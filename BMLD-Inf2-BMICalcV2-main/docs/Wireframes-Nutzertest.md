@@ -12,7 +12,7 @@ Wir wollten herausfinden:
 
 ---
 
-## 📝 Protokoll (optional)
+## 📝 Protokoll
 
 Die Testperson hat sich zuerst auf der Startseite orientiert.  
 Die Suchleiste und die Rezepte waren direkt verständlich.  
