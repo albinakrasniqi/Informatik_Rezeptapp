@@ -22,7 +22,6 @@ Nutzer:innen können über Emojis Zutaten angeben und erhalten passende, gesunde
 - Zutaten-Erkennung optimieren (ähnliche Emojis zulassen)
 - Portionenanzahl wählen
 - Zurück-Button auf Unterseiten
-- Rezeptbewertungen mit Sternen oder Emojis
 - Sortierfunktion in Favoriten
 
 ---
@@ -34,6 +33,7 @@ Nutzer:innen können über Emojis Zutaten angeben und erhalten passende, gesunde
 - Nutzerprofil mit Lieblingsdiäten & Einstellungen
 - Sprachausgabe für Zubereitungsschritte
 - Rezepte nach Schwierigkeit oder Dauer filtern
+- Rezeptbewertungen mit Sternen oder Emojis
 
 ---
 

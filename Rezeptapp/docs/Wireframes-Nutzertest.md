@@ -15,14 +15,18 @@ Wir wollten herausfinden:
 ## 📋 Bewertung des Tests (Test-Raster)
 
 ### ✅ Was war gut?
-- Klare Struktur auf der Startseite
-- Filterfunktion sehr praktisch und verständlich
-- "+ Rezept hinzufügen" wurde gut erkannt
-- Profilbereich mit persönlichen Einstellungen als sinnvoll empfunden
+- Kreative Idee mit der Zutaten-Eingabe über Emojis
+- Einfache und übersichtliche Navigation (Startseite, Favoriten, Profil)
+- Filterfunktion** (Diät, Mahlzeit, Zutaten) ist sinnvoll und leicht verständlich
+- Möglichkeit, eigene Rezepte hinzuzufügen
+- Design wirkt klar und benutzerfreundlich
+- Favoriten und Sortieroption wurden gut verstanden
 
 ### ❌ Was war schlecht?
-- Favoriten-Button wurde beim ersten Mal nicht direkt gesehen
-- Die Bedeutung der Zutatenanzeige (Symbole im Rezept) war nicht sofort klar
+- Es war nicht klar beim ''Rezept hinzufügen'' ob man ein Bild hinzufügen soll
+
+## ❓ Was ist unklar?
+- Wird die Emoji-Eingabe über eine Auswahlliste gemacht oder muss man Emojis selbst eingeben?
 
 ### 💡 Neue Ideen?
 - Tooltip oder kurze Erklärung bei Symbolen (z. B. Filter oder Zutaten)
@@ -31,6 +35,5 @@ Wir wollten herausfinden:
 
 ### ⚠️ Neue Probleme?
 - Unsicherheit bei den Emojis/Symbolen in der Zutatenanzeige
-- Keine direkte Möglichkeit, vom Rezept-Detail wieder zurück zur Startseite
 
 ---
