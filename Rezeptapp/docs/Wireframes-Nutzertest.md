@@ -25,7 +25,7 @@ Wir wollten herausfinden:
 ### ❌ Was war schlecht?
 - Es war nicht klar beim ''Rezept hinzufügen'' ob man ein Bild hinzufügen soll
 
-## ❓ Was ist unklar?
+### ❓ Was ist unklar?
 - Wird die Emoji-Eingabe über eine Auswahlliste gemacht oder muss man Emojis selbst eingeben?
 
 ### 💡 Neue Ideen?
