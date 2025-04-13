@@ -4,7 +4,6 @@
 - Sara Cruz Silva - cruzssar@students.zhaw.ch
 - Genta Arifi - arifigen@students.zhaw.ch
 - Albina Krasniqi – krasnal2@students.zhaw.ch  
-*(Weitere Gruppenmitglieder + Schul-Mailadressen hier einfügen)*
 
 ---
 
