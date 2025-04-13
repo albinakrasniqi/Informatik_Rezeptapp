@@ -1,6 +1,6 @@
 # 🍽️ Emoji-RezeptApp
 
-## 👥 Team und Kontakt
+## 👥 Team 
 - Sara Cruz Silva - cruzssar@students.zhaw.ch
 - Genta Arifi - arifigen@students.zhaw.ch
 - Albina Krasniqi – krasnal2@students.zhaw.ch  
