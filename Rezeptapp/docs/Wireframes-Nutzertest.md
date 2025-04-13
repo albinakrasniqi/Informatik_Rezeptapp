@@ -15,9 +15,9 @@ Wir wollten herausfinden:
 ## 📋 Bewertung des Tests (Test-Raster)
 
 ### ✅ Was war gut?
-- Kreative Idee mit der Zutaten-Eingabe über Emojis
+- Idee mit der Zutaten-Eingabe über Emojis 
 - Einfache und übersichtliche Navigation (Startseite, Favoriten, Profil)
-- Filterfunktion** (Diät, Mahlzeit, Zutaten) ist sinnvoll und leicht verständlich
+- Filterfunktion (Diät, Mahlzeit, Zutaten) ist sinnvoll und verständlich
 - Möglichkeit, eigene Rezepte hinzuzufügen
 - Design wirkt klar und benutzerfreundlich
 - Favoriten und Sortieroption wurden gut verstanden
