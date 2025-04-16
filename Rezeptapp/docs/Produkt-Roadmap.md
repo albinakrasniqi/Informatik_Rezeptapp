@@ -9,10 +9,7 @@ Nutzer:innen können über Emojis Zutaten angeben und erhalten passende, gesunde
 
 - Startseite mit Emoji-Zutaten-Eingabe
 - Filterfunktion (z. B. Diät: vegan, vegetarisch, pescetarisch)
-- Rezeptvorschläge basierend auf ausgewählten Emojis
 - Rezepte anzeigen mit Titel, Tags, Zutaten, Bild
-- Rezept hinzufügen (Titel, Bild, Zubereitung)
-- Favoriten speichern
 - Navigation: Startseite, Favoriten, Profil
 
 ---
@@ -23,6 +20,9 @@ Nutzer:innen können über Emojis Zutaten angeben und erhalten passende, gesunde
 - Portionenanzahl wählen
 - Zurück-Button auf Unterseiten
 - Sortierfunktion in Favoriten
+- Rezeptvorschläge basierend auf ausgewählten Emojis
+- Rezept hinzufügen (Titel, Bild, Zubereitung)
+- Favoriten speichern
 
 ---
 
