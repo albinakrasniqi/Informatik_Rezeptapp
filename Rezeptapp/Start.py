@@ -14,13 +14,10 @@ data_manager.load_app_data(
     parse_dates = ['timestamp']
     )
 
-st.title('BMI Rechner')
 
-st.markdown(f"✨ Hallo! ✨")
-st.markdown("🏃 Die Anwendung ermöglicht es Ihnen, Ihren BMI zu berechnen und im Zeitverlauf zu verfolgen 📊")
-        
-# Add some health advice
-st.info("""Der BMI ist ein Screening-Tool, aber keine Diagnose für Körperfett oder Gesundheit. 
-Bitte konsultieren Sie einen Arzt für eine vollständige Beurteilung.""")
+import streamlit as st
 
-st.write("Diese App wurde von Samuel Wehrli im Rahmen des Moduls 'BMLD Informatik 2' an der ZHAW entwickelt.")
+st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
+
+st.title("👋 Hallo zur Emoji-RezeptApp")
+st.write("Hier kannst du mit Emojis deine Zutaten auswählen und passende Rezepte finden.")
