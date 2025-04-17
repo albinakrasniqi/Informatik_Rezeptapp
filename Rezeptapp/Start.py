@@ -19,5 +19,13 @@ import streamlit as st
 
 st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
 
-st.title("👋 Hallo zur Emoji-RezeptApp")
-st.write("Hier kannst du mit Emojis deine Zutaten auswählen und passende Rezepte finden.")
+st.markdown("""
+<h1 style='text-align: center;'>👋 Willkommen in der Emoji-RezeptApp</h1>
+<p style='text-align: center; font-size:20px;'>🍅🥦🐟 Einfach Zutaten per Emoji auswählen <br>
+und im Handumdrehen leckere Rezepte entdecken! 🧑‍🍳🍽️</p>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.markdown("👉 Über das Menü in der Sidebar kannst du **Rezepte suchen**, **eigene hinzufügen** oder **deine Favoriten** ansehen.")
+st.markdown("🎯 Perfekt für alle, die visuell suchen und schnell etwas Leckeres kochen wollen!")
