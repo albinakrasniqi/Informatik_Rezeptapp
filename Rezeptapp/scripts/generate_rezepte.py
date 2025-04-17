@@ -7,7 +7,6 @@ emoji_map = {
     "carrot": "🥕",
     "salmon": "🐟",
     "chicken": "🍗",
-    "rice": "🍚",
     "tomato": "🍅",
     "cheese": "🧀",
     "egg": "🥚",
@@ -21,12 +20,12 @@ def zutat_zu_emoji(zutat):
             return emoji
     return "❓"
 
-# CSV-Datei laden
-df = pd.read_csv("full_dataset.csv")
+# 📄 CSV-Datei laden (jetzt die kleine!)
+df = pd.read_csv("Rezeptapp/scripts/dataset/klein_dataset.csv")
 
-# Beispiel: Nur die ersten 100 Rezepte verwenden
+# 🧪 Nur die ersten 100 Rezepte verwenden (optional – du hast eh 100)
 rezepte = []
-for index, row in df.head(100).iterrows():
+for index, row in df.iterrows():
     zutaten_liste = json.loads(row['ingredients'])
     emojis = [zutat_zu_emoji(z) for z in zutaten_liste]
     rezepte.append({
@@ -36,6 +35,9 @@ for index, row in df.head(100).iterrows():
         "bild_url": row.get('image_url', '')
     })
 
-# Als JSON speichern
-with open("data/rezepte.json", "w", encoding="utf-8") as f:
+# 💾 Als JSON speichern
+with open("Rezeptapp/data/rezepte.json", "w", encoding="utf-8") as f:
     json.dump(rezepte, f, ensure_ascii=False, indent=2)
+
+print("✅ Rezepte erfolgreich generiert!")
+
