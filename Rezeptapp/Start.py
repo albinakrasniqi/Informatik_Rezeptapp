@@ -25,7 +25,4 @@ st.markdown("""
 und im Handumdrehen leckere Rezepte entdecken! 🧑‍🍳🍽️</p>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
 
-st.markdown("👉 Über das Menü in der Sidebar kannst du **Rezepte suchen**, **eigene hinzufügen** oder **deine Favoriten** ansehen.")
-st.markdown("🎯 Perfekt für alle, die visuell suchen und schnell etwas Leckeres kochen wollen!")
