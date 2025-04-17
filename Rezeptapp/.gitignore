@@ -175,7 +175,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-Rezeptapp/dataset/full_dataset.csv
-
-
