@@ -14,6 +14,12 @@ diät = st.radio(
 st.markdown("### 🔠 Textgröße")
 textgröße = st.slider("Textgröße", 12, 24, 16, key="textgröße")
 
+# Sidebar-Einstellungen, die auf allen Seiten angezeigt werden
+with st.sidebar:
+    st.markdown("### 🔠 Textgröße")
+    st.session_state.textgröße = st.slider("Textgröße wählen", 12, 24, st.session_state.get("textgröße", 16))
+
+
 # Beispiel zur Umsetzung der Textgröße:
 st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>Ausgewählte Diät: {st.session_state.diät}</p>", unsafe_allow_html=True)
 

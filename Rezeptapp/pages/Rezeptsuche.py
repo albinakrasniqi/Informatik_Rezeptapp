@@ -1,4 +1,10 @@
 import streamlit as st
+
+#Textgrösse anpassung
+
+def text(text):
+    st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>{text}</p>", unsafe_allow_html=True)
+
 # Extract all emojis from zutat_emojis_gruppen
 def show():
     st.title("🍽️ Rezeptsuche")
