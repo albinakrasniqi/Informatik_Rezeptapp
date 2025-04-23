@@ -33,10 +33,10 @@ import profile
 # Seitenmenü in der Sidebar
 page = st.sidebar.selectbox("Seite wählen", ["Start", "Favoriten", "Profil"])
 
-if page == "Start":
+if page == "Rezeptsuche":
     home.show()
 elif page == "Favoriten":
     favorites.show()
-elif page == "Profil":
+elif page == "Mein Konto":
     profile.show()
 
