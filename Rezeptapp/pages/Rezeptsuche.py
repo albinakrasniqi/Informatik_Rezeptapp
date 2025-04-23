@@ -42,9 +42,26 @@ zutat_emojis = {
     "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
     }
 
-selected_ingredients = st.multiselect("Was hast du zu Hause?", zutat_emojis)
+st.write("### Was hast du zu Hause?")
+
+# Session State für Auswahl merken
+if "auswahl" not in st.session_state:
+    st.session_state.auswahl = []
+
+# Grid mit Buttons (8 Emojis pro Zeile)
+cols = st.columns(8)
+for i, emoji in enumerate(zutat_emojis):
+    if cols[i % 8].button(emoji, key=emoji):
+        if emoji in st.session_state.auswahl:
+            st.session_state.auswahl.remove(emoji)
+        else:
+            st.session_state.auswahl.append(emoji)
+
+# Zeige aktuelle Auswahl
+st.write("**Ausgewählt:**", " ".join(st.session_state.auswahl))
 
     # Display selected ingredients
+selected_ingredients = st.session_state.auswahl
 if selected_ingredients:
         st.markdown("### 🛒 Ausgewählte Zutaten")
         st.write(", ".join(selected_ingredients))
