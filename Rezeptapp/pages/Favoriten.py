@@ -2,7 +2,7 @@ import streamlit as st
 
 #Textgrösse anpassung
 
-def text(text):
+def text(fav):
     st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>{text}</p>", unsafe_allow_html=True)
 
 def fav():
