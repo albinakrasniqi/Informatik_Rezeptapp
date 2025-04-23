@@ -51,7 +51,7 @@ if "auswahl" not in st.session_state:
 # Grid mit Buttons (8 Emojis pro Zeile)
 cols = st.columns(8)
 for i, emoji in enumerate(zutat_emojis):
-    if cols[i % 8].button(emoji, key=emoji):
+    if cols[i % 8].button(zutat_emojis):
         if emoji in st.session_state.auswahl:
             st.session_state.auswahl.remove(emoji)
         else:
