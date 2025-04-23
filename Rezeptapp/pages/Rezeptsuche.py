@@ -40,7 +40,7 @@ zutat_emojis_gruppen = {
     "🍬 Extras": {
         "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
         "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
-    }
+    }}
 
     
 
@@ -110,4 +110,3 @@ if st.button("Neues Rezept erstellen"):
             st.text_area("Zutaten mit Mengenangaben")
             st.text_area("📝 Schritt-für-Schritt Anleitung")
             st.form_submit_button("✅ Rezept speichern")
-
