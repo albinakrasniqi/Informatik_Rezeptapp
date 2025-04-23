@@ -15,3 +15,6 @@ def show():
             st.image("https://source.unsplash.com/600x400/?recipe", width=300)
             st.write("Eigenes Rezept: 🍞🥚🧀")
             st.button("🗑️ Löschen", key=f"my_recipe_{i}")
+
+if __name__ == "__main__":
+    show()
