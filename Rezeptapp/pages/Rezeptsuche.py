@@ -48,16 +48,19 @@ st.write("### Was hast du zu Hause?")
 if "auswahl" not in st.session_state:
     st.session_state.auswahl = []
 
-# Grid mit Buttons (5 Emojis pro Zeile)
-cols = st.columns(5)
-for i, (emoji, name) in enumerate(zutat_emojis.items()):
-    label = f"{emoji} {name}"
-    if cols[i % 5].button(label, key=emoji):
-        if emoji in st.session_state.auswahl:
-            st.session_state.auswahl.remove(emoji)
-        else:
-            st.session_state.auswahl.append(emoji)
+# Anzahl Spalten pro Reihe
+spalten = 5
+emoji_items = list(zutat_emojis.items())
 
+for i in range(0, len(emoji_items), spalten):
+    cols = st.columns(spalten)
+    for j, (emoji, name) in enumerate(emoji_items[i:i + spalten]):
+        label = f"{emoji} {name}"
+        if cols[j].button(label, key=emoji):
+            if emoji in st.session_state.auswahl:
+                st.session_state.auswahl.remove(emoji)
+            else:
+                st.session_state.auswahl.append(emoji)
 # Zeige aktuelle Auswahl
 st.write("**Ausgewählt:**", " ".join(st.session_state.auswahl))
 
