@@ -13,4 +13,5 @@ def fav():
             st.write("**Favoritenrezept**")
             st.write("Tags: 🥦 Vegan | Mittagessen")
             st.button("🗑️ Entfernen", key=f"remove_{i}")
+
 fav()
