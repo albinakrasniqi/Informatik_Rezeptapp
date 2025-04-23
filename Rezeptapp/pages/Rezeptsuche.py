@@ -1,15 +1,7 @@
 import streamlit as st
-
+# Extract all emojis from zutat_emojis_gruppen
 def show():
     st.title("🍽️ Rezeptsuche")
-
-    # 🔍 Suchleiste
-    search_term = st.text_input("🔍 Suche nach einem Rezept:")
-    if search_term:
-        st.markdown(f"### 🔍 Suchergebnis für: {search_term}")
-
-    # 🧩 Emoji-Filter
-    st.markdown("### 🍎 Zutaten auswählen")
 
 zutat_emojis_gruppen = {
     "🍞 Getreide & Kohlenhydrate": {
@@ -42,6 +34,16 @@ zutat_emojis_gruppen = {
         "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
         },
     }
+
+zutat_emojis = [emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()]
+
+    # 🔍 Suchleiste
+search_term = st.text_input("🔍 Suche nach einem Rezept:")
+if search_term:
+        st.markdown(f"### 🔍 Suchergebnis für: {search_term}")
+
+# 🧩 Emoji-Filter
+st.markdown("### 🍎 Zutaten auswählen")
 
 st.write("### Was hast du zu Hause?")
 
