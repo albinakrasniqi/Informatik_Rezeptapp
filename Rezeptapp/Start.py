@@ -25,18 +25,3 @@ st.markdown("""
 und im Handumdrehen leckere Rezepte entdecken! 🧑‍🍳🍽️</p>
 """, unsafe_allow_html=True)
 
-import streamlit as st
-import home
-import favorites
-import profile
-
-# Seitenmenü in der Sidebar
-page = st.sidebar.selectbox("Seite wählen", ["Start", "Favoriten", "Profil"])
-
-if page == "Rezeptsuche":
-    home.show()
-elif page == "Favoriten":
-    favorites.show()
-elif page == "Mein Konto":
-    profile.show()
-
