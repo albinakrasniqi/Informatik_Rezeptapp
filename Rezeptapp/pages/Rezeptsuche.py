@@ -40,9 +40,8 @@ zutat_emojis_gruppen = {
     "🍬 Extras": {
         "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
         "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
+        },
     }
-
-    
 
 st.write("### Was hast du zu Hause?")
 
