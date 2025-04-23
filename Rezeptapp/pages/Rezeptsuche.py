@@ -48,11 +48,11 @@ st.write("### Was hast du zu Hause?")
 if "auswahl" not in st.session_state:
     st.session_state.auswahl = []
 
-# Grid mit Buttons (8 Emojis pro Zeile)
-cols = st.columns(8)
+# Grid mit Buttons (5 Emojis pro Zeile)
+cols = st.columns(5)
 for i, (emoji, name) in enumerate(zutat_emojis.items()):
     label = f"{emoji} {name}"
-    if cols[i % 8].button(label, key=emoji):
+    if cols[i % 5].button(label, key=emoji):
         if emoji in st.session_state.auswahl:
             st.session_state.auswahl.remove(emoji)
         else:
