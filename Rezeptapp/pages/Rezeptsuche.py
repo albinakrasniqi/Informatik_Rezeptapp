@@ -41,35 +41,7 @@ zutat_emojis_gruppen = {
         "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
         "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
     }
-}
-    # 🍞 Getreide & Kohlenhydrate
-    "🍞": "Brot", "🥖": "Baguette", "🥐": "Croissant", "🥨": "Brezel",
-    "🍚": "Reis", "🍙": "Reisbällchen", "🍘": "Reiscracker", "🍜": "Nudelsuppe",
-    "🍝": "Spaghetti", "🥯": "Bagel", "🥞": "Pfannkuchen", "🧇": "Waffeln", "🫓": "Fladenbrot",
 
-    # 🥦 Gemüse
-    "🥦": "Brokkoli", "🥕": "Karotte", "🌽": "Mais", "🫑": "Paprika", "🍆": "Aubergine",
-    "🥬": "Blattgemüse", "🥒": "Gurke", "🧄": "Knoblauch", "🧅": "Zwiebel", "🍄": "Pilze", "🍅": "Tomate", "🥗": "Gemischter Salat",
-
-    # 🍎 Obst
-    "🍎": "Apfel", "🍏": "Grüner Apfel", "🍐": "Birne", "🍊": "Orange", "🍋": "Zitrone",
-    "🍌": "Banane", "🍉": "Wassermelone", "🍇": "Trauben", "🍓": "Erdbeere",
-    "🫐": "Blaubeeren", "🥭": "Mango", "🍍": "Ananas", "🥝": "Kiwi",
-
-    # 🥩 Eiweißquellen
-    "🥩": "Steak", "🍗": "Hähnchenkeule", "🍖": "Rippchen", "🥓": "Speck", "🦴": "Knochen",
-    "🐟": "Fisch", "🦐": "Garnelen", "🦑": "Tintenfisch", "🦞": "Hummer", "🥚": "Ei", "🍳": "Spiegelei", "🌭": "Wurst",
-
-    # 🧀 Milchprodukte & Alternativen
-    "🧀": "Käse", "🥛": "Milch", "🍶": "Reismilch/Sake", "🧈": "Butter", "🍨": "Eiscreme",
-    "🍦": "Soft-Eis", "🥤": "Milchshake",
-
-    # 🥜 Hülsenfrüchte & Nüsse
-    "🥜": "Erdnüsse", "🌰": "Kastanien", "🫘": "Bohnen", "🍠": "Süßkartoffel",
-
-    # 🍬 Extras
-    "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
-    "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
     
 
 st.write("### Was hast du zu Hause?")
