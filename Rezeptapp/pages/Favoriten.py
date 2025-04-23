@@ -1,6 +1,6 @@
 import streamlit as st
 
-def show():
+def fav():
     st.title("❤️ Meine Favoriten")
 
     # 🔃 Sortieroptionen
@@ -13,3 +13,4 @@ def show():
             st.write("**Favoritenrezept**")
             st.write("Tags: 🥦 Vegan | Mittagessen")
             st.button("🗑️ Entfernen", key=f"remove_{i}")
+fav()
