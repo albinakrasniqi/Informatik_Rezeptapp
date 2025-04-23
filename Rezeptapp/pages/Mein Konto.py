@@ -1,6 +1,6 @@
 import streamlit as st
 
-def show():
+def Kontopage():
     st.title("👤 Mein Konto")
 
     st.markdown("### 🧘 Diätpräferenzen festlegen")
@@ -16,5 +16,4 @@ def show():
             st.write("Eigenes Rezept: 🍞🥚🧀")
             st.button("🗑️ Löschen", key=f"my_recipe_{i}")
 
-if __name__ == "__main__":
-    show()
+Kontopage()
