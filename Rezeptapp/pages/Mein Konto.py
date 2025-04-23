@@ -19,6 +19,14 @@ with st.sidebar:
     st.markdown("### 🔠 Textgröße")
     st.session_state.textgröße = st.slider("Textgröße wählen", 12, 24, st.session_state.get("textgröße", 16))
 
+    st.markdown(f"""
+    <style>
+        * {{
+            font-size: {st.session_state.textgröße}px !important;
+        }}
+    </style>
+""", unsafe_allow_html=True)
+
 
 # Beispiel zur Umsetzung der Textgröße:
 st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>Ausgewählte Diät: {st.session_state.diät}</p>", unsafe_allow_html=True)
