@@ -11,7 +11,37 @@ def show():
     # 🧩 Emoji-Filter
     st.markdown("### 🍎 Zutaten auswählen")
 
-zutat_emojis = {
+zutat_emojis_gruppen = {
+    "🍞 Getreide & Kohlenhydrate": {
+        "🍞": "Brot", "🥖": "Baguette", "🥐": "Croissant", "🥨": "Brezel",
+        "🍚": "Reis", "🍙": "Reisbällchen", "🍘": "Reiscracker", "🍜": "Nudelsuppe",
+        "🍝": "Spaghetti", "🥯": "Bagel", "🥞": "Pfannkuchen", "🧇": "Waffeln", "🫓": "Fladenbrot",
+    },
+    "🥦 Gemüse": {
+        "🥦": "Brokkoli", "🥕": "Karotte", "🌽": "Mais", "🫑": "Paprika", "🍆": "Aubergine",
+        "🥬": "Blattgemüse", "🥒": "Gurke", "🧄": "Knoblauch", "🧅": "Zwiebel", "🍄": "Pilze", "🍅": "Tomate", "🥗": "Gemischter Salat",
+    },
+    "🍎 Obst": {
+        "🍎": "Apfel", "🍏": "Grüner Apfel", "🍐": "Birne", "🍊": "Orange", "🍋": "Zitrone",
+        "🍌": "Banane", "🍉": "Wassermelone", "🍇": "Trauben", "🍓": "Erdbeere",
+        "🫐": "Blaubeeren", "🥭": "Mango", "🍍": "Ananas", "🥝": "Kiwi",
+    },
+    "🥩 Eiweißquellen": {
+        "🥩": "Steak", "🍗": "Hähnchenkeule", "🍖": "Rippchen", "🥓": "Speck", "🦴": "Knochen",
+        "🐟": "Fisch", "🦐": "Garnelen", "🦑": "Tintenfisch", "🦞": "Hummer", "🥚": "Ei", "🍳": "Spiegelei", "🌭": "Wurst",
+    },
+    "🧀 Milchprodukte & Alternativen": {
+        "🧀": "Käse", "🥛": "Milch", "🍶": "Reismilch/Sake", "🧈": "Butter", "🍨": "Eiscreme",
+        "🍦": "Soft-Eis", "🥤": "Milchshake",
+    },
+    "🥜 Hülsenfrüchte & Nüsse": {
+        "🥜": "Erdnüsse", "🌰": "Kastanien", "🫘": "Bohnen", "🍠": "Süßkartoffel",
+    },
+    "🍬 Extras": {
+        "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
+        "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
+    }
+}
     # 🍞 Getreide & Kohlenhydrate
     "🍞": "Brot", "🥖": "Baguette", "🥐": "Croissant", "🥨": "Brezel",
     "🍚": "Reis", "🍙": "Reisbällchen", "🍘": "Reiscracker", "🍜": "Nudelsuppe",
@@ -40,7 +70,7 @@ zutat_emojis = {
     # 🍬 Extras
     "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
     "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
-    }
+    
 
 st.write("### Was hast du zu Hause?")
 
@@ -50,27 +80,30 @@ if "auswahl" not in st.session_state:
 
 # Anzahl Spalten pro Reihe
 spalten = 5
-emoji_items = list(zutat_emojis.items())
+for gruppe, zutaten in zutat_emojis_gruppen.items():
+    st.markdown(f"#### {gruppe}")  # Gruppenüberschrift
+    
+    emoji_items = list(zutaten.items())
+    for i in range(0, len(emoji_items), spalten):
+        cols = st.columns(spalten)
+        for j, (emoji, name) in enumerate(emoji_items[i:i + spalten]):
+            label = f"{emoji} {name}"
+            if cols[j].button(label, key=emoji):
+                if emoji in st.session_state.auswahl:
+                    st.session_state.auswahl.remove(emoji)
+                else:
+                    st.session_state.auswahl.append(emoji)
 
-for i in range(0, len(emoji_items), spalten):
-    cols = st.columns(spalten)
-    for j, (emoji, name) in enumerate(emoji_items[i:i + spalten]):
-        label = f"{emoji} {name}"
-        if cols[j].button(label, key=emoji):
-            if emoji in st.session_state.auswahl:
-                st.session_state.auswahl.remove(emoji)
-            else:
-                st.session_state.auswahl.append(emoji)
-# Zeige aktuelle Auswahl
-st.write("**Ausgewählt:**", " ".join(st.session_state.auswahl))
-
-    # Display selected ingredients
+# Auswahl anzeigen
 selected_ingredients = st.session_state.auswahl
 if selected_ingredients:
-        st.markdown("### 🛒 Ausgewählte Zutaten")
-        st.write(", ".join(selected_ingredients))
+    st.markdown("### 🛒 Ausgewählte Zutaten")
+    st.write(" ".join([f"{emoji} {name}"
+                       for gruppe in zutat_emojis_gruppen.values()
+                       for emoji, name in gruppe.items()
+                       if emoji in selected_ingredients]))
 else:
-        st.markdown("### 🛒 Keine Zutaten ausgewählt")
+    st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
     # 🥗 Diätfilter
 diet = st.selectbox("🧘 Diät wählen", ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch"])
