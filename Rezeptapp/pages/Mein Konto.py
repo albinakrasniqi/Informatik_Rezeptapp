@@ -10,6 +10,7 @@ diät = st.radio(
     key="diät"
 )
 
+
 st.markdown("### 📖 Meine Rezepte")
 for i in range(2):
     with st.container():
@@ -18,3 +19,4 @@ for i in range(2):
         st.button("🗑️ Löschen", key=f"my_recipe_{i}")
 
 kontopage()
+
