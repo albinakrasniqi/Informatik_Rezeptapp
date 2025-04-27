@@ -18,4 +18,4 @@ for i in range(2):
         st.write(f"Eigenes Rezept: 🍝🍜🥗")
         st.button("🗑️ Löschen", key=f"my_recipe_{i}")
 
-kontopage()
+
