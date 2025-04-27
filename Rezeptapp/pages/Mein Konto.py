@@ -1,8 +1,7 @@
 import streamlit as st
 
 def kontopage():
-     with st.container():
-        st.title("👤 Mein Konto")
+     st.title("👤 Mein Konto")
 
 st.markdown("### 🥗 Diätpräferenzen festlegen")
 diät = st.radio(
