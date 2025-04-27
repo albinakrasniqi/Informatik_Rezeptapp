@@ -10,7 +10,6 @@ diät = st.radio(
     key="diät"
 )
 
-
 st.markdown("### 📖 Meine Rezepte")
 for i in range(2):
     with st.container():
