@@ -17,5 +17,5 @@ def kontopage():
             st.image("https://source.unsplash.com/600x400/?food", width=300)
             st.write(f"Eigenes Rezept: 🍝🍜🥗")
             st.button("🗑️ Löschen", key=f"my_recipe_{i}")
-
+kontopage()
 
