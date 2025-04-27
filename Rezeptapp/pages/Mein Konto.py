@@ -10,29 +10,6 @@ diät = st.radio(
     key="diät"
 )
 
-st.markdown("### 🔠 Textgröße")
-
-# Textgröße nur EINMAL setzen (in Session State)
-if "textgröße" not in st.session_state:
-    st.session_state.textgröße = 16  # Standardwert
-
-textgröße = st.slider(
-    "Textgröße wählen", 12, 24, st.session_state.textgröße, key="textgröße_slider"
-)
-st.session_state.textgröße = textgröße
-
-# Sidebar
-with st.sidebar:
-    st.markdown("### 🔠 Textgröße")
-    st.slider(
-        "Textgröße (nur anzeigen)", 12, 24, st.session_state.textgröße, disabled=True
-    )
-
-# Beispiel Textgröße anwenden
-st.markdown(
-    f"<p style='font-size:{st.session_state.textgröße}px'>Ausgewählte Diät: {st.session_state.diät}</p>",
-    unsafe_allow_html=True
-)
 
 st.markdown("### 📖 Meine Rezepte")
 for i in range(2):
