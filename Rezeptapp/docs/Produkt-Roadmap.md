@@ -5,44 +5,28 @@ Nutzer:innen können über Emojis Zutaten angeben und erhalten passende, gesunde
 
 ---
 
-## 🛠️ MVP – Minimal Viable Product (erste Version)
+## MVP (erste Version)
 
 - Startseite mit Emoji-Zutaten-Eingabe
-- Filterfunktion (z. B. Diät: vegan, vegetarisch, pescetarisch)
+- Filterfunktion (z.B. Diät: vegan, vegetarisch, pescetarisch)
 - Navigation: Startseite, Favoriten, Profil
+- Emoji-Atlas erstellen
 
 ---
 
-## 🚀 Nächste Iteration (nach MVP)
-- Rezepte anzeigen 
-- Zutaten-Erkennung optimieren (ähnliche Emojis zulassen)
-- Portionenanzahl wählen
-- Zurück-Button auf Unterseiten
-- Sortierfunktion in Favoriten
-- Rezeptvorschläge basierend auf ausgewählten Emojis
-- Rezept hinzufügen (Titel, Bild, Zubereitung)
-- Favoriten speichern
+## MVP (V2.0)
+
+- Datensatz mit Rezepten einfügen (Rezepttitel, Zutatenliste, Tags)
+- Rezepte über Emojis oder über Wörter finden
+- Favoriten speichern (Rezepte merken können)
+- Rezeptvorschläge basierend auf ausgewählten Emojis anzeigen
 
 ---
 
-## 🌟 Nice-to-have (später)
+## Nice-to-have (später)
 
-- Einkaufsliste generieren aus Rezept
-- Rezepte mit Freund:innen teilen (z. B. WhatsApp)
-- Nutzerprofil mit Lieblingsdiäten & Einstellungen
-- Sprachausgabe für Zubereitungsschritte
-- Rezepte nach Schwierigkeit oder Dauer filtern
-- Rezeptbewertungen mit Sternen oder Emojis
-
----
-
-## 🧭 Zeitplanung (optional)
-
-| Zeitraum      | Ziel/Funktion                               |
-|---------------|---------------------------------------------|
-| Woche 1       | Startseite, Emoji-Eingabe, Rezepte anzeigen |
-| Woche 2       | Filter, Favoritenfunktion                   |
-| Woche 3       | Rezept hinzufügen, Profil                   |
-| Woche 4       | Feinschliff & MVP-Abschluss                 |
-| Danach        | Erweiterungen & Tests mit Nutzenden         |
-
+- Einkaufszettel aus gespeicherten Rezepten generieren
+- Rezepte mit Freund:innen teilen (z.B. Link teilen)
+- Einfaches Nutzerprofil (nur Name speichern)
+- Mehr Emoji-Kategorien einfügen (z.B. Süsses, Getränke)
+- Rezeptbewertungen mit 1-5 Sternen
