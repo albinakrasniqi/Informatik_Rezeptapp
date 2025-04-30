@@ -128,5 +128,5 @@ if st.button("Rezept suchen"):
             st.image("https://source.unsplash.com/600x400/?food", width=300)
             st.write("**Rezepttitel**")
             st.write("Treffer: 🥕 🍝")
-            if st.button("❤️ Zu Favoriten", key=f"fav_{i}"):
-                st.success("Zum Favoriten hinzugefügt") 
+            if st.button("❤️ Zu Favoriten", key=f"fav_{meal_type}_{i}"):
+                st.success("Zum Favoriten hinzugefügt")
