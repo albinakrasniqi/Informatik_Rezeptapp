@@ -1,73 +1,39 @@
-import streamlit as st
 import pandas as pd
 
-# Datensatz laden
-@st.cache_data
-def load_data():
-    # Gib hier den korrekten Pfad zum Datensatz an
-    return pd.read_csv("c:/Users/arifi/OneDrive - ZHAW/2. Semester/Informatik/Eigene App/Informatik_Rezeptapp/dataset.csv")
+# Funktion, um ein Rezept basierend auf Benutzereingaben zu finden
+def finde_rezept(angaben):
+    # Datensatz laden (z.B. als CSV-Datei)
+    datensatz = pd.read_csv('c:/Users/arifi/OneDrive - ZHAW/2. Semester/Informatik/Eigene App/Datensatz/rezeptdaten.csv')
 
-df = load_data()
+    # Filtere den Datensatz basierend auf den Angaben
+    gefundene_rezepte = datensatz
+    for schluessel, wert in angaben.items():
+        gefundene_rezepte = gefundene_rezepte[gefundene_rezepte[schluessel] == wert]
 
-# Überprüfen, ob der Datensatz korrekt geladen wurde
-if df.empty:
-    st.error("Der Datensatz konnte nicht geladen werden. Bitte überprüfe den Pfad.")
-    st.stop()
-
-# Benutzeroberfläche
-st.title("🍽️ Gefundenes Rezept")
-
-# Filterlogik basierend auf den Angaben von "Rezeptsuche.py"
-# Die Angaben werden über `st.session_state` übergeben
-diet = st.session_state.get("diet", "Alle")
-meal_type = st.session_state.get("meal_type", "Alle")
-ingredients = st.session_state.get("ingredients", [])
-
-# Filterlogik
-filtered_df = df
-
-# Filter nach Diät
-if diet != "Alle":
-    if "diet" in df.columns:
-        filtered_df = filtered_df[filtered_df["diet"].str.contains(diet, case=False, na=False)]
+    # Überprüfen, ob ein Rezept gefunden wurde
+    if not gefundene_rezepte.empty:
+        return gefundene_rezepte
     else:
-        st.warning("Die Spalte 'diet' wurde im Datensatz nicht gefunden.")
+        return "Kein passendes Rezept gefunden."
 
-# Filter nach Mahlzeittyp
-if meal_type != "Alle":
-    if "meal_type" in df.columns:
-        filtered_df = filtered_df[filtered_df["meal_type"].str.contains(meal_type, case=False, na=False)]
-    else:
-        st.warning("Die Spalte 'meal_type' wurde im Datensatz nicht gefunden.")
+# Benutzerangaben abfragen
+def benutzereingaben_abfragen():
+    print("Bitte geben Sie die folgenden Angaben ein:")
+    zutat = input("Zutat: ")
+    schwierigkeit = input("Schwierigkeit (z. B. Einfach, Mittel, Schwer): ")
+    dauer = input("Dauer (z. B. 30 Minuten): ")
 
-# Filter nach Zutaten
-if ingredients:
-    if "ingredients" in df.columns:
-        for ingredient in ingredients:
-            filtered_df = filtered_df[filtered_df["ingredients"].str.contains(ingredient, case=False, na=False)]
-    else:
-        st.warning("Die Spalte 'ingredients' wurde im Datensatz nicht gefunden.")
+    return {
+        'Zutat': zutat,
+        'Schwierigkeit': schwierigkeit,
+        'Dauer': dauer
+    }
 
-# Ergebnisse anzeigen
-if not filtered_df.empty:
-    st.subheader("🔎 Gefundenes Rezept")
-    st.write(filtered_df.iloc[0])  # Zeige das erste passende Rezept
-else:
-    st.warning("Keine passenden Rezepte gefunden. Bitte passe deine Filter an.")
-
-
-
-    st.session_state["diet"] = diet
-st.session_state["meal_type"] = meal_type
-st.session_state["ingredients"] = ingredients
-
-
-print(df.columns)
-
-
-st.session_state["diet"] = diet
-st.session_state["meal_type"] = meal_type
-st.session_state["ingredients"] = ingredients
-st.experimental_rerun()  # Navigiere zur Seite "zRezeptangabe.py"
+# Hauptprogramm
+if __name__ == "__main__":
+    angaben = benutzereingaben_abfragen()
+    ergebnis = finde_rezept(angaben)
+    print("\nSuchergebnis:")
+    print(ergebnis)
 
 
