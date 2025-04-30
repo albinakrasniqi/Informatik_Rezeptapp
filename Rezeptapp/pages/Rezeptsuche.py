@@ -117,3 +117,16 @@ if st.button("Neues Rezept erstellen"):
             st.text_area("Zutaten mit Mengenangaben")
             st.text_area("📝 Schritt-für-Schritt Anleitung")
             st.form_submit_button("✅ Rezept speichern")
+
+
+# 📋 Rezept suchen Button
+if st.button("Rezept suchen"):
+    st.subheader("🔎 Gefundene Rezepte")
+    st.markdown(f"### 🍽️ Ausgewählter Mahlzeittyp: {meal_type}")
+    for i in range(2):  # Platzhalter für Demo
+        with st.container():
+            st.image("https://source.unsplash.com/600x400/?food", width=300)
+            st.write("**Rezepttitel**")
+            st.write("Treffer: 🥕 🍝")
+            if st.button("❤️ Zu Favoriten", key=f"fav_{i}"):
+                st.success("Zum Favoriten hinzugefügt") 
