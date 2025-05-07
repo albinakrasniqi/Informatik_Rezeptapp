@@ -15,7 +15,8 @@ data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  #
 data_manager.load_app_data(
     session_state_key='data', 
     file_name='recipes.csv', 
-    initial_value = pd.DataFrame(), 
+    initial_value = pd.DataFrame(),
+    encoding='utf-8' 
     )
 
 import streamlit as st
