@@ -36,7 +36,9 @@ if data.empty:
 else:
     st.markdown("<p style='text-align: center; font-size:20px;'>Hier sind Ihre Rezepte:</p>", unsafe_allow_html=True)
     # Display the data in a table format
-    st.table(data)  # Display the data in a table format
+    anzahl = st.slider("Wie viele Rezepte anzeigen?", 10, 500, 100)
+st.table(data.head(anzahl))
+  # Display the data in a table format
 
 
 
