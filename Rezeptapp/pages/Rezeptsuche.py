@@ -171,29 +171,34 @@ if st.button("Neues Rezept erstellen"):
 
 if st.button("Rezept suchen"):
     st.subheader("🔎 Gefundene Rezepte")
-    
-    rezepte = st.session_state['data']  # das geladene DataFrame
-    zutaten = st.session_state.auswahl  # ausgewählte Emojis
-    st.write(rezepte.columns.tolist())
 
-if 'RecipeIngredientParts' in rezepte.columns:
-    gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
-        lambda z: all(zutat in str(z) for zutat in zutaten)
-    )]
-    if gefundene.empty:
-        st.warning("❌ Kein passendes Rezept gefunden.")
-    else:
-        for i, row in gefundene.iterrows():
-            with st.container():
-                st.image(row['Images'], width=300)
-                st.markdown(f"**{row['Name']}**")
-                st.write(f"🍽️ Zutaten: {row['RecipeIngredientParts']}")
-                st.write(f"📝 Zubereitung: {row['RecipeInstructions']}")
-                if st.button("❤️ Zu Favoriten", key=f"fav_{row['ID']}"):
-                    st.success("Zum Favoriten hinzugefügt")
-else:
-    st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
+    rezepte = st.session_state.get('data', None)
+    zutaten = st.session_state.get('auswahl', [])
+
+    if rezepte is None or rezepte.empty:
+        st.error("⚠️ Keine Rezepte geladen.")
+        st.stop()
+
+    # Spalten zur Kontrolle anzeigen
     st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
-    st.stop()
-rezepte = st.session_state['data']  # das geladene DataFrame
-zutaten = st.session_state.auswahl  # ausgewählte Emojis
+
+    if 'RecipeIngredientParts' in rezepte.columns:
+        # Filter: nur Rezepte mit allen ausgewählten Zutaten
+        gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
+            lambda z: all(zutat in str(z) for zutat in zutaten)
+        )]
+
+        if gefundene.empty:
+            st.warning("❌ Kein passendes Rezept gefunden.")
+        else:
+            for i, row in gefundene.iterrows():
+                with st.container():
+                    st.image(row['Images'], width=300)
+                    st.markdown(f"**{row['Name']}**")
+                    st.write(f"🍽️ Zutaten: {row['RecipeIngredientParts']}")
+                    st.write(f"📝 Zubereitung: {row['RecipeInstructions']}")
+                    if st.button("❤️ Zu Favoriten", key=f"fav_{row['ID']}"):
+                        st.success("Zum Favoriten hinzugefügt")
+    else:
+        st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
+        st.stop()
