@@ -190,19 +190,18 @@ if st.button("Rezept suchen"):
         st.error("⚠️ Keine Rezepte geladen.")
         st.stop()
 
-    # Spalten zur Kontrolle anzeigen
-    st.write(rezepte[['Name', 'RecipeIngredientParts']].head(5))
     st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
 
     if 'RecipeIngredientParts' in rezepte.columns:
-        # Filter: nur Rezepte mit allen ausgewählten Zutaten
+        # Rezepte mit mindestens einer Zutat (statt all)
         gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
-            lambda z: all(zutat in str(z) for zutat in zutaten)
+            lambda z: any(zutat in str(z) for zutat in zutaten)
         )]
 
         if gefundene.empty:
             st.warning("❌ Kein passendes Rezept gefunden.")
         else:
+            st.info(f"✅ {len(gefundene)} Rezepte gefunden")
             for i, row in gefundene.iterrows():
                 with st.container():
                     st.image(row['Images'], width=300)
@@ -213,5 +212,5 @@ if st.button("Rezept suchen"):
                         st.success("Zum Favoriten hinzugefügt")
     else:
         st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
+        st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
         st.stop()
-
