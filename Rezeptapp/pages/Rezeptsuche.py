@@ -184,7 +184,6 @@ if st.button("Rezept suchen"):
     st.subheader("🔎 Gefundene Rezepte")
 
     rezepte = st.session_state.get('data', None)
-    st.write(rezepte[['Name', 'RecipeIngredientParts']].head(5))
     zutaten = st.session_state.get('auswahl', [])
 
     if rezepte is None or rezepte.empty:
@@ -192,6 +191,7 @@ if st.button("Rezept suchen"):
         st.stop()
 
     # Spalten zur Kontrolle anzeigen
+    st.write(rezepte[['Name', 'RecipeIngredientParts']].head(5))
     st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
 
     if 'RecipeIngredientParts' in rezepte.columns:
@@ -214,3 +214,4 @@ if st.button("Rezept suchen"):
     else:
         st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
         st.stop()
+
