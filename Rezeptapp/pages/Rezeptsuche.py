@@ -1,4 +1,8 @@
 import streamlit as st
+if 'data' not in st.session_state:
+    st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
+    st.stop()
+
 
 #Textgrösse anpassung
 
