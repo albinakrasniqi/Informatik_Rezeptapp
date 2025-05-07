@@ -145,17 +145,6 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 
 st.markdown("---")
 
-    # 📋 Dummy-Rezeptanzeige
-st.subheader("🔎 Gefundene Rezepte")
-st.markdown(f"### 🍽️ Ausgewählter Mahlzeittyp: {meal_type}")
-for i in range(2):  # Platzhalter für Demo
-     with st.container():
-            st.image("https://source.unsplash.com/600x400/?food", width=300)
-            st.write("**Rezepttitel**")
-            st.write("Treffer: 🥕 🍝")
-            if st.button("❤️ Zu Favoriten", key=f"fav_{i}"):
-                st.success("Zum Favoriten hinzugefügt")
-
 import uuid  # ganz oben in deiner Datei, wenn noch nicht da
 import pandas as pd
 
@@ -195,6 +184,7 @@ if st.button("Rezept suchen"):
     st.subheader("🔎 Gefundene Rezepte")
 
     rezepte = st.session_state.get('data', None)
+    st.write(rezepte[['Name', 'RecipeIngredientParts']].head(5))
     zutaten = st.session_state.get('auswahl', [])
 
     if rezepte is None or rezepte.empty:
