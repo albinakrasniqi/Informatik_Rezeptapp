@@ -14,7 +14,7 @@ data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Datensatz")  # 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
     session_state_key='data', 
-    file_name='recipes.cvs', 
+    file_name='recipes.csv', 
     initial_value = pd.DataFrame(), 
     )
 
