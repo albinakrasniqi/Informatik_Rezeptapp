@@ -113,7 +113,7 @@ for gruppe, zutaten in zutat_emojis_gruppen.items():
         cols = st.columns(spalten)
         for j, (emoji, name) in enumerate(emoji_items[i:i + spalten]):
             label = f"{emoji} {name}"
-            if cols[j].button(label, key=emoji):
+            if cols[j].button(label, key=f"{gruppe}_{emoji}"):
                 if emoji in st.session_state.auswahl:
                     st.session_state.auswahl.remove(emoji)
                 else:
