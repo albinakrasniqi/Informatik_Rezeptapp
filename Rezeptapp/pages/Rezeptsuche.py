@@ -165,14 +165,25 @@ if st.button("Neues Rezept erstellen"):
             st.form_submit_button("✅ Rezept speichern")
 
 
-# 📋 Rezept suchen Button
 if st.button("Rezept suchen"):
     st.subheader("🔎 Gefundene Rezepte")
-    st.markdown(f"### 🍽️ Ausgewählter Mahlzeittyp: {meal_type}")
-    for i in range(2):  # Platzhalter für Demo
-        with st.container():
-            st.image("https://source.unsplash.com/600x400/?food", width=300)
-            st.write("**Rezepttitel**")
-            st.write("Treffer: 🥕 🍝")
-            if st.button("❤️ Zu Favoriten", key=f"fav_{meal_type}_{i}"):
-                st.success("Zum Favoriten hinzugefügt")
+    
+    rezepte = st.session_state['data']  # das geladene DataFrame
+    zutaten = st.session_state.auswahl  # ausgewählte Emojis
+
+    # Filter: Zeilen, die alle gewählten Zutaten enthalten
+    gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
+        lambda z: all(zutat in str(z) for zutat in zutaten)
+    )]
+
+    if gefundene.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
+    else:
+        for i, row in gefundene.iterrows():
+            with st.container():
+                st.image(row['Images'], width=300)
+                st.markdown(f"**{row['Name']}**")
+                st.write(f"🍽️ Zutaten: {row['RecipeIngredientParts']}")
+                st.write(f"📝 Zubereitung: {row['RecipeInstructions']}")
+                if st.button("❤️ Zu Favoriten", key=f"fav_{row['ID']}"):
+                    st.success("Zum Favoriten hinzugefügt")
