@@ -176,11 +176,10 @@ if st.button("Rezept suchen"):
     zutaten = st.session_state.auswahl  # ausgewählte Emojis
     st.write(rezepte.columns.tolist())
 
-    # Filter: Zeilen, die alle gewählten Zutaten enthalten
+if 'RecipeIngredientParts' in rezepte.columns:
     gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
         lambda z: all(zutat in str(z) for zutat in zutaten)
     )]
-
     if gefundene.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
     else:
@@ -192,3 +191,9 @@ if st.button("Rezept suchen"):
                 st.write(f"📝 Zubereitung: {row['RecipeInstructions']}")
                 if st.button("❤️ Zu Favoriten", key=f"fav_{row['ID']}"):
                     st.success("Zum Favoriten hinzugefügt")
+else:
+    st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
+    st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
+    st.stop()
+rezepte = st.session_state['data']  # das geladene DataFrame
+zutaten = st.session_state.auswahl  # ausgewählte Emojis
