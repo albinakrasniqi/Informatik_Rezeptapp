@@ -170,6 +170,7 @@ if st.button("Rezept suchen"):
     
     rezepte = st.session_state['data']  # das geladene DataFrame
     zutaten = st.session_state.auswahl  # ausgewählte Emojis
+    st.write(rezepte.columns.tolist())
 
     # Filter: Zeilen, die alle gewählten Zutaten enthalten
     gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
