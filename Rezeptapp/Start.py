@@ -9,12 +9,12 @@ def text(text):
     st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>{text}</p>", unsafe_allow_html=True)
 
 # initialize the data manager
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp")  # switch drive 
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
     session_state_key='data', 
-    file_name='Datensatz/recipes.csv', 
+    file_name='recipes.csv', 
     initial_value = pd.DataFrame(), 
     )
 
