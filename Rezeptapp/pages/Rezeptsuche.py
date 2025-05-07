@@ -10,36 +10,82 @@ def show():
     st.title("🍽️ Rezeptsuche")
 
 zutat_emojis_gruppen = {
-    "🍞 Getreide & Kohlenhydrate": {
-        "🍞": "Brot", "🥖": "Baguette", "🥐": "Croissant", "🥨": "Brezel",
-        "🍚": "Reis", "🍙": "Reisbällchen", "🍘": "Reiscracker", "🍜": "Nudelsuppe",
-        "🍝": "Spaghetti", "🥯": "Bagel", "🥞": "Pfannkuchen", "🧇": "Waffeln", "🫓": "Fladenbrot",
+    "Kohlenhydrate & Getreide": {
+        "🍞": "Brot",
+        "🥖": "Baguette",
+        "🥨": "Brezel",
+        "🍚": "Reis",
+        "🍜": "Nudeln",
+        "🫓": "Fladenbrot",
+        "🌾": "Hafer",
+        "🌽": "Mais"
     },
-    "🥦 Gemüse": {
-        "🥦": "Brokkoli", "🥕": "Karotte", "🌽": "Mais", "🫑": "Paprika", "🍆": "Aubergine",
-        "🥬": "Blattgemüse", "🥒": "Gurke", "🧄": "Knoblauch", "🧅": "Zwiebel", "🍄": "Pilze", "🍅": "Tomate", "🥗": "Gemischter Salat",
+    "Gemüse": {
+        "🥦": "Brokkoli",
+        "🥕": "Karotte",
+        "🌶️": "Paprika",
+        "🍆": "Aubergine",
+        "🧄": "Knoblauch",
+        "🧅": "Zwiebel",
+        "🍄": "Pilze",
+        "🥬": "Blattgemüse",
+        "🥒": "Gurke",
+        "🍅": "Tomate",
+        "🫑": "Peperoni",
+        "🥗": "Salat"
     },
-    "🍎 Obst": {
-        "🍎": "Apfel", "🍏": "Grüner Apfel", "🍐": "Birne", "🍊": "Orange", "🍋": "Zitrone",
-        "🍌": "Banane", "🍉": "Wassermelone", "🍇": "Trauben", "🍓": "Erdbeere",
-        "🫐": "Blaubeeren", "🥭": "Mango", "🍍": "Ananas", "🥝": "Kiwi",
+    "Obst": {
+        "🍏": "Grüner Apfel",
+        "🍎": "Apfel",
+        "🍐": "Birne",
+        "🍊": "Orange",
+        "🍋": "Zitrone",
+        "🍌": "Banane",
+        "🍉": "Wassermelone",
+        "🍇": "Trauben",
+        "🍓": "Erdbeere",
+        "🫐": "Blaubeeren",
+        "🥭": "Mango",
+        "🍍": "Ananas",
+        "🥝": "Kiwi"
     },
-    "🥩 Eiweißquellen": {
-        "🥩": "Steak", "🍗": "Hähnchenkeule", "🍖": "Rippchen", "🥓": "Speck", "🦴": "Knochen",
-        "🐟": "Fisch", "🦐": "Garnelen", "🦑": "Tintenfisch", "🦞": "Hummer", "🥚": "Ei", "🍳": "Spiegelei", "🌭": "Wurst",
+    "Eiweissquellen": {
+        "🍗": "Poulet",
+        "🥩": "Rindfleisch",
+        "🍖": "Schweinefleisch",
+        "🐟": "Fisch",
+        "🦐": "Garnelen",
+        "🧀": "Käse",
+        "🥚": "Ei",
+        "🍳": "Eiklar"
     },
-    "🧀 Milchprodukte & Alternativen": {
-        "🧀": "Käse", "🥛": "Milch", "🍶": "Reismilch/Sake", "🧈": "Butter", "🍨": "Eiscreme",
-        "🍦": "Soft-Eis", "🥤": "Milchshake",
+    "Hülsenfrüchte & Nüsse": {
+        "🌰": "Haselnüsse",
+        "🥜": "Erdnüsse",
+        "🫘": "Bohnen",
+        "🍠": "Süßkartoffel",
+        "🟤": "Linsen",
+        "🟡": "Gelbe Linsen",
+        "🟣": "Schwarze Bohnen",
+        "🟢": "Kichererbsen",
+        "🔴": "Rote Linsen",
+        "⚪": "Weiße Bohnen",
+        "💚": "Grüne Erbsen"
     },
-    "🥜 Hülsenfrüchte & Nüsse": {
-        "🥜": "Erdnüsse", "🌰": "Kastanien", "🫘": "Bohnen", "🍠": "Süßkartoffel",
+    "Milchprodukte & Alternativen": {
+        "🥛": "Milch",
+        "🧈": "Butter",
+        "🧀": "Käse",
+        "🍦": "Eis",
+        "🥥": "Kokosmilch",
+        "🌱": "Sojamilch"
     },
-    "🍬 Extras": {
-        "🧂": "Salz", "🫒": "Olive/Öl", "🧊": "Eiswürfel", "🍫": "Schokolade", "🍯": "Honig",
-        "🍪": "Keks", "🍰": "Kuchen", "🍮": "Pudding"
-        },
+    "Extras": {
+        "🧂": "Salz",
+        "🫒": "Olivenöl",
+        "🍯": "Honig"
     }
+}
 
 zutat_emojis = [emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()]
 
