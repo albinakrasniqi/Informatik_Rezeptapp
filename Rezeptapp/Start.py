@@ -4,6 +4,7 @@ import pandas as pd
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 
+from utils.exceptions import RegisterError  # Beispiel: Import der Ausnahme
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
