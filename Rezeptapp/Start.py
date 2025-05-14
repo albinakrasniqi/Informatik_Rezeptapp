@@ -14,11 +14,6 @@ try:
 except RegisterError as e:
     st.error(f"Registrierungsfehler: {e}")
 
-    class RegisterError(Exception):
-    """Benutzerdefinierte Ausnahme für Registrierungsfehler."""
-    pass
-
-from utils.exceptions import RegisterError
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
