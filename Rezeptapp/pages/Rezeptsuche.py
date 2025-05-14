@@ -10,6 +10,16 @@ if 'data' not in st.session_state:
     st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
     st.stop()
 
+# Nur die relevanten Spalten behalten
+gewünschte_spalten = [
+    "Name", "CookTime", "PrepTime", "TotalTime", "Description", "Images",
+    "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
+    "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
+]
+
+# Initialize rezepte from session state data
+rezepte = st.session_state['data']
+rezepte = rezepte[[spalte for spalte in gewünschte_spalten if spalte in rezepte.columns]]
 
 
 # Extract all emojis from zutat_emojis_gruppen
