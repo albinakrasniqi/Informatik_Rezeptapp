@@ -34,27 +34,25 @@ else:
     anzahl = st.slider("Wie viele Rezepte anzeigen?", 10, 500, 10)
     st.dataframe(data.head(anzahl))  # Jetzt ist anzahl sicher definiert
 
-# Gewünschte Spalten definieren
-gewünschte_spalten = [
-    "Name",
-    "CookTime",
-    "PrepTime",
-    "TotalTime",
-    "Description", 
-    "RecipeCategory",
-    "Keywords",
-    "RecipeIngredientQuantities",
-    "RecipeIngredientParts",
-    "RecipeServings",
-    "RecipeInstructions"
-]
+if not data.empty:
+    # Gewünschte Spalten definieren
+    gewünschte_spalten = [
+        "Name",
+        "CookTime",
+        "PrepTime",
+        "TotalTime",
+        "Description", 
+        "RecipeCategory",
+        "Keywords",
+        "RecipeIngredientQuantities",
+        "RecipeIngredientParts",
+        "RecipeServings",
+        "RecipeInstructions"
+    ]
 
-# Nur vorhandene Spalten auswählen, um Fehler zu vermeiden
-vorhandene_spalten = [spalte for spalte in gewünschte_spalten if spalte in data.columns]
+    # Nur vorhandene Spalten auswählen
+    vorhandene_spalten = [spalte for spalte in gewünschte_spalten if spalte in data.columns]
 
-# Gewünschte Anzahl anzeigen
-anzahl = st.slider("Wie viele Rezepte anzeigen?", 1, min(len(data), 500), 5)
-st.dataframe(data[vorhandene_spalten].head(anzahl))
-
-
-
+    # Gewünschte Anzahl anzeigen
+    anzahl = st.slider("Wie viele Rezepte anzeigen?", 1, min(len(data), 500), 5)
+    st.dataframe(data[vorhandene_spalten].head(anzahl))
