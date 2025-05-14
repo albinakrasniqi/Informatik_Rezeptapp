@@ -268,3 +268,30 @@ if st.button("🔍 Rezept suchen"):
                 st.write(f"📝 Beschreibung: {row.get('Description', '')}")
                 st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
                 st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
+
+
+if 'favoriten' not in st.session_state:
+    st.session_state.favoriten = []
+
+for _, row in rezepte.iterrows():
+    with st.container():
+        if "Images" in row and pd.notna(row["Images"]):
+            st.image(row["Images"], width=300)
+
+        st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
+        st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
+        st.write(f"📝 Beschreibung: {row.get('Description', '')}")
+        st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
+        st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
+        st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
+
+        rezept_id = row.get("ID", str(row.get("Name", "")))
+        ist_favorit = rezept_id in st.session_state.favoriten
+
+        if st.button("❤️" if ist_favorit else "🤍", key=f"fav_{rezept_id}"):
+            if ist_favorit:
+                st.session_state.favoriten.remove(rezept_id)
+            else:
+                st.session_state.favoriten.append(rezept_id)
+
+
