@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import uuid  # ganz oben in deiner Datei, wenn noch nicht da
 from utils.data_manager import DataManager 
 
 
@@ -213,42 +215,7 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 
 st.markdown("---")
 
-import uuid  # ganz oben in deiner Datei, wenn noch nicht da
-import pandas as pd
-
-if st.button("Neues Rezept erstellen"):
-    with st.form("add_recipe_form"):
-        bild_url = st.text_input("📸 Bild-URL eingeben")
-        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
-        zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
-        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
-        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
-
-        abgesendet = st.form_submit_button("✅ Rezept speichern")
-        if abgesendet:
-            new_recipe = {
-                "ID": str(uuid.uuid4()),
-                "Name": "Rezepttitel",  # Hier kannst du noch ein Feld für den Titel hinzufügen
-                "Images": bild_url,
-                "RecipeIngredientParts": zutaten_emojis,
-                "RecipeInstructions": anleitung,
-                "RecipeCategory": diät,
-                "MealType": mahlzeit
-            }
-
-            # Stelle sicher, dass die DataFrame-Struktur da ist
-            if 'data' not in st.session_state or st.session_state['data'].empty:
-                st.session_state['data'] = pd.DataFrame([new_recipe])
-            else:
-                st.session_state['data'] = pd.concat(
-                    [st.session_state['data'], pd.DataFrame([new_recipe])],
-                    ignore_index=True
-                )
-
-            st.success("✅ Rezept erfolgreich gespeichert!")
-
-if st.button("Neues Rezept erstellen"):
+if st.button("Neues Rezept erstellen", key="new_recipe"):
     with st.form("add_recipe_form"):
         titel = st.text_input("📛 Rezepttitel eingeben")
         bild_url = st.text_input("📸 Bild-URL eingeben")
