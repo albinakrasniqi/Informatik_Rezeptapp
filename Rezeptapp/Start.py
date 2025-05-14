@@ -9,10 +9,18 @@ from utils.login_manager import LoginManager
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
-
-# initialize the login manager
 login_manager = LoginManager(data_manager)
 login_manager.login_register()
+
+# === Authentifizierung (Login & Registrierung)
+if not st.session_state.get("authentication_status"):
+    login_tab, register_tab = st.tabs(["Login", "Registrieren"])
+    with login_tab:
+        login_manager.login(stop=False)
+    with register_tab:
+        login_manager.register()
+    st.stop()
+
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
