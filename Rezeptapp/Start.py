@@ -32,3 +32,12 @@ st.markdown("""
 und im Handumdrehen leckere Rezepte entdecken! 🧑‍🍳🍽️</p>
 """, unsafe_allow_html=True)
 
+# Rezepte aus dem Session State anzeigen (optional, zur Kontrolle)
+data = st.session_state['data']
+
+if data.empty:
+    st.markdown("<p style='text-align: center; font-size:20px;'>❗Keine Rezepte gefunden. Bitte fügen Sie Rezepte hinzu.</p>", unsafe_allow_html=True)
+else:
+    st.markdown("<p style='text-align: center; font-size:20px;'>✅ Hier sind Ihre Rezepte:</p>", unsafe_allow_html=True)
+    anzahl = st.slider("Wie viele Rezepte anzeigen?", 10, min(500, len(data)), 10)
+    st.table(data.head(anzahl))
