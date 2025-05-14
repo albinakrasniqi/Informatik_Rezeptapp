@@ -14,13 +14,17 @@ gewünschte_spalten = [
     "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
     "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
 ]
-# Initialize rezepte from session state data
+# Daten aus Session State laden
 rezepte = st.session_state['data']
-rezepte = rezepte[[spalte for spalte in gewünschte_spalten if spalte in rezepte.columns]]
 
+# DEBUG: Zeige Struktur
+st.write("📊 Shape:", rezepte.shape)
 st.write("📋 Spalten:", rezepte.columns.tolist())
-st.write("🔍 Beispiel-Zutaten:", rezepte["RecipeIngredientParts"].head())
 
+# Falls leer, sofort stoppen
+if rezepte.empty:
+    st.error("❌ Keine Daten im Rezept-Datensatz! Bitte prüfe die Datei in SwitchDrive.")
+    st.stop()
 
 # Extract all emojis from zutat_emojis_gruppen
 def show():
