@@ -215,46 +215,35 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 
 st.markdown("---")
 
-if st.button("Neues Rezept erstellen", key="new_recipe"):
-    with st.form("add_recipe_form"):
-        titel = st.text_input("📛 Rezepttitel eingeben")
-        bild_url = st.text_input("📸 Bild-URL eingeben")
-        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
-        zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
-        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
-        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
+if st.button("🔍 Rezept suchen"):
+    zutaten = st.session_state.get('auswahl', [])
+    suchergebnisse = rezepte.copy()
 
-        abgesendet = st.form_submit_button("✅ Rezept speichern")
-        if abgesendet:
-            if not titel:
-                st.error("Bitte einen Rezepttitel eingeben!")
-            else:
-                new_recipe = {
-                    "ID": str(uuid.uuid4()),
-                    "Name": titel,
-                    "Images": bild_url,
-                    "RecipeIngredientParts": zutaten_emojis,
-                    "RecipeIngredientQuantities": zutaten_mit_mengen,
-                    "RecipeInstructions": anleitung,
-                    "RecipeCategory": diät,
-                    "MealType": mahlzeit
-                }
+    if search_term:
+        suchergebnisse = suchergebnisse[suchergebnisse["Name"].str.contains(search_term, case=False, na=False)]
 
-                if 'data' not in st.session_state or st.session_state['data'].empty:
-                    st.session_state['data'] = pd.DataFrame([new_recipe])
-                else:
-                    st.session_state['data'] = pd.concat(
-                        [st.session_state['data'], pd.DataFrame([new_recipe])],
-                        ignore_index=True
-                    )
+    if zutaten:
+        suchergebnisse = suchergebnisse[suchergebnisse["RecipeIngredientParts"].apply(
+            lambda z: any(zutat in str(z) for zutat in zutaten)
+        )]
 
-                # Optional: dauerhaft speichern
-                data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
-                data_manager.save_app_data(
-                    session_state_key='data',
-                    file_name='recipes.csv',
-                    encoding='utf-8'
-                )
+    if diet != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse["RecipeCategory"] == diet]
 
-                st.success("✅ Rezept erfolgreich gespeichert!")
+    if meal_type != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse["MealType"] == meal_type]
+
+    if suchergebnisse.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
+    else:
+        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden")
+        for _, row in suchergebnisse.iterrows():
+            with st.container():
+                if "Images" in row and pd.notna(row["Images"]):
+                    st.image(row["Images"], width=300)
+                st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
+                st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
+                st.write(f"📝 Beschreibung: {row.get('Description', '')}")
+                st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
+                st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
+                st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
