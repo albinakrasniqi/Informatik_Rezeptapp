@@ -9,12 +9,13 @@ from utils.login_manager import LoginManager
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
+
 login_manager = LoginManager(data_manager)
 login_manager.login_register()
 
 
 # load the data from the persistent storage into the session state
-data_manager.load_app_data(
+data_manager.load_user_data(
     session_state_key='data', 
     file_name='recipes.csv', 
     initial_value = pd.DataFrame(),
