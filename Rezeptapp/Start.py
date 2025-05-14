@@ -4,8 +4,6 @@ import pandas as pd
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 
-from utils.exceptions import RegisterError  # Beispiel: Import der Ausnahme
-
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
 
@@ -15,6 +13,12 @@ try:
     login_manager.login_register()  # open login/register page
 except RegisterError as e:
     st.error(f"Registrierungsfehler: {e}")
+
+    class RegisterError(Exception):
+    """Benutzerdefinierte Ausnahme für Registrierungsfehler."""
+    pass
+
+from utils.exceptions import RegisterError
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
