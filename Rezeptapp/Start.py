@@ -1,24 +1,16 @@
-class RegisterError(Exception):
-    """Exception raised for errors during registration."""
-    pass
-
+# ====== Start Init Block ======
+# This needs to copied on top of the entry point of the app (Start.py)
 import streamlit as st
 import pandas as pd
-
-st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
-
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
+
+# initialize the login manager
 login_manager = LoginManager(data_manager)
-
-try:
-    login_manager.login_register()  # open login/register page
-except RegisterError as e:
-    st.error(f"Registrierungsfehler: {e}")
-
+login_manager.login_register()
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
