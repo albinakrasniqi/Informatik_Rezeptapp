@@ -12,15 +12,6 @@ data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  #
 login_manager = LoginManager(data_manager)
 login_manager.login_register()
 
-# === Authentifizierung (Login & Registrierung)
-if not st.session_state.get("authentication_status"):
-    login_tab, register_tab = st.tabs(["Login", "Registrieren"])
-    with login_tab:
-        login_manager.login(stop=False)
-    with register_tab:
-        login_manager.register()
-    st.stop()
-
 
 # load the data from the persistent storage into the session state
 data_manager.load_app_data(
@@ -34,7 +25,6 @@ st.write(st.session_state['data'].shape)
 st.write(st.session_state['data'].head(3))
 
 import streamlit as st
-
 
 st.markdown("""
 <h1 style='text-align: center;'>👋 Willkommen in der Emoji-RezeptApp</h1>
