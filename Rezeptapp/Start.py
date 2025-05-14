@@ -15,7 +15,7 @@ login_manager.login_register()
 
 
 # load the data from the persistent storage into the session state
-data_manager.load_user_data(
+data_manager.load_app_data(
     session_state_key='data', 
     file_name='recipes.csv', 
     initial_value = pd.DataFrame(),
