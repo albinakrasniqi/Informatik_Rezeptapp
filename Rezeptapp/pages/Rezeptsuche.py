@@ -248,51 +248,46 @@ if st.button("Neues Rezept erstellen"):
 
             st.success("✅ Rezept erfolgreich gespeichert!")
 
-if st.button("Rezept suchen"):
-    st.subheader("🔎 Gefundene Rezepte")
+if st.button("Neues Rezept erstellen"):
+    with st.form("add_recipe_form"):
+        titel = st.text_input("📛 Rezepttitel eingeben")
+        bild_url = st.text_input("📸 Bild-URL eingeben")
+        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
+        mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
+        zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
+        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
+        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
 
-    rezepte = st.session_state.get('data', None)
-    zutaten = st.session_state.get('auswahl', [])
+        abgesendet = st.form_submit_button("✅ Rezept speichern")
+        if abgesendet:
+            if not titel:
+                st.error("Bitte einen Rezepttitel eingeben!")
+            else:
+                new_recipe = {
+                    "ID": str(uuid.uuid4()),
+                    "Name": titel,
+                    "Images": bild_url,
+                    "RecipeIngredientParts": zutaten_emojis,
+                    "RecipeIngredientQuantities": zutaten_mit_mengen,
+                    "RecipeInstructions": anleitung,
+                    "RecipeCategory": diät,
+                    "MealType": mahlzeit
+                }
 
-    if rezepte is None or rezepte.empty:
-        st.error("⚠️ Keine Rezepte geladen.")
-        st.stop()
+                if 'data' not in st.session_state or st.session_state['data'].empty:
+                    st.session_state['data'] = pd.DataFrame([new_recipe])
+                else:
+                    st.session_state['data'] = pd.concat(
+                        [st.session_state['data'], pd.DataFrame([new_recipe])],
+                        ignore_index=True
+                    )
 
-    # Nur relevante Spalten auswählen
-    relevante_spalten = [
-        "Name", "CookTime", "PrepTime", "TotalTime", "Description", "Images",
-        "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
-        "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
-    ]
-    vorhandene_spalten = [s for s in relevante_spalten if s in rezepte.columns]
-    rezepte = rezepte[vorhandene_spalten]
+                # Optional: dauerhaft speichern
+                data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
+                data_manager.save_app_data(
+                    session_state_key='data',
+                    file_name='recipes.csv',
+                    encoding='utf-8'
+                )
 
-    # Filtern nach ausgewählten Emojis
-    if 'RecipeIngredientParts' in rezepte.columns:
-        rezepte = rezepte[rezepte['RecipeIngredientParts'].apply(
-            lambda z: any(zutat in str(z) for zutat in zutaten)
-        )]
-
-    # Filter nach Diät
-    if diet != "Alle" and "RecipeCategory" in rezepte.columns:
-        rezepte = rezepte[rezepte["RecipeCategory"] == diet]
-
-    # Filter nach Mahlzeit
-    if meal_type != "Alle" and "MealType" in rezepte.columns:
-        rezepte = rezepte[rezepte["MealType"] == meal_type]
-
-    # Ergebnisse anzeigen
-    if rezepte.empty:
-        st.warning("❌ Kein passendes Rezept gefunden.")
-    else:
-        st.success(f"✅ {len(rezepte)} Rezept(e) gefunden")
-        for _, row in rezepte.iterrows():
-            with st.container():
-                if "Images" in row and pd.notna(row["Images"]):
-                    st.image(row["Images"], width=300)
-                st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
-                st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
-                st.write(f"📝 Beschreibung: {row.get('Description', '')}")
-                st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
-                st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
-                st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
+                st.success("✅ Rezept erfolgreich gespeichert!")
