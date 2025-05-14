@@ -216,23 +216,31 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 st.markdown("---")
 
 if st.button("🔍 Rezept suchen"):
-    zutaten = st.session_state.get('auswahl', [])
+    zutaten = st.session_state.get("auswahl", [])
     suchergebnisse = rezepte.copy()
 
-    if search_term:
+    # 🔎 Suche nach Titel
+    if search_term and "Name" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["Name"].str.contains(search_term, case=False, na=False)]
 
+    # 🛒 Zutaten-Filter
     if zutaten:
-        suchergebnisse = suchergebnisse[suchergebnisse["RecipeIngredientParts"].apply(
-            lambda z: any(zutat in str(z) for zutat in zutaten)
-        )]
+        if "RecipeIngredientParts" in suchergebnisse.columns:
+            suchergebnisse = suchergebnisse[suchergebnisse["RecipeIngredientParts"].apply(
+                lambda z: any(zutat in str(z) for zutat in zutaten)
+            )]
+        else:
+            st.warning("❗ Spalte 'RecipeIngredientParts' fehlt – keine Zutatenfilterung möglich.")
 
-    if diet != "Alle":
+    # 🧘 Diät-Filter
+    if diet != "Alle" and "RecipeCategory" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["RecipeCategory"] == diet]
 
-    if meal_type != "Alle":
+    # 🍽️ Mahlzeit-Filter
+    if meal_type != "Alle" and "MealType" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["MealType"] == meal_type]
 
+    # 📋 Ergebnisse anzeigen
     if suchergebnisse.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
     else:
