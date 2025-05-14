@@ -295,3 +295,13 @@ for _, row in rezepte.iterrows():
                 st.session_state.favoriten.append(rezept_id)
 
 
+diet = st.selectbox("🧘 Diät wählen", ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"])
+
+mit dem ersetzte:
+diet = st.selectbox(
+    "🧘 Diät wählen",
+    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
+        st.session_state.get("diät", "Alle")
+    )
+)
