@@ -31,9 +31,31 @@ if data.empty:
     st.markdown("<p style='text-align: center; font-size:20px;'>Keine Rezepte gefunden. Bitte fügen Sie Rezepte hinzu.</p>", unsafe_allow_html=True)
 else:
     st.markdown("<p style='text-align: center; font-size:20px;'>Hier sind Ihre Rezepte:</p>", unsafe_allow_html=True)
-    anzahl = st.slider("Wie viele Rezepte anzeigen?", 10, 500, 100)
-    st.table(data.head(anzahl))  # Jetzt ist anzahl sicher definiert
+    anzahl = st.slider("Wie viele Rezepte anzeigen?", 10, 500, 5)
+    st.dataframe(data.head(anzahl))  # Jetzt ist anzahl sicher definiert
 
+# Gewünschte Spalten definieren
+gewünschte_spalten = [
+    "Name",
+    "CookTime",
+    "PrepTime",
+    "TotalTime",
+    "Description",
+    "Images",  # nur anzeigen, wenn ihr sicher seid, dass die Spalte da ist
+    "RecipeCategory",
+    "Keywords",
+    "RecipeIngredientQuantities",
+    "RecipeIngredientParts",
+    "RecipeServings",
+    "RecipeInstructions"
+]
+
+# Nur vorhandene Spalten auswählen, um Fehler zu vermeiden
+vorhandene_spalten = [spalte for spalte in gewünschte_spalten if spalte in data.columns]
+
+# Gewünschte Anzahl anzeigen
+anzahl = st.slider("Wie viele Rezepte anzeigen?", 1, min(len(data), 500), 5)
+st.dataframe(data[vorhandene_spalten].head(anzahl))
 
 
 
