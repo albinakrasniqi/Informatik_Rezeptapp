@@ -163,7 +163,6 @@ zutat_emojis_gruppen = {
     }
 }
 
-zutat_emojis = [emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()]
 
     # 🔍 Suchleiste
 search_term = st.text_input("🔍 Suche nach einem Rezept:")
@@ -298,14 +297,6 @@ for _, row in rezepte.iterrows():
             else:
                 st.session_state.favoriten.append(rezept_id)
 
-
-diet = st.selectbox(
-    "🧘 Diät wählen",
-    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
-        st.session_state.get("diät", "Alle")
-    )
-)
 
 if st.button("Neues Rezept erstellen"):
    with st.form("add_recipe_form"):
