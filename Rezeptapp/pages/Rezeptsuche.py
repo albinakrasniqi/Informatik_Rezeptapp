@@ -206,10 +206,14 @@ if selected_ingredients:
 else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
-    # 🥗 Diätfilter
-diet = st.selectbox("🧘 Diät wählen", ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"])
+   diet = st.selectbox(
+    "🧘 Diät wählen",
+    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
+        st.session_state.get("diät", "Alle")
+    )
+)
 
-    # Display selected diet
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 
     # 🍲 Mahlzeittyp
