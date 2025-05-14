@@ -25,8 +25,6 @@ data_manager.load_app_data(
 import streamlit as st
 
 
-st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
-
 st.markdown("""
 <h1 style='text-align: center;'>👋 Willkommen in der Emoji-RezeptApp</h1>
 <p style='text-align: center; font-size:20px;'>🍅🥦🐟 Einfach Zutaten per Emoji auswählen <br>
