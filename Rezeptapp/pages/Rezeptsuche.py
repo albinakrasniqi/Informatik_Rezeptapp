@@ -299,31 +299,38 @@ for _, row in rezepte.iterrows():
 
 
 if st.button("Neues Rezept erstellen"):
-   with st.form("add_recipe_form"):
-       bild_url = st.text_input("📸 Bild-URL eingeben")
-       diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-       mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
-       zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
-       zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
-       anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
-       abgesendet = st.form_submit_button("✅ Rezept speichern")
-       if abgesendet:
-           new_recipe = {
-               "ID": str(uuid.uuid4()),
-               "Name": "Rezepttitel",  # Hier kannst du noch ein Feld für den Titel hinzufügen
-               "Images": bild_url,
-               "RecipeIngredientParts": zutaten_emojis,
-               "RecipeInstructions": anleitung,
-               "RecipeCategory": diät,
-               "MealType": Mahlzeit,
-              "ErstelltVon":"user"
-           }
-           # Stelle sicher, dass die DataFrame-Struktur da ist
-           if 'data' not in st.session_state or st.session_state['data'].empty:
-               st.session_state['data'] = pd.DataFrame([new_recipe])
-           else:
-               st.session_state['data'] = pd.concat(
-                   [st.session_state['data'], pd.DataFrame([new_recipe])],
-                   ignore_index=True
-               )
-           st.success("✅ Rezept erfolgreich gespeichert!")
+    with st.form("add_recipe_form"):
+        rezept_name = st.text_input("📖 Rezepttitel eingeben")
+        bild_url = st.text_input("📸 Bild-URL eingeben")
+        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
+        mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
+        zutat_emojis = [emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()]
+        zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
+        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
+        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
+        abgesendet = st.form_submit_button("✅ Rezept speichern")
+        
+        if abgesendet:
+            if not rezept_name:
+                st.error("❌ Bitte einen Rezepttitel eingeben.")
+            elif not anleitung:
+                st.error("❌ Bitte eine Anleitung eingeben.")
+            else:
+                new_recipe = {
+                    "ID": str(uuid.uuid4()),
+                    "Name": rezept_name,
+                    "Images": bild_url,
+                    "RecipeIngredientParts": zutaten_emojis,
+                    "RecipeInstructions": anleitung,
+                    "RecipeCategory": diät,
+                    "MealType": mahlzeit,
+                    "ErstelltVon": "user"
+                }
+                if 'data' not in st.session_state or st.session_state['data'].empty:
+                    st.session_state['data'] = pd.DataFrame([new_recipe])
+                else:
+                    st.session_state['data'] = pd.concat(
+                        [st.session_state['data'], pd.DataFrame([new_recipe])],
+                        ignore_index=True
+                    )
+                st.success("✅ Rezept erfolgreich gespeichert!")
