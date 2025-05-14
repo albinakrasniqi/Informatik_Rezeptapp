@@ -4,10 +4,6 @@ import uuid  # ganz oben in deiner Datei, wenn noch nicht da
 from utils.data_manager import DataManager 
 
 
-# initialize the data manager
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
-
-
 if 'data' not in st.session_state:
     st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
     st.stop()
