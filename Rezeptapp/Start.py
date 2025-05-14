@@ -1,6 +1,8 @@
 # ====== Start Init Block ======
 # This needs to copied on top of the entry point of the app (Start.py)
 import streamlit as st
+st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
+
 import pandas as pd
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
