@@ -1,3 +1,9 @@
+class RegisterError(Exception):
+    """Exception raised for errors during registration."""
+    pass
+
+from utils.login_manager import LoginManager, RegisterError
+
 import streamlit as st
 import pandas as pd
 
