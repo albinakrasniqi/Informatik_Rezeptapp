@@ -216,31 +216,21 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 st.markdown("---")
 
 if st.button("🔍 Rezept suchen"):
-    zutaten = st.session_state.get("auswahl", [])
     suchergebnisse = rezepte.copy()
 
-    # 🔎 Suche nach Titel
+    # 🔍 Nach Titel filtern (sofern gesucht)
     if search_term and "Name" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["Name"].str.contains(search_term, case=False, na=False)]
 
-    # 🛒 Zutaten-Filter
-    if zutaten:
-        if "RecipeIngredientParts" in suchergebnisse.columns:
-            suchergebnisse = suchergebnisse[suchergebnisse["RecipeIngredientParts"].apply(
-                lambda z: any(zutat in str(z) for zutat in zutaten)
-            )]
-        else:
-            st.warning("❗ Spalte 'RecipeIngredientParts' fehlt – keine Zutatenfilterung möglich.")
-
-    # 🧘 Diät-Filter
+    # 🧘 Nach Diät filtern
     if diet != "Alle" and "RecipeCategory" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["RecipeCategory"] == diet]
 
-    # 🍽️ Mahlzeit-Filter
+    # 🍽️ Nach Mahlzeittyp filtern
     if meal_type != "Alle" and "MealType" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["MealType"] == meal_type]
 
-    # 📋 Ergebnisse anzeigen
+    # 🔎 Ergebnisse anzeigen
     if suchergebnisse.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
     else:
@@ -252,6 +242,5 @@ if st.button("🔍 Rezept suchen"):
                 st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
                 st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
                 st.write(f"📝 Beschreibung: {row.get('Description', '')}")
-                st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
                 st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
                 st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
