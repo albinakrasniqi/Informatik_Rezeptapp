@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd  # Fehlender Import
 
 def fav():
     st.title("❤️ Meine Favoriten")
@@ -6,14 +7,24 @@ def fav():
     sort_option = st.selectbox("Sortieren nach", ["Diät", "Mahlzeit", "Zuletzt hinzugefügt", "Alt -> Neu"])
     sortieren = st.button("🔃 Sortierung anwenden")
 
-    if "favoriten" not in st.session_state or not st.session_state.favoriten:
+    # Initialisiere Favoriten, falls nicht vorhanden
+    if "favoriten" not in st.session_state:
+        st.session_state.favoriten = []
+
+    if not st.session_state.favoriten:
         st.info("Noch keine Favoriten gespeichert.")
         return
 
+    # Lade Rezeptdaten
     rezepte = st.session_state.get('data', pd.DataFrame())
+    if rezepte.empty or "ID" not in rezepte.columns:
+        st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
+        return
+
+    # Filtere Favoriten
     favoriten_rezepte = rezepte[rezepte["ID"].isin(st.session_state.favoriten)].copy()
 
-    # Nur sortieren, wenn Button gedrückt wurde
+    # Sortieren
     if sortieren:
         if sort_option == "Diät":
             favoriten_rezepte.sort_values(by="RecipeCategory", inplace=True)
@@ -29,6 +40,7 @@ def fav():
                 inplace=True
             )
 
+    # Favoriten anzeigen
     for _, row in favoriten_rezepte.iterrows():
         with st.container():
             if "Images" in row and pd.notna(row["Images"]):
