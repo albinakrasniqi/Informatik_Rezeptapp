@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
-import uuid  # ganz oben in deiner Datei, wenn noch nicht da
-from utils.data_manager import DataManager 
+import uuid  # Für die Generierung von IDs
+from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, dass utils verfügbar ist
 
-
+# Überprüfen, ob Rezeptdaten vorhanden sind
 if 'data' not in st.session_state:
     st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
     st.stop()
@@ -14,6 +14,7 @@ gewünschte_spalten = [
     "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
     "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
 ]
+
 # Daten aus Session State laden
 rezepte = st.session_state['data']
 
@@ -26,163 +27,69 @@ if rezepte.empty:
     st.error("❌ Keine Daten im Rezept-Datensatz! Bitte prüfe die Datei in SwitchDrive.")
     st.stop()
 
-# Extract all emojis from zutat_emojis_gruppen
-def show():
-    st.title("🍽️ Rezeptsuche")
-
-
+# Zutaten-Emoji-Gruppen definieren
 zutat_emojis_gruppen = {
     "Kohlenhydrate & Getreide": {
-        "🍞": "Brot",
-        "🥖": "Baguette",
-        "🥨": "Brezel",
-        "🍚": "Reis",
-        "🍜": "Nudeln",
-        "🫓": "Fladenbrot",
-        "🌽": "Mais",
-        "🍝": "Pasta",
-        "🌰": "Quinoa",
-        "🍢": "Couscous",
-        "🥣": "Hirse",
-        "🍥": "Polenta",
-        "🧇": "Haferflocken",
-        "🥯": "Bagel",
-        "🥞": "Pfannkuchen",
+        "🍞": "Brot", "🥖": "Baguette", "🥨": "Brezel", "🍚": "Reis", "🍜": "Nudeln",
+        "🫓": "Fladenbrot", "🌽": "Mais", "🍝": "Pasta", "🌰": "Quinoa", "🍢": "Couscous",
+        "🥣": "Hirse", "🍥": "Polenta", "🧇": "Haferflocken", "🥯": "Bagel", "🥞": "Pfannkuchen",
         "🌾": "Mehl"
-
     },
     "Gemüse": {
-        "🥦": "Brokkoli",
-        "🥕": "Karotte",
-        "🌶": "Paprika",
-        "🍆": "Aubergine",
-        "🧄": "Knoblauch",
-        "🧅": "Zwiebel",
-        "🍄": "Pilze",
-        "🥬": "Blattgemüse",
-        "🥒": "Gurke",
-        "🍅": "Tomate",
-        "🫑": "Peperoni",
-        "🥗": "Salat",
-        "🥔": "Kartoffel",
-        "🍠": "Süßkartoffel",
-        "🥦": "Blumenkohl",
-        "🥒": "Zucchini",
-        "🥬": "Spinat",
-        "🥬": "Kohl",
-        "🫛": "Sellerie",
-        "🎃": "Kürbis"
+        "🥦": "Brokkoli", "🥕": "Karotte", "🌶": "Paprika", "🍆": "Aubergine", "🧄": "Knoblauch",
+        "🧅": "Zwiebel", "🍄": "Pilze", "🥬": "Blattgemüse", "🥒": "Gurke", "🍅": "Tomate",
+        "🫑": "Peperoni", "🥗": "Salat", "🥔": "Kartoffel", "🍠": "Süßkartoffel", "🥬": "Spinat",
+        "🎃": "Kürbis", "🥒": "Zucchini", "🥬": "Kohl", "🫛": "Sellerie"
     },
     "Obst": {
-        "🍎": "Apfel",
-        "🍐": "Birne",
-        "🍊": "Orange",
-        "🍋": "Zitrone",
-        "🍌": "Banane",
-        "🍉": "Wassermelone",
-        "🍇": "Trauben",
-        "🍓": "Erdbeere",
-        "🫐": "Blaubeeren",
-        "🥭": "Mango",
-        "🍍": "Ananas",
-        "🥝": "Kiwi",
-        "🍒": "Kirsche",
-        "🍑": "Pfirsich"
+        "🍎": "Apfel", "🍐": "Birne", "🍊": "Orange", "🍋": "Zitrone", "🍌": "Banane",
+        "🍉": "Wassermelone", "🍇": "Trauben", "🍓": "Erdbeere", "🫐": "Blaubeeren",
+        "🥭": "Mango", "🍍": "Ananas", "🥝": "Kiwi", "🍒": "Kirsche", "🍑": "Pfirsich"
     },
     "Eiweissquellen": {
-        "🍗": "Poulet",
-        "🥩": "Rindfleisch",
-        "🍖": "Schweinefleisch",
-        "🐟": "Fisch",
-        "🦐": "Garnelen",
-        "🧀": "Käse",
-        "🥚": "Ei",
-        "🍳": "Eiweiss",
-        "🥓": "Speck",
-        "🧆": "Falafel",
-        "🥫": "Thunfisch",
-        "🍶": "Quark",
-        "🥛": "Joghurt",
-        "🌭": "Wurst",
+        "🍗": "Poulet", "🥩": "Rindfleisch", "🍖": "Schweinefleisch", "🐟": "Fisch",
+        "🦐": "Garnelen", "🧀": "Käse", "🥚": "Ei", "🍳": "Eiweiss", "🥓": "Speck",
+        "🧆": "Falafel", "🥫": "Thunfisch", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst",
         "🍢": "Fleischbällchen"
     },
     "Hülsenfrüchte & Nüsse": {
-        "🌰": "Haselnüsse",
-        "🥜": "Erdnüsse",
-        "🫘": "Bohnen",
-        "🍠": "Süßkartoffel",
-        "🟤": "Linsen",
-        "🟡": "Gelbe Linsen",
-        "🟣": "Schwarze Bohnen",
-        "🟢": "Kichererbsen",
-        "🔴": "Rote Linsen",
-        "⚪": "Weiße Bohnen",
-        "💚": "Grüne Erbsen",
-        "🌰": "Mandeln",
-        "🌰": "Walnüsse",
-        "🥥": "Kokosnuss"
+        "🌰": "Haselnüsse", "🥜": "Erdnüsse", "🫘": "Bohnen", "🟤": "Linsen",
+        "🟡": "Gelbe Linsen", "🟣": "Schwarze Bohnen", "🟢": "Kichererbsen",
+        "🔴": "Rote Linsen", "⚪": "Weiße Bohnen", "💚": "Grüne Erbsen",
+        "🌰": "Mandeln", "🌰": "Walnüsse", "🥥": "Kokosnuss"
     },
     "Milchprodukte & Alternativen": {
-        "🥛": "Milch",
-        "🧈": "Butter",
-        "🧀": "Käse",
-        "🥥": "Kokosmilch",
-        "🌱": "Sojamilch",
-        "🧀": "Parmesan",
-        "🥛": "Sahne",
-        "🧀": "Frischkäse",
-        "🥛": "Kondensmilch",
-        "🥛": "Buttermilch"
+        "🥛": "Milch", "🧈": "Butter", "🧀": "Käse", "🥥": "Kokosmilch",
+        "🌱": "Sojamilch", "🧀": "Parmesan", "🥛": "Sahne", "🧀": "Frischkäse",
+        "🥛": "Kondensmilch", "🥛": "Buttermilch"
     },
     "Extras": {
-        "🧂": "Salz",
-        "🫒": "Olivenöl",
-        "🍯": "Honig",
-        "🧃": "Essig",
-        "🥫": "Tomatenmark",
-        "🍶": "Sojasauce",
-        "🌶": "Chilipulver",
-        "🟤": "Zucker",
-        "🍁": "Ahornsirup",
-        "🧁": "Vanilleextrakt",
-        "🍫": "Schokolade",
-        "🍩": "Backpulver",
-        "🍞": "Hefe",
-        "🥄": "Senf",
-        "🍯": "Melasse",
-        "🥫": "Worcestersauce",
-        "🍜": "Miso-Paste",
-        "🥄": "Tahini",
-        "🧂": "Kreuzkümmel",
-        "🌿": "Thymian",
-        "🌿": "Oregano",
-        "🌿": "Rosmarin",
-        "🌿": "Basilikum",
-        "🧂": "Muskatnuss",
-        "🧂": "Zimt"
+        "🧂": "Salz", "🫒": "Olivenöl", "🍯": "Honig", "🧃": "Essig", "🥫": "Tomatenmark",
+        "🍶": "Sojasauce", "🌶": "Chilipulver", "🟤": "Zucker", "🍁": "Ahornsirup",
+        "🧁": "Vanilleextrakt", "🍫": "Schokolade", "🍩": "Backpulver", "🍞": "Hefe",
+        "🥄": "Senf", "🍯": "Melasse", "🥫": "Worcestersauce", "🍜": "Miso-Paste",
+        "🥄": "Tahini", "🧂": "Kreuzkümmel", "🌿": "Thymian", "🌿": "Oregano",
+        "🌿": "Rosmarin", "🌿": "Basilikum", "🧂": "Muskatnuss", "🧂": "Zimt"
     }
 }
 
-
-    # 🔍 Suchleiste
+# 🔍 Suchleiste
 search_term = st.text_input("🔍 Suche nach einem Rezept:")
 if search_term:
-        st.markdown(f"### 🔍 Suchergebnis für: {search_term}")
+    st.markdown(f"### 🔍 Suchergebnis für: {search_term}")
 
 # 🧩 Emoji-Filter
 st.markdown("### 🍎 Zutaten auswählen")
-
 st.write("### Was hast du zu Hause?")
 
 # Session State für Auswahl merken
 if "auswahl" not in st.session_state:
     st.session_state.auswahl = []
 
-# Anzahl Spalten pro Reihe
+# Zutaten-Auswahl anzeigen
 spalten = 5
 for gruppe, zutaten in zutat_emojis_gruppen.items():
-    st.markdown(f"#### {gruppe}")  # Gruppenüberschrift
-    
+    st.markdown(f"#### {gruppe}")
     emoji_items = list(zutaten.items())
     for i in range(0, len(emoji_items), spalten):
         cols = st.columns(spalten)
@@ -205,19 +112,18 @@ if selected_ingredients:
 else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
-   diet = st.selectbox(
+# 🧘 Diät auswählen
+diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
     index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
         st.session_state.get("diät", "Alle")
     )
 )
-
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 
-    # 🍲 Mahlzeittyp
+# 🍲 Mahlzeittyp auswählen
 meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagessen", "Abendessen", "Snack"])
-
 st.markdown("---")
 
 # Zutaten-Namen aus den Emojis holen
@@ -229,7 +135,6 @@ selected_ingredient_names = [
 # 🔍 Rezept suchen
 if st.button("🔍 Rezept suchen"):
     def zutaten_match(row, zutaten):
-        # prüfe, ob alle ausgewählten Zutaten in den Rezept-Zutaten stehen
         if pd.isna(row):
             return False
         return all(any(z.lower() in ingredient.lower() for ingredient in row) for z in zutaten)
@@ -272,10 +177,11 @@ if st.button("🔍 Rezept suchen"):
                 st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
                 st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
 
-
+# Favoriten initialisieren
 if 'favoriten' not in st.session_state:
     st.session_state.favoriten = []
 
+# Rezepte anzeigen
 for _, row in rezepte.iterrows():
     with st.container():
         if "Images" in row and pd.notna(row["Images"]):
@@ -297,7 +203,7 @@ for _, row in rezepte.iterrows():
             else:
                 st.session_state.favoriten.append(rezept_id)
 
-
+# Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
     with st.form("add_recipe_form"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
