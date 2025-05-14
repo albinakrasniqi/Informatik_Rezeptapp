@@ -241,27 +241,41 @@ if st.button("Rezept suchen"):
         st.error("⚠️ Keine Rezepte geladen.")
         st.stop()
 
-    st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
+    # Nur relevante Spalten auswählen
+    relevante_spalten = [
+        "Name", "CookTime", "PrepTime", "TotalTime", "Description", "Images",
+        "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
+        "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
+    ]
+    vorhandene_spalten = [s for s in relevante_spalten if s in rezepte.columns]
+    rezepte = rezepte[vorhandene_spalten]
 
+    # Filtern nach ausgewählten Emojis
     if 'RecipeIngredientParts' in rezepte.columns:
-        # Rezepte mit mindestens einer Zutat (statt all)
-        gefundene = rezepte[rezepte['RecipeIngredientParts'].apply(
+        rezepte = rezepte[rezepte['RecipeIngredientParts'].apply(
             lambda z: any(zutat in str(z) for zutat in zutaten)
         )]
 
-        if gefundene.empty:
-            st.warning("❌ Kein passendes Rezept gefunden.")
-        else:
-            st.info(f"✅ {len(gefundene)} Rezepte gefunden")
-            for i, row in gefundene.iterrows():
-                with st.container():
-                    st.image(row['Images'], width=300)
-                    st.markdown(f"**{row['Name']}**")
-                    st.write(f"🍽️ Zutaten: {row['RecipeIngredientParts']}")
-                    st.write(f"📝 Zubereitung: {row['RecipeInstructions']}")
-                    if st.button("❤️ Zu Favoriten", key=f"fav_{row['ID']}"):
-                        st.success("Zum Favoriten hinzugefügt")
+    # Filter nach Diät
+    if diet != "Alle" and "RecipeCategory" in rezepte.columns:
+        rezepte = rezepte[rezepte["RecipeCategory"] == diet]
+
+    # Filter nach Mahlzeit
+    if meal_type != "Alle" and "MealType" in rezepte.columns:
+        rezepte = rezepte[rezepte["MealType"] == meal_type]
+
+    # Ergebnisse anzeigen
+    if rezepte.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
     else:
-        st.error("❌ Die Spalte 'RecipeIngredientParts' wurde nicht gefunden.")
-        st.write("📋 Verfügbare Spalten:", rezepte.columns.tolist())
-        st.stop()
+        st.success(f"✅ {len(rezepte)} Rezept(e) gefunden")
+        for _, row in rezepte.iterrows():
+            with st.container():
+                if "Images" in row and pd.notna(row["Images"]):
+                    st.image(row["Images"], width=300)
+                st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
+                st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
+                st.write(f"📝 Beschreibung: {row.get('Description', '')}")
+                st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
+                st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
+                st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
