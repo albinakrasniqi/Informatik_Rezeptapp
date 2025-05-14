@@ -20,12 +20,6 @@ data_manager.load_app_data(
     initial_value = pd.DataFrame(),
     encoding='utf-8' 
     )
-# Kontrollausgabe: Zeige alle Dateien im Ordner
-st.write("📂 Dateien im Ordner 'Rezeptapp2':", data_manager.fs.listdir("Rezeptapp2"))
-
-# Kontrollausgabe: Ist etwas geladen worden?
-st.write("📊 Geladene Daten (shape):", st.session_state['data'].shape)
-st.dataframe(st.session_state['data'].head())  # Zeige die ersten Zeilen
 
 import streamlit as st
 
