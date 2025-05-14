@@ -29,6 +29,9 @@ data_manager.load_app_data(
     initial_value = pd.DataFrame(),
     encoding='utf-8' 
     )
+st.write("✅ Daten geladen:")
+st.write(st.session_state['data'].shape)
+st.write(st.session_state['data'].head(3))
 
 import streamlit as st
 
