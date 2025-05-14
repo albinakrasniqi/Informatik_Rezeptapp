@@ -3,10 +3,6 @@ import pandas as pd
 
 from utils.data_manager import DataManager
 
-#Textgrösse anpassung
-
-def text(text):
-    st.markdown(f"<p style='font-size:{st.session_state.textgröße}px'>{text}</p>", unsafe_allow_html=True)
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
