@@ -1,6 +1,9 @@
 import streamlit as st
 from utils.data_manager import DataManager
 
+from utils.login_manager import LoginManager
+LoginManager().go_to_login('Start.py') 
+
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
