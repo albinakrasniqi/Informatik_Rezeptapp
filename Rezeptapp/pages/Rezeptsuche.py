@@ -14,10 +14,12 @@ gewünschte_spalten = [
     "RecipeCategory", "Keywords", "RecipeIngredientQuantities",
     "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
 ]
-
 # Initialize rezepte from session state data
 rezepte = st.session_state['data']
 rezepte = rezepte[[spalte for spalte in gewünschte_spalten if spalte in rezepte.columns]]
+
+st.write("📋 Spalten:", rezepte.columns.tolist())
+st.write("🔍 Beispiel-Zutaten:", rezepte["RecipeIngredientParts"].head())
 
 
 # Extract all emojis from zutat_emojis_gruppen
