@@ -5,12 +5,13 @@ class RegisterError(Exception):
 import streamlit as st
 import pandas as pd
 
+st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
+
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 
 # initialize the data manager
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")  # switch drive 
-
 login_manager = LoginManager(data_manager)
 
 try:
