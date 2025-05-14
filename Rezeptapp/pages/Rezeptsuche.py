@@ -30,7 +30,9 @@ zutat_emojis_gruppen = {
         "🍥": "Polenta",
         "🧇": "Haferflocken",
         "🥯": "Bagel",
-        "🥞": "Pfannkuchen"
+        "🥞": "Pfannkuchen",
+        "🌾": "Mehl"
+
     },
     "Gemüse": {
         "🥦": "Brokkoli",
