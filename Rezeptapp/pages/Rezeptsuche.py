@@ -211,10 +211,23 @@ meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagesse
 
 st.markdown("---")
 
+# Zutaten-Namen aus den Emojis holen
+selected_ingredient_names = [
+    name for gruppe in zutat_emojis_gruppen.values()
+    for emoji, name in gruppe.items() if emoji in selected_ingredients
+]
+
+# 🔍 Rezept suchen
 if st.button("🔍 Rezept suchen"):
+    def zutaten_match(row, zutaten):
+        # prüfe, ob alle ausgewählten Zutaten in den Rezept-Zutaten stehen
+        if pd.isna(row):
+            return False
+        return all(any(z.lower() in ingredient.lower() for ingredient in row) for z in zutaten)
+
     suchergebnisse = rezepte.copy()
 
-    # 🔍 Nach Titel filtern (sofern gesucht)
+    # 🔍 Nach Text im Namen filtern
     if search_term and "Name" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["Name"].str.contains(search_term, case=False, na=False)]
 
@@ -225,6 +238,15 @@ if st.button("🔍 Rezept suchen"):
     # 🍽️ Nach Mahlzeittyp filtern
     if meal_type != "Alle" and "MealType" in suchergebnisse.columns:
         suchergebnisse = suchergebnisse[suchergebnisse["MealType"] == meal_type]
+
+    # 🧩 Zutatenfilter anwenden
+    if selected_ingredient_names:
+        if "RecipeIngredientParts" in suchergebnisse.columns:
+            suchergebnisse = suchergebnisse[
+                suchergebnisse["RecipeIngredientParts"].apply(lambda row: zutaten_match(row, selected_ingredient_names))
+            ]
+        else:
+            st.warning("⚠️ Rezeptdaten enthalten keine Zutateninformationen.")
 
     # 🔎 Ergebnisse anzeigen
     if suchergebnisse.empty:
