@@ -13,7 +13,11 @@ def kontopage():
     st.markdown("### 📚 Meine Rezepte")
 
     rezepte = st.session_state.get("data", pd.DataFrame())
-    eigene_rezepte = rezepte[rezepte.get("ErstelltVon") == "user"]
+    if "ErstelltVon" not in rezepte.columns:
+        st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
+        return
+
+    eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
 
     if eigene_rezepte.empty:
         st.info("Noch keine eigenen Rezepte erstellt.")
@@ -27,4 +31,3 @@ def kontopage():
                 if st.button("🗑️ Löschen", key=f"my_recipe_{row['ID']}"):
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
                     st.experimental_rerun()
-
