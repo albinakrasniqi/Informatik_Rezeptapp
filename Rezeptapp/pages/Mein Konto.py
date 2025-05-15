@@ -32,6 +32,6 @@ def kontopage():
                 st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
                 if st.button("🗑️ Löschen", key=f"my_recipe_{row['ID']}"):
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
-                    st.experimental_rerun() 
+                    st.rerun()
 
 kontopage() 
