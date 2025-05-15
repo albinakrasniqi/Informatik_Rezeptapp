@@ -1,3 +1,5 @@
+import pandas as pd
+# ...existing code...
 import streamlit as st
 
 def kontopage():
