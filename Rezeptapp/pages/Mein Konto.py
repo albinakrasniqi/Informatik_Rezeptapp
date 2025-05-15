@@ -31,3 +31,5 @@ def kontopage():
                 if st.button("🗑️ Löschen", key=f"my_recipe_{row['ID']}"):
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
                     st.experimental_rerun() 
+
+kontopage() 
