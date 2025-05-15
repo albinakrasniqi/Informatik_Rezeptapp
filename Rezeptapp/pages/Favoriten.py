@@ -51,5 +51,5 @@ def fav():
                 st.session_state.favoriten.remove(row["ID"])
                 st.experimental_rerun()
 
-    fav() 
+fav() 
 
