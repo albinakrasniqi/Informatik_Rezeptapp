@@ -5,8 +5,6 @@ import os
 
 st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
 
-# Debug: Verzeichnis anzeigen
-st.write("📁 Aktuelles Verzeichnis:", os.getcwd())
 
 # Initialisiere den DataManager (nicht aktiv genutzt bei lokalem Laden)
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
