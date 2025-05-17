@@ -11,14 +11,13 @@ st.write("📁 Aktuelles Verzeichnis:", os.getcwd())
 # Initialisiere den DataManager (nicht aktiv genutzt bei lokalem Laden)
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
-# Rezeptdaten laden
-if 'data' not in st.session_state:
-    try:
-        st.session_state['data'] = pd.read_csv("recipes.csv", encoding="utf-8")
-        st.success("✅ Rezeptdaten lokal geladen.")
-    except Exception as e:
-        st.error(f"❌ Fehler beim Laden der lokalen Datei: {e}")
-        st.stop()
+# load the data from the persistent storage into the session state
+data_manager.load_app_data(
+    session_state_key='data', 
+    file_name='recipes.csv', 
+    initial_value = pd.DataFrame(),
+    encoding='utf-8' 
+    )
 
 # Layout
 st.markdown("""
