@@ -132,86 +132,14 @@ selected_ingredient_names = [
     for emoji, name in gruppe.items() if emoji in selected_ingredients
 ]
 
-# 🔍 Rezept suchen
-if st.button("🔍 Rezept suchen"):
-    def zutaten_match(row, zutaten):
-        if pd.isna(row):
-            return False
-        return all(any(z.lower() in ingredient.lower() for ingredient in row) for z in zutaten)
-
-    suchergebnisse = rezepte.copy()
-
-    # 🔍 Nach Text im Namen filtern
-    if search_term and "Name" in suchergebnisse.columns:
-        suchergebnisse = suchergebnisse[suchergebnisse["Name"].str.contains(search_term, case=False, na=False)]
-
-    # 🧘 Nach Diät filtern
-    if diet != "Alle" and "RecipeCategory" in suchergebnisse.columns:
-        suchergebnisse = suchergebnisse[suchergebnisse["RecipeCategory"] == diet]
-
-    # 🍽️ Nach Mahlzeittyp filtern
-    if meal_type != "Alle" and "MealType" in suchergebnisse.columns:
-        suchergebnisse = suchergebnisse[suchergebnisse["MealType"] == meal_type]
-
-    # 🧩 Zutatenfilter anwenden
-    if selected_ingredient_names:
-        if "RecipeIngredientParts" in suchergebnisse.columns:
-            suchergebnisse = suchergebnisse[
-                suchergebnisse["RecipeIngredientParts"].apply(lambda row: zutaten_match(row, selected_ingredient_names))
-            ]
-        else:
-            st.warning("⚠️ Rezeptdaten enthalten keine Zutateninformationen.")
-
-    # 🔎 Ergebnisse anzeigen
-    if suchergebnisse.empty:
-        st.warning("❌ Kein passendes Rezept gefunden.")
-    else:
-        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden")
-        for _, row in suchergebnisse.iterrows():
-            with st.container():
-                if "Images" in row and pd.notna(row["Images"]):
-                    st.image(row["Images"], width=300)
-                st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
-                st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
-                st.write(f"📝 Beschreibung: {row.get('Description', '')}")
-                st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
-                st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
-
-# Favoriten initialisieren
-if 'favoriten' not in st.session_state:
-    st.session_state.favoriten = []
-
-# Rezepte anzeigen
-for _, row in rezepte.iterrows():
-    with st.container():
-        if "Images" in row and pd.notna(row["Images"]):
-            st.image(row["Images"], width=300)
-
-        st.markdown(f"### {row.get('Name', 'Ohne Titel')}")
-        st.write(f"🕒 Gesamtzeit: {row.get('TotalTime', 'n/a')}")
-        st.write(f"📝 Beschreibung: {row.get('Description', '')}")
-        st.write(f"🥣 Zutaten: {row.get('RecipeIngredientParts', '')}")
-        st.write(f"📏 Mengen: {row.get('RecipeIngredientQuantities', '')}")
-        st.write(f"👨‍🍳 Anleitung: {row.get('RecipeInstructions', '')}")
-
-        rezept_id = row.get("ID", str(row.get("Name", "")))
-        ist_favorit = rezept_id in st.session_state.favoriten
-
-        if st.button("❤️" if ist_favorit else "🤍", key=f"fav_{rezept_id}"):
-            if ist_favorit:
-                st.session_state.favoriten.remove(rezept_id)
-            else:
-                st.session_state.favoriten.append(rezept_id)
-
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
     with st.form("add_recipe_form"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
         bild_url = st.text_input("📸 Bild-URL eingeben")
         diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        mahlzeit = st.selectbox("🍽️ Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
-        zutat_emojis = [emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()]
-        zutaten_emojis = st.multiselect("Zutaten auswählen", zutat_emojis)
+        mahlzeit = st.selectbox("🍽 Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
+        zutaten_emojis = st.multiselect("Zutaten auswählen", list(set([emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()])))
         zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
         anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
         abgesendet = st.form_submit_button("✅ Rezept speichern")
@@ -227,10 +155,16 @@ if st.button("Neues Rezept erstellen"):
                     "Name": rezept_name,
                     "Images": bild_url,
                     "RecipeIngredientParts": zutaten_emojis,
+                    "RecipeIngredientQuantities": zutaten_mit_mengen,
                     "RecipeInstructions": anleitung,
                     "RecipeCategory": diät,
                     "MealType": mahlzeit,
-                    "ErstelltVon": "user"
+                    "ErstelltVon": "user",
+                    "TotalTime": "",
+                    "PrepTime": "",
+                    "CookTime": "",
+                    "Description": "",
+                    "RecipeServings": ""
                 }
                 if 'data' not in st.session_state or st.session_state['data'].empty:
                     st.session_state['data'] = pd.DataFrame([new_recipe])
@@ -240,3 +174,4 @@ if st.button("Neues Rezept erstellen"):
                         ignore_index=True
                     )
                 st.success("✅ Rezept erfolgreich gespeichert!")
+

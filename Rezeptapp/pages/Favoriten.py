@@ -20,6 +20,11 @@ def fav():
     if rezepte.empty or "ID" not in rezepte.columns:
         st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
         return
+    rezepte = rezepte if not rezepte.empty else pd.DataFrame()
+    required_cols = ["ID", "Name", "Images", "RecipeCategory", "MealType"]
+    for col in required_cols:
+        if col not in rezepte.columns:
+            rezepte[col] = ""
 
     # Filtere Favoriten
     favoriten_rezepte = rezepte[rezepte["ID"].isin(st.session_state.favoriten)].copy()

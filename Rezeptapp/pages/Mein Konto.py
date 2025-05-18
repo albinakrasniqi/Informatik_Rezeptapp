@@ -1,6 +1,5 @@
-import pandas as pd
-# ...existing code...
 import streamlit as st
+import pandas as pd
 
 def kontopage():
     st.title("📖 Mein Konto")
@@ -16,7 +15,7 @@ def kontopage():
 
     rezepte = st.session_state.get("data", pd.DataFrame())
     if "ErstelltVon" not in rezepte.columns:
-        st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
+        st.warning("⚠ Keine gültigen Rezeptdaten gefunden.")
         return
 
     eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
@@ -30,8 +29,10 @@ def kontopage():
                     st.image(row["Images"], width=300)
                 st.write(f"**{row.get('Name', 'Ohne Titel')}**")
                 st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
-                if st.button("🗑️ Löschen", key=f"my_recipe_{row['ID']}"):
+                if st.button("🗑 Löschen", key=f"my_recipe_{row['ID']}"):
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
                     st.rerun()
 
-kontopage() 
+kontopage()
+
+
