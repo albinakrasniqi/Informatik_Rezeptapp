@@ -43,3 +43,8 @@ else:
     st.markdown("✅ <p style='text-align: center;'>Hier sind Ihre Rezepte:</p>", unsafe_allow_html=True)
     anzahl = st.slider("Wie viele Rezepte anzeigen?", 1, min(len(data), 500), 5)
     st.dataframe(data.head(anzahl))
+
+if st.session_state['data'].empty:
+    st.error("❌ Rezept-Datei wurde gefunden, aber sie enthält keine Daten.")
+else:
+    st.success(f"✅ {len(st.session_state['data'])} Rezepte geladen.")

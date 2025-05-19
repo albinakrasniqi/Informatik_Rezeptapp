@@ -151,21 +151,23 @@ if st.button("Neues Rezept erstellen"):
                 st.error("❌ Bitte eine Anleitung eingeben.")
             else:
                 new_recipe = {
-                    "ID": str(uuid.uuid4()),
-                    "Name": rezept_name,
-                    "Images": bild_url,
-                    "RecipeIngredientParts": zutaten_emojis,
-                    "RecipeIngredientQuantities": zutaten_mit_mengen,
-                    "RecipeInstructions": anleitung,
-                    "RecipeCategory": diät,
-                    "MealType": mahlzeit,
-                    "ErstelltVon": "user",
-                    "TotalTime": "",
-                    "PrepTime": "",
-                    "CookTime": "",
-                    "Description": "",
-                    "RecipeServings": ""
-                }
+    "RecipeId": str(uuid.uuid4()),
+    "Name": rezept_name,
+    "Images": bild_url,
+    "RecipeIngredientParts": zutaten_emojis,
+    "RecipeIngredientQuantities": zutaten_mit_mengen,
+    "RecipeInstructions": anleitung,
+    "RecipeCategory": diät,
+    "MealType": mahlzeit,
+    "AuthorId": "user",               # statt 'ErstelltVon'
+    "AuthorName": "",                 # falls du keinen Namen angibst
+    "TotalTime": "",
+    "PrepTime": "",
+    "CookTime": "",
+    "Description": "",
+    "RecipeServings": ""
+}
+
                 if 'data' not in st.session_state or st.session_state['data'].empty:
                     st.session_state['data'] = pd.DataFrame([new_recipe])
                 else:
