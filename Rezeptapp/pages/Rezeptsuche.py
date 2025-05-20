@@ -129,25 +129,50 @@ st.markdown("---")
 
 # Übersetzung Deutsch → Englisch
 deutsch_to_englisch = {
-    "Brokkoli": "broccoli",
-    "Reis": "rice",
-    "Karotte": "carrot",
-    "Paprika": "bell pepper",
-    "Zwiebel": "onion",
-    "Knoblauch": "garlic",
-    "Tomate": "tomato",
-    "Spinat": "spinach",
-    "Kartoffel": "potato",
-    "Kichererbsen": "chickpeas",
-    "Linsen": "lentils",
-    "Mais": "corn",
-    "Aubergine": "eggplant",
-    "Zucchini": "zucchini",
-    "Erbsen": "peas",
-    "Kohl": "cabbage",
-    "Kürbis": "pumpkin"
-    # ggf. erweitern
+    # Kohlenhydrate & Getreide
+    "Brot": "bread", "Baguette": "baguette", "Brezel": "pretzel", "Reis": "rice", "Nudeln": "noodles",
+    "Fladenbrot": "flatbread", "Mais": "corn", "Pasta": "pasta", "Quinoa": "quinoa", "Couscous": "couscous",
+    "Hirse": "millet", "Polenta": "polenta", "Haferflocken": "oatmeal", "Bagel": "bagel", "Pfannkuchen": "pancake",
+    "Mehl": "flour",
+
+    # Gemüse
+    "Brokkoli": "broccoli", "Karotte": "carrot", "Paprika": "bell pepper", "Aubergine": "eggplant",
+    "Knoblauch": "garlic", "Zwiebel": "onion", "Pilze": "mushrooms", "Blattgemüse": "leafy greens",
+    "Gurke": "cucumber", "Tomate": "tomato", "Peperoni": "chili pepper", "Salat": "lettuce",
+    "Kartoffel": "potato", "Süßkartoffel": "sweet potato", "Spinat": "spinach", "Kürbis": "pumpkin",
+    "Zucchini": "zucchini", "Kohl": "cabbage", "Sellerie": "celery",
+
+    # Obst
+    "Apfel": "apple", "Birne": "pear", "Orange": "orange", "Zitrone": "lemon", "Banane": "banana",
+    "Wassermelone": "watermelon", "Trauben": "grapes", "Erdbeere": "strawberry", "Blaubeeren": "blueberries",
+    "Mango": "mango", "Ananas": "pineapple", "Kiwi": "kiwi", "Kirsche": "cherry", "Pfirsich": "peach",
+
+    # Eiweissquellen
+    "Poulet": "chicken", "Rindfleisch": "beef", "Schweinefleisch": "pork", "Fisch": "fish",
+    "Garnelen": "shrimp", "Käse": "cheese", "Ei": "egg", "Eiweiss": "egg white", "Speck": "bacon",
+    "Falafel": "falafel", "Thunfisch": "tuna", "Quark": "quark", "Joghurt": "yogurt",
+    "Wurst": "sausage", "Fleischbällchen": "meatballs",
+
+    # Hülsenfrüchte & Nüsse
+    "Haselnüsse": "hazelnuts", "Erdnüsse": "peanuts", "Bohnen": "beans", "Linsen": "lentils",
+    "Gelbe Linsen": "yellow lentils", "Schwarze Bohnen": "black beans", "Kichererbsen": "chickpeas",
+    "Weiße Bohnen": "white beans", "Grüne Erbsen": "green peas", "Erbsen": "peas",
+    "Mandeln": "almonds", "Walnüsse": "walnuts", "Kokosnuss": "coconut",
+
+    # Milchprodukte & Alternativen
+    "Milch": "milk", "Butter": "butter", "Kokosmilch": "coconut milk", "Sojamilch": "soy milk",
+    "Parmesan": "parmesan", "Sahne": "cream", "Frischkäse": "cream cheese", "Kondensmilch": "condensed milk",
+    "Buttermilch": "buttermilk",
+
+    # Extras
+    "Salz": "salt", "Olivenöl": "olive oil", "Honig": "honey", "Essig": "vinegar", "Tomatenmark": "tomato paste",
+    "Sojasauce": "soy sauce", "Chilipulver": "chili powder", "Zucker": "sugar", "Ahornsirup": "maple syrup",
+    "Vanilleextrakt": "vanilla extract", "Schokolade": "chocolate", "Backpulver": "baking powder", "Hefe": "yeast",
+    "Senf": "mustard", "Melasse": "molasses", "Worcestersauce": "worcestershire sauce", "Miso-Paste": "miso paste",
+    "Tahini": "tahini", "Kreuzkümmel": "cumin", "Thymian": "thyme", "Oregano": "oregano",
+    "Rosmarin": "rosemary", "Basilikum": "basil", "Muskatnuss": "nutmeg", "Zimt": "cinnamon"
 }
+
 
 st.markdown("### 🔍 Suche starten")
 search_button = st.button("🔎 Suchen")
