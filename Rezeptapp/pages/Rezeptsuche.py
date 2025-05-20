@@ -77,13 +77,13 @@ with st.form("suche_formular"):
     search_term = st.text_input("🔍 Suche nach einem Rezept")
     search_button = st.form_submit_button("🔎 Suchen")
 
-if search_button:
-    suchergebnisse = rezepte[rezepte['Name'].str.contains(search_term, case=False, na=False)]
-    if suchergebnisse.empty:
-        st.warning("❌ Kein Rezept gefunden.")
-    else:
-        st.markdown(f"### 🔍 Suchergebnisse für: **{search_term}**")
-        st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(10))
+    if search_button:
+        suchergebnisse = rezepte[rezepte['Name'].str.contains(search_term, case=False, na=False)]
+        if suchergebnisse.empty:
+            st.warning("❌ Kein Rezept gefunden.")
+        else:
+            st.markdown(f"### 🔍 Suchergebnisse für: **{search_term}**")
+            st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(10))
 
 
 # 🧩 Emoji-Filter
