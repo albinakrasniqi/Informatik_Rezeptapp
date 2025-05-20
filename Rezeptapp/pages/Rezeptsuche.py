@@ -161,13 +161,13 @@ if search_button:
     if meal_type != "Alle":
         suchergebnisse = suchergebnisse[suchergebnisse['MealType'].str.contains(meal_type, case=False, na=False)]
 
-   # Nach Zutaten filtern (mindestens eine muss vorkommen), mit Übersetzung ins Englische
+    # Nach Zutaten filtern
     selected_ingredient_names = [
-    deutsch_to_englisch.get(name, name)
-    for gruppe in zutat_emojis_gruppen.values()
-    for emoji, name in gruppe.items()
-    if emoji in selected_ingredients
-]
+        deutsch_to_englisch.get(name, name)
+        for gruppe in zutat_emojis_gruppen.values()
+        for emoji, name in gruppe.items()
+        if emoji in selected_ingredients
+    ]
 
     if selected_ingredient_names:
         suchergebnisse = suchergebnisse[
@@ -176,14 +176,29 @@ if search_button:
             )
         ]
 
-
     # Ergebnis anzeigen
     if suchergebnisse.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
     else:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
-        st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(20))
 
+        # ⬇️ Jetzt korrekt eingerückt!
+        for i, row in suchergebnisse.head(20).iterrows():
+            st.markdown(f"### 🍽️ {row['Name']}")
+            st.write(f"**Kategorie:** {row['RecipeCategory']} | **Mahlzeit:** {row['MealType']} | **Kochzeit:** {row['CookTime']}")
+
+            instructions_raw = str(row["RecipeInstructions"])
+            instructions_cleaned = instructions_raw.strip('c()[]').replace('"', '').split('","')
+
+            if len(instructions_cleaned) == 1:
+                instructions_cleaned = instructions_raw.strip('c()[]').replace('"', '').split('", "')
+
+            st.markdown("**📝 Zubereitung:**")
+            for step in instructions_cleaned:
+                if step.strip():
+                    st.markdown(f"- {step.strip()}")
+
+            st.markdown("---")
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
