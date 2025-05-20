@@ -126,36 +126,35 @@ selected_ingredient_names = [
     name for gruppe in zutat_emojis_gruppen.values()
     for emoji, name in gruppe.items() if emoji in selected_ingredients
 ]
-with st.form("emoji_filter_suche_formular"):
-    st.markdown("### 🔍 Suche starten")
-    search_term = st.text_input("🔍 Rezeptname (optional)", placeholder="z. B. Pasta, Biryani …")
-    search_button = st.form_submit_button("🔎 Suchen")
+st.markdown("### 🔍 Suche starten")
+search_term = st.text_input("🔍 Rezeptname (optional)", placeholder="z. B. Pasta, Biryani …")
+search_button = st.button("🔎 Suchen")
 
-    if search_button:
-        suchergebnisse = rezepte.copy()
+if search_button:
+    suchergebnisse = rezepte.copy()
 
-        # Nach Name filtern, falls etwas eingegeben wurde
-        if search_term:
-            suchergebnisse = suchergebnisse[suchergebnisse['Name'].str.contains(search_term, case=False, na=False)]
+    # Nach Name filtern, falls etwas eingegeben wurde
+    if search_term:
+        suchergebnisse = suchergebnisse[suchergebnisse['Name'].str.contains(search_term, case=False, na=False)]
 
-        # Nach Diät filtern
-        if diet != "Alle":
-            suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
+    # Nach Diät filtern
+    if diet != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
 
-        # Nach Mahlzeittyp filtern
-        if meal_type != "Alle":
-            suchergebnisse = suchergebnisse[suchergebnisse['MealType'].str.contains(meal_type, case=False, na=False)]
+    # Nach Mahlzeittyp filtern
+    if meal_type != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse['MealType'].str.contains(meal_type, case=False, na=False)]
 
-        # Nach Zutaten filtern (mind. eine Zutat muss vorkommen)
-        for zutat in selected_ingredient_names:
-            suchergebnisse = suchergebnisse[suchergebnisse['RecipeIngredientParts'].astype(str).str.contains(zutat, case=False)]
+    # Nach Zutaten filtern (mind. eine Zutat muss vorkommen)
+    for zutat in selected_ingredient_names:
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeIngredientParts'].astype(str).str.contains(zutat, case=False)]
 
-        # Ergebnis anzeigen
-        if suchergebnisse.empty:
-            st.warning("❌ Kein passendes Rezept gefunden.")
-        else:
-            st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
-            st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(20))
+    # Ergebnis anzeigen
+    if suchergebnisse.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
+    else:
+        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
+        st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(20))
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
