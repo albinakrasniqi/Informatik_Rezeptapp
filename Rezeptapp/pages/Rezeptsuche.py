@@ -172,9 +172,10 @@ if search_button:
     if selected_ingredient_names:
         suchergebnisse = suchergebnisse[
             suchergebnisse['RecipeIngredientParts'].astype(str).apply(
-                lambda x: any(z in x for z in selected_ingredient_names)
+                lambda x: all(z in x for z in selected_ingredient_names)
             )
         ]
+
 
     # Ergebnis anzeigen
     if suchergebnisse.empty:
