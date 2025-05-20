@@ -182,23 +182,63 @@ if search_button:
     else:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
-        # ⬇️ Jetzt korrekt eingerückt!
-        for i, row in suchergebnisse.head(20).iterrows():
+    # pro Rezept eine „Karte“ aus Bild + Text
+    for _, row in suchergebnisse.head(20).iterrows():
+
+        # 👉 Layout-Spalten (links 1, rechts 2)
+        col_img, col_txt = st.columns([1, 2])
+
+        # ----------  Bild -------------------
+        # rohe Images-Zeile (z. B.  c("url1","url2") oder nur URL)
+        raw_img = str(row["Images"]).strip()
+
+        url = None
+        if raw_img.startswith("c("):
+            try:
+                # remove leading c( … )  ->  ["url1","url2"]
+                url_list = ast.literal_eval(raw_img[1:])  # macht echte Liste
+                if url_list:
+                    url = url_list[0]
+            except Exception:
+                pass
+        elif raw_img.startswith("http"):
+            url = raw_img
+
+        with col_img:
+            if url:
+                st.image(url, use_column_width=True)
+            else:
+                st.markdown("*(kein Bild)*")
+
+        # ----------  Text-Teil --------------
+        with col_txt:
             st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row['RecipeCategory']} | **Mahlzeit:** {row['MealType']} | **Kochzeit:** {row['CookTime']}")
+            st.write(f"**Kategorie:** {row['RecipeCategory']}  |  "
+                     f"**Mahlzeit:** {row['MealType']}  |  "
+                     f"**Kochzeit:** {row['CookTime']}")
 
-            instructions_raw = str(row["RecipeInstructions"])
-            instructions_cleaned = instructions_raw.strip('c()[]').replace('"', '').split('","')
+            # Zutaten
+            zutaten_raw = str(row["RecipeIngredientParts"])
+            zutat_list = zutaten_raw.strip('c()[]').replace('"', '').split('","')
+            if len(zutat_list) == 1:  # Fallback
+                zutat_list = zutaten_raw.strip('c()[]').replace('"', '').split('", "')
+            st.markdown("**🧾 Zutaten:**")
+            for z in zutat_list:
+                if z.strip():
+                    st.markdown(f"- {z.strip()}")
 
-            if len(instructions_cleaned) == 1:
-                instructions_cleaned = instructions_raw.strip('c()[]').replace('"', '').split('", "')
-
+            # Zubereitung
+            instr_raw = str(row["RecipeInstructions"])
+            # erst nach '", "' splitten, sonst Punkt-Leerzeichen
+            step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+            if len(step_list) == 1:
+                step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
             st.markdown("**📝 Zubereitung:**")
-            for step in instructions_cleaned:
+            for idx, step in enumerate(step_list, start=1):
                 if step.strip():
-                    st.markdown(f"- {step.strip()}")
+                    st.markdown(f"{idx}. {step.strip()}")
 
-            st.markdown("---")
+        st.markdown("---")
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
