@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import uuid  # Für die Generierung von IDs
 from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, dass utils verfügbar ist
+import re
+import ast
 
 # Überprüfen, ob Rezeptdaten vorhanden sind
 if 'data' not in st.session_state:
