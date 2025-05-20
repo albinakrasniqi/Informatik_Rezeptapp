@@ -208,7 +208,7 @@ if search_button:
 
         with col_img:
             if url:
-                st.image(url, use_column_width=True)
+                st.image(url, use_container_width=True)
             else:
                 st.markdown("*(kein Bild)*")
 
