@@ -17,6 +17,9 @@ gewünschte_spalten = [
 
 # Daten aus Session State laden
 rezepte = st.session_state['data']
+# 🧪 Vorschau auf die Zutatenliste im Datensatz
+st.subheader("🧪 Vorschau auf alle Rezeptzutaten")
+st.write(rezepte["RecipeIngredientParts"].head(20))  # zeigt die ersten 20 Einträge
 
 # DEBUG: Zeige Struktur
 st.write("📊 Shape:", rezepte.shape)
@@ -121,21 +124,34 @@ st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagessen", "Abendessen", "Snack"])
 st.markdown("---")
 
-# Zutaten-Namen aus den Emojis holen
-selected_ingredient_names = [
-    name for gruppe in zutat_emojis_gruppen.values()
-    for emoji, name in gruppe.items() if emoji in selected_ingredients
-]
+
+# Übersetzung Deutsch → Englisch
+deutsch_to_englisch = {
+    "Brokkoli": "broccoli",
+    "Reis": "rice",
+    "Karotte": "carrot",
+    "Paprika": "bell pepper",
+    "Zwiebel": "onion",
+    "Knoblauch": "garlic",
+    "Tomate": "tomato",
+    "Spinat": "spinach",
+    "Kartoffel": "potato",
+    "Kichererbsen": "chickpeas",
+    "Linsen": "lentils",
+    "Mais": "corn",
+    "Aubergine": "eggplant",
+    "Zucchini": "zucchini",
+    "Erbsen": "peas",
+    "Kohl": "cabbage",
+    "Kürbis": "pumpkin"
+    # ggf. erweitern
+}
+
 st.markdown("### 🔍 Suche starten")
-search_term = st.text_input("🔍 Rezeptname (optional)", placeholder="z. B. Pasta, Biryani …")
 search_button = st.button("🔎 Suchen")
 
 if search_button:
     suchergebnisse = rezepte.copy()
-
-    # Nach Name filtern, falls etwas eingegeben wurde
-    if search_term:
-        suchergebnisse = suchergebnisse[suchergebnisse['Name'].str.contains(search_term, case=False, na=False)]
 
     # Nach Diät filtern
     if diet != "Alle":
@@ -145,9 +161,20 @@ if search_button:
     if meal_type != "Alle":
         suchergebnisse = suchergebnisse[suchergebnisse['MealType'].str.contains(meal_type, case=False, na=False)]
 
-    # Nach Zutaten filtern (mind. eine Zutat muss vorkommen)
-    for zutat in selected_ingredient_names:
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeIngredientParts'].astype(str).str.contains(zutat, case=False)]
+   # Nach Zutaten filtern (mindestens eine muss vorkommen), mit Übersetzung ins Englische
+    selected_ingredient_names = [
+    deutsch_to_englisch.get(name, name)
+    for gruppe in zutat_emojis_gruppen.values()
+    for emoji, name in gruppe.items()
+    if emoji in selected_ingredients
+]
+
+    if selected_ingredient_names:
+        suchergebnisse = suchergebnisse[
+            suchergebnisse['RecipeIngredientParts'].astype(str).apply(
+                lambda x: any(z in x for z in selected_ingredient_names)
+            )
+        ]
 
     # Ergebnis anzeigen
     if suchergebnisse.empty:
@@ -155,6 +182,7 @@ if search_button:
     else:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
         st.dataframe(suchergebnisse[["Name", "RecipeCategory", "MealType", "CookTime", "RecipeInstructions"]].head(20))
+
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
