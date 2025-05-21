@@ -212,18 +212,13 @@ if search_button:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
     for _, row in suchergebnisse.head(20).iterrows(): 
-
-    rezept_id = row.get("ID") or row.get("RecipeId") 
-
- 
-
-    # Layout: Titel + Infos links, Herz rechts 
-
-    row1, heart_col = st.columns([5, 1]) 
-
-    with row1: 
-
-        st.markdown(f"### 🍽️ {row['Name']}") 
+        rezept_id = row.get("ID") or row.get("RecipeId") 
+        
+        # Layout: Titel + Infos links, Herz rechts 
+        row1, heart_col = st.columns([5, 1]) 
+        
+        with row1: 
+            st.markdown(f"### 🍽️ {row['Name']}") 
 
         st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}" 
 
