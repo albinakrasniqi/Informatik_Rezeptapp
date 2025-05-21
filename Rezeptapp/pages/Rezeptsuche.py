@@ -230,8 +230,6 @@ if search_button:
                         st.session_state.favoriten.append(rezept_id)
                         st.experimental_rerun()
 
-    # Bild und Zubereitung wie gehabt...
-
     # Bild anzeigen (unterhalb)
     raw_img = str(row.get("Images", "")).strip()
     url = None
