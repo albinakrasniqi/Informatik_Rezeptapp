@@ -404,33 +404,35 @@ if st.button("Neues Rezept erstellen"):
                 st.error("❌ Bitte einen Rezepttitel eingeben.")
             elif not anleitung:
                 st.error("❌ Bitte eine Anleitung eingeben.")
-            else:
-                new_recipe = {
-    "RecipeId": str(uuid.uuid4()),
-    "Name": rezept_name,
-    "Images": bild_url,
-    "RecipeIngredientParts": zutaten_emojis,
-    "RecipeIngredientQuantities": zutaten_mit_mengen,
-    "RecipeInstructions": anleitung,
-    "RecipeCategory": diät,
-    "MealType": mahlzeit,
-    "ErstelltVon": "user",  # <-- wichtig!
-    "TotalTime": "",
-    "PrepTime": "",
-    "CookTime": "",
-    "Description": "",
-    "RecipeServings": ""
-}
+else:
+    new_recipe = {
+        "ID": str(uuid.uuid4()),  # Wichtig für Anzeige + Löschen
+        "RecipeId": str(uuid.uuid4()),
+        "Name": rezept_name,
+        "Images": bild_url,
+        "RecipeIngredientParts": zutaten_emojis,
+        "RecipeIngredientQuantities": zutaten_mit_mengen,
+        "RecipeInstructions": anleitung,
+        "RecipeCategory": diät,
+        "MealType": mahlzeit,
+        "ErstelltVon": "user",  # Damit es in „Mein Konto“ auftaucht
+        "TotalTime": "",
+        "PrepTime": "",
+        "CookTime": "",
+        "Description": "",
+        "RecipeServings": ""
+    }
+    st.write("Neu gespeichert:", new_recipe)
+    st.write("Alle Rezepte:", st.session_state['data'].tail(5))
 
-
-                if 'data' not in st.session_state or st.session_state['data'].empty:
-                    st.session_state['data'] = pd.DataFrame([new_recipe])
-                else:
-                    st.session_state['data'] = pd.concat(
-                        [st.session_state['data'], pd.DataFrame([new_recipe])],
-                        ignore_index=True
-                    )
-                data_manager.save_data("data")
-                st.success("✅ Rezept erfolgreich gespeichert!")
+    if 'data' not in st.session_state or st.session_state['data'].empty:
+        st.session_state['data'] = pd.DataFrame([new_recipe])
+    else:
+        st.session_state['data'] = pd.concat(
+            [st.session_state['data'], pd.DataFrame([new_recipe])],
+            ignore_index=True
+        )
+    data_manager.save_data("data")
+    st.success("✅ Rezept erfolgreich gespeichert!")
 
 
