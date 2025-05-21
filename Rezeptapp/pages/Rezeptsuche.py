@@ -37,15 +37,15 @@ if rezepte.empty:
 zutat_emojis_gruppen = {
     "Kohlenhydrate & Getreide": {
         "🍞": "Brot", "🥖": "Baguette", "🥨": "Brezel", "🍚": "Reis", "🍜": "Nudeln",
-        "🫓": "Fladenbrot", "🌽": "Mais", "🍝": "Pasta", "🌰": "Quinoa", "🍢": "Couscous",
+        "🫓": "Fladenbrot", "🌽": "Mais", "🍝": "Pasta", "🟫": "Quinoa", "🍢": "Couscous",
         "🥣": "Hirse", "🍥": "Polenta", "🧇": "Haferflocken", "🥯": "Bagel", "🥞": "Pfannkuchen",
         "🌾": "Mehl"
     },
     "Gemüse": {
         "🥦": "Brokkoli", "🥕": "Karotte", "🌶": "Paprika", "🍆": "Aubergine", "🧄": "Knoblauch",
-        "🧅": "Zwiebel", "🍄": "Pilze", "🥬": "Blattgemüse", "🥒": "Gurke", "🍅": "Tomate",
-        "🫑": "Peperoni", "🥗": "Salat", "🥔": "Kartoffel", "🍠": "Süßkartoffel", "🥬": "Spinat",
-        "🎃": "Kürbis", "🥒": "Zucchini", "🥬": "Kohl", "🫛": "Sellerie"
+        "🧅": "Zwiebel", "🍄": "Pilze", "🥒": "Gurke", "🍅": "Tomate",
+        "🫑": "Peperoni", "🥗": "Salat", "🥔": "Kartoffel", "🍠": "Süßkartoffel", "🪴": "Spinat",
+        "🎃": "Kürbis", "🥒 + 🟢": "Zucchini", "🥬": "Kohl", "🫛": "Sellerie"
     },
     "Obst": {
         "🍎": "Apfel", "🍐": "Birne", "🍊": "Orange", "🍋": "Zitrone", "🍌": "Banane",
@@ -55,27 +55,24 @@ zutat_emojis_gruppen = {
     "Eiweissquellen": {
         "🍗": "Poulet", "🥩": "Rindfleisch", "🍖": "Schweinefleisch", "🐟": "Fisch",
         "🦐": "Garnelen", "🧀": "Käse", "🥚": "Ei", "🍳": "Eiweiss", "🥓": "Speck",
-        "🧆": "Falafel", "🥫": "Thunfisch", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst",
+        "🧆": "Falafel", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst",
         "🍢": "Fleischbällchen"
     },
     "Hülsenfrüchte & Nüsse": {
-        "🌰": "Haselnüsse", "🥜": "Erdnüsse", "🫘": "Bohnen", "🟤": "Linsen",
+        "🥜": "Erdnüsse", "🫘": "Bohnen", "🟤": "Linsen",
         "🟡": "Gelbe Linsen", "🟣": "Schwarze Bohnen", "🟢": "Kichererbsen",
         "🔴": "Rote Linsen", "⚪": "Weiße Bohnen", "💚": "Grüne Erbsen",
         "🌰": "Mandeln", "🌰": "Walnüsse", "🥥": "Kokosnuss"
     },
     "Milchprodukte & Alternativen": {
         "🥛": "Milch", "🧈": "Butter", "🧀": "Käse", "🥥": "Kokosmilch",
-        "🌱": "Sojamilch", "🧀": "Parmesan", "🥛": "Sahne", "🧀": "Frischkäse",
-        "🥛": "Kondensmilch", "🥛": "Buttermilch"
+        "🌱": "Sojamilch", "🧁": "Sahne", "🍶": "Frischkäse",
+        "🧴": "Kondensmilch"
     },
     "Extras": {
         "🧂": "Salz", "🫒": "Olivenöl", "🍯": "Honig", "🧃": "Essig", "🥫": "Tomatenmark",
-        "🍶": "Sojasauce", "🌶": "Chilipulver", "🟤": "Zucker", "🍁": "Ahornsirup",
-        "🧁": "Vanilleextrakt", "🍫": "Schokolade", "🍩": "Backpulver", "🍞": "Hefe",
-        "🥄": "Senf", "🍯": "Melasse", "🥫": "Worcestersauce",
-        "🥄": "Tahini", "🧂": "Kreuzkümmel", "🌿": "Thymian", "🌿": "Oregano",
-        "🌿": "Rosmarin", "🌿": "Basilikum", "🧂": "Muskatnuss", "🧂": "Zimt"
+        "🍶": "Sojasauce", "🌶": "Chilipulver", "🍬": "Zucker", "🍁": "Ahornsirup",
+        "🧁": "Vanilleextrakt", "🍫": "Schokolade", "🍩": "Backpulver", "🥄": "Senf", "🌿": "Basilikum", "🪵": "Zimt"
     }
 }
 
