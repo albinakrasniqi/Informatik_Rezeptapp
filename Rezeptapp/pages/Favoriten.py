@@ -25,6 +25,9 @@ def fav():
     for col in required_cols:
         if col not in rezepte.columns:
             rezepte[col] = ""
+    # Einheitliche ID-Spalte sicherstellen
+    if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
+        rezepte["ID"] = rezepte["RecipeId"]
 
     # Filtere Favoriten
     favoriten_rezepte = rezepte[rezepte["ID"].isin(st.session_state.favoriten)].copy()
