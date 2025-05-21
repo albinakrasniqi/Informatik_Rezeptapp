@@ -247,16 +247,15 @@ if search_button:
                     st.markdown("*(kein Bild)*")
                 st.markdown("---")
                 
-                # Zubereitung
-                instr_raw = str(row["RecipeInstructions"])
-                step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
-                if len(step_list) == 1:
-                    step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
-                st.markdown("**📝 Zubereitung:**")
-                for idx, step in enumerate(step_list, start=1):
-                    if step.strip():
-                        st.markdown(f"{idx}. {step.strip()}")
-
+                # Zubereitung (immer anzeigen!)
+    instr_raw = str(row["RecipeInstructions"])
+    step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+    if len(step_list) == 1:
+        step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+    st.markdown("**📝 Zubereitung:**")
+    for idx, step in enumerate(step_list, start=1):
+        if step.strip():
+            st.markdown(f"{idx}. {step.strip()}")
 
 # Einheitliche ID-Spalte
 if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
