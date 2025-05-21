@@ -296,6 +296,7 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
         st.write(f"**Zutaten:** {formatted_ingredients}")
 
         rezept_id = row.get("ID") or row.get("RecipeId")
+        row1, heart_col = st.columns([5, 1])
         with heart_col:
             is_fav = rezept_id in st.session_state.favoriten
             icon = "❤️" if is_fav else "🤍"
