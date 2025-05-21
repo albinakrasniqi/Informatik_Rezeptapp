@@ -271,18 +271,16 @@ else:
     st.markdown("*(kein Bild)*")
 st.markdown("---")
 
-
-
-            # Zubereitung
-            instr_raw = str(row["RecipeInstructions"])
-            # erst nach '", "' splitten, sonst Punkt-Leerzeichen
-            step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
-            if len(step_list) == 1:
-                step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
-            st.markdown("**📝 Zubereitung:**")
-            for idx, step in enumerate(step_list, start=1):
-                if step.strip():
-                    st.markdown(f"{idx}. {step.strip()}")
+# Zubereitung
+instr_raw = str(row["RecipeInstructions"])
+# erst nach '", "' splitten, sonst Punkt-Leerzeichen
+step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+if len(step_list) == 1:
+    step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+st.markdown("**📝 Zubereitung:**")
+for idx, step in enumerate(step_list, start=1):
+    if step.strip():
+        st.markdown(f"{idx}. {step.strip()}")
 
 
 # Einheitliche ID-Spalte
