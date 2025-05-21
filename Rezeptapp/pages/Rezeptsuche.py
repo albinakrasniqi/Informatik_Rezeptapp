@@ -211,33 +211,71 @@ if search_button:
     else:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
-    # pro Rezept eine „Karte“ aus Bild + Text
-    for _, row in suchergebnisse.head(20).iterrows():
+    for _, row in suchergebnisse.head(20).iterrows(): 
 
-        # 👉 Layout-Spalten (links 1, rechts 2)
-        col_img, col_txt = st.columns([1, 2])
+    rezept_id = row.get("ID") or row.get("RecipeId") 
 
-        # ----------  Bild -------------------
-        # rohe Images-Zeile (z. B.  c("url1","url2") oder nur URL)
-        raw_img = str(row["Images"]).strip()
+ 
 
-        url = None
-        if raw_img.startswith("c("):
-            try:
-                # remove leading c( … )  ->  ["url1","url2"]
-                url_list = ast.literal_eval(raw_img[1:])  # macht echte Liste
-                if url_list:
-                    url = url_list[0]
-            except Exception:
-                pass
-        elif raw_img.startswith("http"):
-            url = raw_img
+    # Layout: Titel + Infos links, Herz rechts 
 
-        with col_img:
-            if url:
-                st.image(url, use_container_width=True)
-            else:
-                st.markdown("*(kein Bild)*")
+    row1, heart_col = st.columns([5, 1]) 
+
+    with row1: 
+
+        st.markdown(f"### 🍽️ {row['Name']}") 
+
+        st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}" 
+
+                 f"  |  **Mahlzeit:** {row.get('MealType', '-')}" 
+
+                 f"  |  **Kochzeit:** {row.get('CookTime', '-')}") 
+
+ 
+
+    with heart_col: 
+
+        if rezept_id in st.session_state.favoriten: 
+
+            if st.button("💔", key=f"remove_{rezept_id}"): 
+
+                st.session_state.favoriten.remove(rezept_id) 
+
+                st.experimental_rerun() 
+
+        else: 
+
+            if st.button("❤️", key=f"add_{rezept_id}"): 
+
+                st.session_state.favoriten.append(rezept_id) 
+
+                st.experimental_rerun() 
+
+ 
+
+    # Bild anzeigen (unterhalb) 
+
+    raw_img = str(row.get("Images", "")).strip() 
+
+    url = None 
+
+    if raw_img.startswith("c("): 
+
+        try: 
+
+            url_list = ast.literal_eval(raw_img[1:]) 
+
+            if url_list: 
+
+                url = url_list[0] 
+
+        except Exception: 
+
+            pass 
+
+    elif raw_img.startswith("http"): 
+
+        url = 
 
         # ----------  Text-Teil --------------
         with col_txt:
