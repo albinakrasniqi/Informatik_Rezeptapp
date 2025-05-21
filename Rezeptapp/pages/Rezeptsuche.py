@@ -274,19 +274,21 @@ if search_button:
 
     for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
-        # Prüfe, ob das Rezept eigentlich verboten wäre (z.B. Fleisch bei Vegetarisch)
         highlight = False
+        warntext = ""
         forbidden = forbidden_dict.get(diet, [])
         if forbidden:
             if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
                 highlight = True
+                warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
             for col in ["Name", "Description", "Keywords"]:
                 if forbidden_in_text(row.get(col, ''), forbidden):
                     highlight = True
+                    warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
         row1, heart_col = st.columns([5, 1])
         with row1:
             if highlight:
-                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+                st.markdown(f"### <span style='color:red; font-weight:bold'>🍽️ {row['Name']}</span> {warntext}", unsafe_allow_html=True)
             else:
                 st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
