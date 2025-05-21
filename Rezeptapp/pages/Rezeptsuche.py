@@ -182,9 +182,11 @@ search_button = st.button("🔎 Suchen")
 if search_button:
     suchergebnisse = rezepte.copy()
 
-diätform = st.session_state.get('diätform', 'Alle')
-if diätform != "Alle":
-    suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diätform, case=False, na=False)]
+    diätform = st.session_state.get('diätform', 'Alle')
+    if diätform != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diätform, case=False, na=False)]
+
+    # ...weitere Filter (diet, meal_type, Zutaten, etc.)
 
     # Nach Diät filtern
     if diet != "Alle":
