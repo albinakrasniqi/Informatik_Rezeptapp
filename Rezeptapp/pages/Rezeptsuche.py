@@ -118,11 +118,6 @@ else:
 gespeicherte_diät = st.session_state.get("gespeicherte_diätform", "Alle")
 st.markdown(f"### 🧘 Ausgewählte Diät: {gespeicherte_diät}")
 
-# 🍲 Mahlzeittyp auswählen
-meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagessen", "Abendessen", "Snack"])
-st.markdown("---")
-
-
 # Übersetzung Deutsch → Englisch
 deutsch_to_englisch = {
     # Kohlenhydrate & Getreide
@@ -271,10 +266,6 @@ if search_button:
         return False
     suchergebnisse['forbidden'] = suchergebnisse.apply(has_forbidden, axis=1)
 
-    # Nach Mahlzeittyp filtern
-    if meal_type != "Alle":
-        suchergebnisse = suchergebnisse[suchergebnisse['MealType'].str.contains(meal_type, case=False, na=False)]
-
     # Nach Zutaten filtern
     selected_ingredient_names = [
         deutsch_to_englisch.get(name, name)
@@ -305,7 +296,7 @@ if search_button:
                 st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
             else:
                 st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
             formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
             st.write(f"**Zutaten:** {formatted_ingredients}")
         # Bild anzeigen (unterhalb)
@@ -340,11 +331,6 @@ if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
     rezepte["ID"] = rezepte["RecipeId"]
 
 rezepte = st.session_state['data']
-
-
-
-
-
 
 st.markdown("---")
 
