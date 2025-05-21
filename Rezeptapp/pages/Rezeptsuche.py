@@ -229,7 +229,8 @@ def forbidden_in_ingredients(ingredient_val, forbidden_words):
     ingredients = extract_ingredients(ingredient_val)
     for ing in ingredients:
         for word in forbidden_words:
-            if word in ing:
+            # Match as full word (word boundary)
+            if re.search(rf"\\b{re.escape(word)}\\b", ing):
                 return True
     return False
 def forbidden_in_text(val, forbidden_words):
