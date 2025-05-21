@@ -250,7 +250,7 @@ if search_button:
         st.markdown("*(kein Bild)*")
     st.markdown("---")
 
-    # Zubereitung
+   # Zubereitung
     instr_raw = str(row["RecipeInstructions"])
     step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
     if len(step_list) == 1:
