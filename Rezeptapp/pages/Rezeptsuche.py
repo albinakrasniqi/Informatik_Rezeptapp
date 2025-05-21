@@ -348,7 +348,6 @@ def zeige_rezept(row, idx):
         s = str(val).strip().lower()
         if s.startswith('c(') and s.endswith(')'):
             s = s[2:-1]
-extract_ingredients()
 
 
 # Bild anzeigen (unterhalb)
