@@ -6,13 +6,13 @@ st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
-# Daten laden
-data_manager.load_app_data(
-    session_state_key='data', 
-    file_name='recipes.csv', 
-    initial_value=pd.DataFrame(),
-    encoding='utf-8'
-)
+# # Daten laden
+# data_manager.load_app_data(
+#     session_state_key='data', 
+#     file_name='recipes.csv', 
+#     initial_value=pd.DataFrame(),
+#     encoding='utf-8'
+# )
 
 # Datensatz bereinigen
 def clean_and_validate_data(df):
@@ -26,8 +26,8 @@ def clean_and_validate_data(df):
             df[col] = None
     return df
 
+st.session_state['data'] = pd.read_csv("data/recipes.csv", on_bad_lines="skip", encoding='utf-8')
 data = clean_and_validate_data(st.session_state['data'])
-st.session_state['data'] = data
 
 # Layout
 st.markdown("""
