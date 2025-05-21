@@ -249,8 +249,8 @@ if search_button:
     suchergebnisse = rezepte.copy()
     st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
 
-    # Diät aus Session State lesen
-    diet = gespeicherte_diät
+    # Diät aus Session State lesen (explizit wie im Screenshot)
+    diet = st.session_state.get("gespeicherte_diätform", "Alle")
     forbidden = forbidden_dict.get(diet, [])
     if forbidden:
         # Komplett-Filter: Entferne alle Rezepte mit verbotenen Zutaten
