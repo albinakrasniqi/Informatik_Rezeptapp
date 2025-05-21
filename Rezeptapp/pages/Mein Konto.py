@@ -10,8 +10,6 @@ def kontopage():
         ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
         key="diätform"
     )
-    # Synchronisiere Session State für andere Seiten explizit
-    st.session_state['diätform'] = diät
 
     st.markdown("### 📚 Meine Rezepte")
 
