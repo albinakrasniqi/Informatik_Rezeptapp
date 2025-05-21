@@ -206,6 +206,12 @@ if search_button:
                     lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
                 )
             ]
+            # Auch im Rezeptnamen prüfen!
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['Name'].astype(str).str.lower().apply(
+                    lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
+                )
+            ]
         elif diet == "Vegan":
             tierprodukte = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
@@ -213,6 +219,11 @@ if search_button:
             ]
             suchergebnisse = suchergebnisse[
                 ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(tier in x for tier in tierprodukte)
+                )
+            ]
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['Name'].astype(str).str.lower().apply(
                     lambda x: any(tier in x for tier in tierprodukte)
                 )
             ]
