@@ -272,35 +272,6 @@ else:
 st.markdown("---")
 
 
-    # ----------  Text-Teil --------------
-    with col_txt:
-        st.markdown(f"### 🍽️ {row['Name']}")
-        st.write(f"**Kategorie:** {row['RecipeCategory']}  |  "
-                 f"**Mahlzeit:** {row['MealType']}  |  "
-                 f"**Kochzeit:** {row['CookTime']}")
-            
-# ❤️ Favoriten-Button
-rezept_id = row.get("ID") or row.get("RecipeId")
-
-if rezept_id:
-    if rezept_id in st.session_state.favoriten:
-        if st.button("💔 Entfernen aus Favoriten", key=f"remove_{rezept_id}"):
-            st.session_state.favoriten.remove(rezept_id)
-            st.experimental_rerun()
-    else:
-        if st.button("❤️ Zu Favoriten", key=f"add_{rezept_id}"):
-            st.session_state.favoriten.append(rezept_id)
-            st.experimental_rerun()
-
-            # Zutaten
-            zutaten_raw = str(row["RecipeIngredientParts"])
-            zutat_list = zutaten_raw.strip('c()[]').replace('"', '').split('","')
-            if len(zutat_list) == 1:  # Fallback
-                zutat_list = zutaten_raw.strip('c()[]').replace('"', '').split('", "')
-            st.markdown("**🧾 Zutaten:**")
-            for z in zutat_list:
-                if z.strip():
-                    st.markdown(f"- {z.strip()}")
 
             # Zubereitung
             instr_raw = str(row["RecipeInstructions"])
