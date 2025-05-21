@@ -24,12 +24,6 @@ gewünschte_spalten = [
     "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
 ]
 
-# Daten aus Session State laden
-rezepte = st.session_state['data']
-# 🧪 Vorschau auf die Zutatenliste im Datensatz
-st.subheader("🧪 Vorschau auf alle Rezeptzutaten")
-st.write(rezepte["RecipeIngredientParts"].head(20))  # zeigt die ersten 20 Einträge
-
 
 # Falls leer, sofort stoppen
 if rezepte.empty:
@@ -99,11 +93,16 @@ for gruppe, zutaten in zutat_emojis_gruppen.items():
         cols = st.columns(spalten)
         for j, (emoji, name) in enumerate(emoji_items[i:i + spalten]):
             label = f"{emoji} {name}"
-            if cols[j].button(label, key=f"{gruppe}_{emoji}"):
-                if emoji in st.session_state.auswahl:
-                    st.session_state.auswahl.remove(emoji)
-                else:
-                    st.session_state.auswahl.append(emoji)
+            key = f"{gruppe}_{emoji}"
+
+            # Toggle-Auswahl über Checkbox
+            checked = st.session_state.auswahl and emoji in st.session_state.auswahl
+            checkbox = cols[j].checkbox(label, value=checked, key=key)
+
+            if checkbox and emoji not in st.session_state.auswahl:
+                st.session_state.auswahl.append(emoji)
+            elif not checkbox and emoji in st.session_state.auswahl:
+                st.session_state.auswahl.remove(emoji)
 
 # Auswahl anzeigen
 selected_ingredients = st.session_state.auswahl
@@ -289,22 +288,22 @@ if search_button:
     else:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
-    for _, row in suchergebnisse.head(20).iterrows():
-        rezept_id = row.get("ID") or row.get("RecipeId")
-        row1, heart_col = st.columns([5, 1])
-        with row1:
-            # Titel rot markieren, wenn forbidden
-            if row.get('forbidden', False):
-                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
-            else:
-                st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
-            formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
-            st.write(f"**Zutaten:** {formatted_ingredients}")
+for _, row in suchergebnisse.iterrows():
+    if row.get('forbidden', False):
+        continue  # Rezept überspringen, wenn verboten
+
+    st.markdown(f"### 🍽️ {row['Name']}")
+    st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+             f" | **Mahlzeit:** {row.get('MealType', '-')}"
+             f" | **Kochzeit:** {row.get('CookTime', '-')}")
+    
+    formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+    st.write(f"**Zutaten:** {formatted_ingredients}")
+
         # Bild anzeigen (unterhalb)
-        raw_img = str(row.get("Images", "")).strip()
-        url = None
-        if raw_img.startswith("c("):
+    raw_img = str(row.get("Images", "")).strip()
+    url = None
+    if raw_img.startswith("c("):
             try:
                 url_list = ast.literal_eval(raw_img[1:])
                 if url_list:
@@ -319,14 +318,24 @@ if search_button:
             st.markdown("*(kein Bild)*")
         st.markdown("---")
         # Zubereitung (immer anzeigen!)
-        instr_raw = str(row["RecipeInstructions"])
-        step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
-        if len(step_list) == 1:
+instr_raw = str(row["RecipeInstructions"])
+step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+if len(step_list) == 1:
             step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
         st.markdown("**📝 Zubereitung:**")
-        for idx, step in enumerate(step_list, start=1):
+for idx, step in enumerate(step_list, start=1):
             if step.strip():
                 st.markdown(f"{idx}. {step.strip()}")
+
+# Zutaten + Mengen formatieren
+parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+
+st.markdown("**🧾 Zutaten mit Mengen:**")
+for i, zutat in enumerate(parts):
+    menge = mengen[i] if i < len(mengen) else ""
+    st.markdown(f"- {menge} {zutat}".strip())
+
 
 # Einheitliche ID-Spalte
 if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
