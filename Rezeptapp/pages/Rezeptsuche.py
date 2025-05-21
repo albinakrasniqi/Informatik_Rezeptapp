@@ -522,6 +522,18 @@ if not suchergebnisse.empty:
                     st.session_state.favoriten.append(rezept_id)
                 st.experimental_rerun()
 
+    def toggle_favorit(rezept_id):
+        if rezept_id in st.session_state.favoriten:
+            st.session_state.favoriten.remove(rezept_id)
+        else:
+            st.session_state.favoriten.append(rezept_id)
+        if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+         toggle_favorit(rezept_id)
+        st.experimental_rerun()
+
+            
+
+
         # Bild anzeigen (unterhalb)
         raw_img = str(row.get("Images", "")).strip()
         url = None
