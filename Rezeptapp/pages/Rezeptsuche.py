@@ -313,7 +313,7 @@ def zeige_rezept(row, idx):
                 st.session_state.favoriten.remove(rezept_id)
             else:
                 st.session_state.favoriten.append(rezept_id)
-            st.experimental_rerun()
+            st.rerun()
 
     # Zutaten anzeigen
     def extract_ingredients(val):
