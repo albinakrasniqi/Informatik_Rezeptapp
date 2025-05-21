@@ -414,14 +414,14 @@ if st.button("Neues Rezept erstellen"):
     "RecipeInstructions": anleitung,
     "RecipeCategory": diät,
     "MealType": mahlzeit,
-    "AuthorId": "user",               # statt 'ErstelltVon'
-    "AuthorName": "",                 # falls du keinen Namen angibst
+    "ErstelltVon": "user",  # <-- wichtig!
     "TotalTime": "",
     "PrepTime": "",
     "CookTime": "",
     "Description": "",
     "RecipeServings": ""
 }
+
 
                 if 'data' not in st.session_state or st.session_state['data'].empty:
                     st.session_state['data'] = pd.DataFrame([new_recipe])
@@ -433,4 +433,4 @@ if st.button("Neues Rezept erstellen"):
                 data_manager.save_data("data")
                 st.success("✅ Rezept erfolgreich gespeichert!")
 
-# (Entfernt: Doppelte Anzeige und Favoriten-Logik, da dies bereits oben erledigt wird)
+
