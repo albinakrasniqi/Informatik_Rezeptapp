@@ -196,8 +196,28 @@ if search_button:
 
     # Filtere nach Diätform
     if diet != "Alle":
-        # Rezepte müssen exakt zur Diätform passen (nicht nur enthalten!)
+        # Nur Rezepte, die exakt zur Diätform passen
         suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower() == diet.lower()]
+        # UND: Entferne alle Rezepte, die Fleisch enthalten, wenn vegetarisch oder vegan gewählt ist
+        if diet == "Vegetarisch":
+            fleisch_stichworte = [
+                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
+            ]
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
+                )
+            ]
+        elif diet == "Vegan":
+            tierprodukte = [
+                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+                "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
+            ]
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(tier in x for tier in tierprodukte)
+                )
+            ]
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
