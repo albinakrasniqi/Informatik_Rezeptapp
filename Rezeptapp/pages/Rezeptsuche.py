@@ -228,34 +228,34 @@ if search_button:
                     if st.button("❤️", key=f"add_{rezept_id}"):
                         st.session_state.favoriten.append(rezept_id)
                         st.experimental_rerun()
-
-    # Bild anzeigen (unterhalb)
-    raw_img = str(row.get("Images", "")).strip()
-    url = None
-    if raw_img.startswith("c("):
-        try:
-            url_list = ast.literal_eval(raw_img[1:])
-            if url_list:
-                url = url_list[0]
-        except Exception:
-            pass
-    elif raw_img.startswith("http"):
-        url = raw_img
-    if url:
-        st.image(url, use_container_width=True)
-    else:
-        st.markdown("*(kein Bild)*")
-    st.markdown("---")
-
-   # Zubereitung
-    instr_raw = str(row["RecipeInstructions"])
-    step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
-    if len(step_list) == 1:
-        step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
-    st.markdown("**📝 Zubereitung:**")
-    for idx, step in enumerate(step_list, start=1):
-        if step.strip():
-            st.markdown(f"{idx}. {step.strip()}")
+                        
+            # Bild anzeigen (unterhalb)
+            raw_img = str(row.get("Images", "")).strip()
+            url = None
+            if raw_img.startswith("c("):
+                try:
+                    url_list = ast.literal_eval(raw_img[1:])
+                    if url_list:
+                        url = url_list[0]
+                except Exception:
+                    pass
+            elif raw_img.startswith("http"):
+                url = raw_img
+                if url:
+                    st.image(url, use_container_width=True)
+                else:
+                    st.markdown("*(kein Bild)*")
+                st.markdown("---")
+                
+                # Zubereitung
+                instr_raw = str(row["RecipeInstructions"])
+                step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+                if len(step_list) == 1:
+                    step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+                st.markdown("**📝 Zubereitung:**")
+                for idx, step in enumerate(step_list, start=1):
+                    if step.strip():
+                        st.markdown(f"{idx}. {step.strip()}")
 
 
 # Einheitliche ID-Spalte
