@@ -7,6 +7,9 @@ import ast
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
+data_manager.register("data")
+data_manager.register("favoriten")
+
 suchergebnisse = pd.DataFrame()  # leeres DataFrame zur Initialisierung
 
 if "favoriten" not in st.session_state:
