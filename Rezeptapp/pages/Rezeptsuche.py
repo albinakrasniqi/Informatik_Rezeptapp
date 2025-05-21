@@ -114,10 +114,9 @@ if selected_ingredients:
 else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
-# Ausgewählte Diät übernehmen aus dem Session State
-diet = st.session_state.get("gespeicherte_diätform", "Alle")
-# Zeige dem Nutzer an, welche Diät gerade aktiv ist
-st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
+# Diätform anzeigen (aber NICHT session_state['diätform'] setzen!)
+gespeicherte_diät = st.session_state.get("gespeicherte_diätform", "Alle")
+st.markdown(f"### 🧘 Ausgewählte Diät: {gespeicherte_diät}")
 
 # 🍲 Mahlzeittyp auswählen
 meal_type = st.selectbox("🍽️ Mahlzeit", ["Alle", "Frühstück", "Mittagessen", "Abendessen", "Snack"])
