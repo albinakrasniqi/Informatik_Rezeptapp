@@ -192,9 +192,18 @@ diet = st.selectbox(
 if search_button:
     suchergebnisse = rezepte.copy()
 
+    # Normalize all relevant fields for robust filtering
+    def normalize_field(val):
+        if isinstance(val, list):
+            val = ' '.join(map(str, val))
+        return str(val).lower().strip()
+
+    for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+        if col in suchergebnisse.columns:
+            suchergebnisse[col] = suchergebnisse[col].apply(normalize_field)
+
     # Filtere nach Diätform
     if diet != "Alle":
-        # Flexible Kategorie-Prüfung: auch Teilstrings und englische Begriffe
         diet_keywords = {
             "Vegetarisch": ["vegetarisch", "vegetarian", "vegetable"],
             "Vegan": ["vegan"],
@@ -210,73 +219,51 @@ if search_button:
             ]
         else:
             suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower().str.strip() == diet.lower().strip()]
-        # UND: Entferne alle Rezepte, die Fleisch enthalten, wenn vegetarisch oder vegan gewählt ist
+
+        # Define forbidden ingredient patterns for each diet
+        def forbidden_pattern(words):
+            # Use word boundaries to avoid partial matches (e.g., 'chicken' vs 'chickpea')
+            return re.compile(r"\\b(" + "|".join(map(re.escape, words)) + r")\\b", re.IGNORECASE)
+
         if diet == "Vegetarisch":
-            fleisch_stichworte = [
+            forbidden = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
             ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
-                    lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
-                )
-            ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['Name'].astype(str).str.lower().apply(
-                    lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
-                )
-            ]
-            # Auch in Description prüfen
-            if 'Description' in suchergebnisse.columns:
-                suchergebnisse = suchergebnisse[
-                    ~suchergebnisse['Description'].astype(str).str.lower().apply(
-                        lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
-                    )
-                ]
+            patt = forbidden_pattern(forbidden)
+            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+                if col in suchergebnisse.columns:
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
         elif diet == "Vegan":
-            tierprodukte = [
+            forbidden = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
                 "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
             ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
-                    lambda x: any(tier in x for tier in tierprodukte)
-                )
-            ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['Name'].astype(str).str.lower().apply(
-                    lambda x: any(tier in x for tier in tierprodukte)
-                )
-            ]
-            if 'Description' in suchergebnisse.columns:
-                suchergebnisse = suchergebnisse[
-                    ~suchergebnisse['Description'].astype(str).str.lower().apply(
-                        lambda x: any(tier in x for tier in tierprodukte)
-                    )
-                ]
+            patt = forbidden_pattern(forbidden)
+            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+                if col in suchergebnisse.columns:
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
         elif diet == "Kein Schweinefleisch":
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
-                    lambda x: any(schwein in x for schwein in ["schwein", "schweinefleisch", "pork"])
-                )
-            ]
+            forbidden = ["schwein", "schweinefleisch", "pork"]
+            patt = forbidden_pattern(forbidden)
+            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+                if col in suchergebnisse.columns:
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
         elif diet == "Pescitarisch":
-            fleisch_ausser_fisch = [
+            forbidden = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
             ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
-                    lambda x: any(fleisch in x for fleisch in fleisch_ausser_fisch)
-                )
-            ]
+            patt = forbidden_pattern(forbidden)
+            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+                if col in suchergebnisse.columns:
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
         elif diet == "laktosefrei":
-            milchprodukte = [
+            forbidden = [
                 "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
             ]
-            suchergebnisse = suchergebnisse[
-                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
-                    lambda x: any(milch in x for milch in milchprodukte)
-                )
-            ]
+            patt = forbidden_pattern(forbidden)
+            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+                if col in suchergebnisse.columns:
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
