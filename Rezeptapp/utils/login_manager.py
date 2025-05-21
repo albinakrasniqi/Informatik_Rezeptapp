@@ -127,8 +127,7 @@ class LoginManager:
                 try:
                     self._save_auth_credentials()
                     st.success("Credentials saved successfully")
-                    self.data_manager.save_all_data()
-                    
+
                 except Exception as e:
                     st.error(f"Failed to save credentials: {e}")
             if stop:
