@@ -195,7 +195,7 @@ if search_button:
     # Filtere nach Diätform
     if diet != "Alle":
         # Nur Rezepte, die exakt zur Diätform passen
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower() == diet.lower()]
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower().str.strip() == diet.lower().strip()]
         # UND: Entferne alle Rezepte, die Fleisch enthalten, wenn vegetarisch oder vegan gewählt ist
         if diet == "Vegetarisch":
             fleisch_stichworte = [
@@ -206,12 +206,18 @@ if search_button:
                     lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
                 )
             ]
-            # Auch im Rezeptnamen prüfen!
             suchergebnisse = suchergebnisse[
                 ~suchergebnisse['Name'].astype(str).str.lower().apply(
                     lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
                 )
             ]
+            # Auch in Description prüfen
+            if 'Description' in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[
+                    ~suchergebnisse['Description'].astype(str).str.lower().apply(
+                        lambda x: any(fleisch in x for fleisch in fleisch_stichworte)
+                    )
+                ]
         elif diet == "Vegan":
             tierprodukte = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
@@ -227,6 +233,12 @@ if search_button:
                     lambda x: any(tier in x for tier in tierprodukte)
                 )
             ]
+            if 'Description' in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[
+                    ~suchergebnisse['Description'].astype(str).str.lower().apply(
+                        lambda x: any(tier in x for tier in tierprodukte)
+                    )
+                ]
         elif diet == "Kein Schweinefleisch":
             # Entferne alle Rezepte mit Schwein
             suchergebnisse = suchergebnisse[
