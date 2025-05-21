@@ -245,6 +245,19 @@ if search_button:
             st.write(f"**Kategorie:** {row['RecipeCategory']}  |  "
                      f"**Mahlzeit:** {row['MealType']}  |  "
                      f"**Kochzeit:** {row['CookTime']}")
+            
+# ❤️ Favoriten-Button
+rezept_id = row.get("ID") or row.get("RecipeId")
+
+if rezept_id:
+    if rezept_id in st.session_state.favoriten:
+        if st.button("💔 Entfernen aus Favoriten", key=f"remove_{rezept_id}"):
+            st.session_state.favoriten.remove(rezept_id)
+            st.experimental_rerun()
+    else:
+        if st.button("❤️ Zu Favoriten", key=f"add_{rezept_id}"):
+            st.session_state.favoriten.append(rezept_id)
+            st.experimental_rerun()
 
             # Zutaten
             zutaten_raw = str(row["RecipeIngredientParts"])
@@ -266,22 +279,14 @@ if search_button:
             for idx, step in enumerate(step_list, start=1):
                 if step.strip():
                     st.markdown(f"{idx}. {step.strip()}")
-# ❤️ Favoriten-Button
-rezept_id = row.get("ID") or row.get("RecipeId")
 
-if rezept_id:
-    if rezept_id in st.session_state.favoriten:
-        if st.button("💔 Entfernen aus Favoriten", key=f"remove_{rezept_id}"):
-            st.session_state.favoriten.remove(rezept_id)
-            st.experimental_rerun()
-    else:
-        if st.button("❤️ Zu Favoriten", key=f"add_{rezept_id}"):
-            st.session_state.favoriten.append(rezept_id)
-            st.experimental_rerun()
 
 # Einheitliche ID-Spalte
 if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
     rezepte["ID"] = rezepte["RecipeId"]
+
+rezepte = st.session_state['data']
+
 
 
 
