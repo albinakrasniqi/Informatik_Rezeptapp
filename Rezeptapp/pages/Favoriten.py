@@ -54,7 +54,7 @@ def fav():
             st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
             if st.button("🗑️ Entfernen", key=f"remove_fav_{row['ID']}"):
                 st.session_state.favoriten.remove(row["ID"])
-                st.experimental_rerun()
+                st.rerun()
 
 fav() 
 
