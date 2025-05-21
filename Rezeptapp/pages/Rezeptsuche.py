@@ -258,7 +258,8 @@ if search_button:
         ingredients = extract_ingredients(ingredient_val)
         for ing in ingredients:
             for word in forbidden_words:
-                if word in ing:  # Teilstring-Suche, nicht nur Wortgrenze
+                # robust: lower, strip, und auch Teilstrings
+                if word.lower().strip() in ing.lower().strip():
                     return True
         return False
 
