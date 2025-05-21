@@ -313,14 +313,42 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
                     st.session_state.favoriten.append(rezept_id)
                 st.experimental_rerun()
 
-for idx, row in enumerate(suchergebnisse.itertuples()):
-    rezept_id = getattr(row, "ID", None) or getattr(row, "RecipeId", None)
-    ...
+def zeige_rezept(row, idx):
+    import ast
 
+    rezept_id = row.get("ID") or row.get("RecipeId")
 
-if st.button("❤️" if rezept_id in st.session_state.favoriten else "🤍", key=f"fav_{rezept_id}_{idx}"):
-    toggle_favorit(rezept_id)
-    st.experimental_rerun()
+    # Skip, wenn verboten (z. B. wegen Diät)
+    if row.get('forbidden', False):
+        st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"### 🍽️ {row['Name']}")
+
+    st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+             f" | **Mahlzeit:** {row.get('MealType', '-')}"
+             f" | **Kochzeit:** {row.get('CookTime', '-')}")
+
+    # Favoriten-Button
+    col1, heart_col = st.columns([8, 1])
+    with heart_col:
+        is_fav = rezept_id in st.session_state.favoriten
+        icon = "❤️" if is_fav else "🤍"
+        if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+            if is_fav:
+                st.session_state.favoriten.remove(rezept_id)
+            else:
+                st.session_state.favoriten.append(rezept_id)
+            st.experimental_rerun()
+
+    # Zutaten anzeigen
+    def extract_ingredients(val):
+        import re
+        if isinstance(val, list):
+            return [str(x).strip().lower() for x in val]
+        s = str(val).strip().lower()
+        if s.startswith('c(') and s.endswith(')'):
+            s = s[2:-1]
+
 
 
 # Bild anzeigen (unterhalb)
