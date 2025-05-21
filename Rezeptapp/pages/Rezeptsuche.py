@@ -258,8 +258,7 @@ if search_button:
         ingredients = extract_ingredients(ingredient_val)
         for ing in ingredients:
             for word in forbidden_words:
-                # Match as full word (word boundary)
-                if re.search(rf"\\b{re.escape(word)}\\b", ing):
+                if word in ing:
                     return True
         return False
 
