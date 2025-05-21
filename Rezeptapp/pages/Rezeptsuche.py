@@ -24,6 +24,9 @@ gewünschte_spalten = [
     "RecipeIngredientParts", "RecipeServings", "RecipeInstructions"
 ]
 
+# Rezepte DataFrame aus Session State laden
+rezepte = st.session_state['data']
+
 
 # Falls leer, sofort stoppen
 if rezepte.empty:
