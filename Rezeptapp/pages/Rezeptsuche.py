@@ -313,10 +313,15 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
                     st.session_state.favoriten.append(rezept_id)
                 st.experimental_rerun()
 
-icon = "❤️" if rezept_id in st.session_state.favoriten else "🤍"
-if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+for idx, row in enumerate(suchergebnisse.itertuples()):
+    rezept_id = getattr(row, "ID", None) or getattr(row, "RecipeId", None)
+    ...
+
+
+if st.button("❤️" if rezept_id in st.session_state.favoriten else "🤍", key=f"fav_{rezept_id}_{idx}"):
     toggle_favorit(rezept_id)
     st.experimental_rerun()
+
 
 # Bild anzeigen (unterhalb)
 raw_img = str(row.get("Images", "")).strip()
