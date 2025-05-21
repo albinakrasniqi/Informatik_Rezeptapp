@@ -378,7 +378,7 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
         if row.get('forbidden', False):
             continue
         zeige_rezept(row, idx)
-data_manager.save_data("data")
+
 
 # Einheitliche ID-Spalte
 if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
