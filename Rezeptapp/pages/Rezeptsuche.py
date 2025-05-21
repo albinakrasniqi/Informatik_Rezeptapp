@@ -224,7 +224,6 @@ if search_button:
                     if st.button("💔", key=f"remove_{rezept_id}"):
                         st.session_state.favoriten.remove(rezept_id)
                         st.experimental_rerun()
-                        
                 else:
                     if st.button("❤️", key=f"add_{rezept_id}"):
                         st.session_state.favoriten.append(rezept_id)
