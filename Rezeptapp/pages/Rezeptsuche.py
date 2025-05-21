@@ -245,18 +245,106 @@ if search_button:
     suchergebnisse = rezepte.copy()
     st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
 
-    # Diät aus Session State lesen
     diet = st.session_state.get("gespeicherte_diätform", "Alle")
     forbidden = forbidden_dict.get(diet, [])
-    # forbidden_in_ingredients prüft auf exakte Wortgrenzen, aber Zutatenlisten können zusammengesetzte Begriffe enthalten.
-    # Wir machen die Prüfung robuster, indem wir auch Teilstrings erlauben (z.B. "chicken breast" matcht "chicken").
-    def forbidden_in_ingredients_anywhere(ingredient_val, forbidden_words):
-        ingredients = extract_ingredients(ingredient_val)
-        for ing in ingredients:
-            for word in forbidden_words:
-                if word in ing:
-                    return True
+
+    def has_forbidden(row):
+        if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+            return True
+        for col in ["Name", "Description", "Keywords"]:
+            if forbidden_in_text(row.get(col, ''), forbidden):
+                return True
         return False
+
+    suchergebnisse['forbidden'] = suchergebnisse.apply(has_forbidden, axis=1)
+
+    selected_ingredient_names = [
+        deutsch_to_englisch.get(name, name)
+        for gruppe in zutat_emojis_gruppen.values()
+        for emoji, name in gruppe.items()
+        if emoji in st.session_state.auswahl
+    ]
+
+    if selected_ingredient_names:
+        suchergebnisse = suchergebnisse[
+            suchergebnisse['RecipeIngredientParts'].astype(str).apply(
+                lambda x: all(z in x for z in selected_ingredient_names)
+            )
+        ]
+
+    if suchergebnisse.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
+        st.session_state['suchergebnisse'] = pd.DataFrame()  # Leeren
+    else:
+        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
+        st.session_state['suchergebnisse'] = suchergebnisse
+
+
+# 🔄 Rezepte anzeigen, wenn vorhanden
+if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
+    for _, row in st.session_state['suchergebnisse'].iterrows():
+        if row.get('forbidden', False):
+            continue
+
+        st.markdown(f"### 🍽️ {row['Name']}")
+        st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+                 f" | **Mahlzeit:** {row.get('MealType', '-')}"
+                 f" | **Kochzeit:** {row.get('CookTime', '-')}")
+
+        formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+        st.write(f"**Zutaten:** {formatted_ingredients}")
+
+        # Herz-Favoriten-Button
+        col1, col2 = st.columns([9, 1])
+        with col1:
+            st.write(f"**{row['Name']}**")
+        with col2:
+            rezept_id = row.get("ID", row.get("RecipeId", ""))
+            is_fav = rezept_id in st.session_state.favoriten
+            icon = "❤️" if is_fav else "🤍"
+            if st.button(icon, key=f"fav_{rezept_id}"):
+                if is_fav:
+                    st.session_state.favoriten.remove(rezept_id)
+                else:
+                    st.session_state.favoriten.append(rezept_id)
+                st.experimental_rerun()
+
+        # Bild anzeigen
+        raw_img = str(row.get("Images", "")).strip()
+        url = None
+        if raw_img.startswith("c("):
+            try:
+                url_list = ast.literal_eval(raw_img[1:])
+                if url_list:
+                    url = url_list[0]
+            except Exception:
+                pass
+        elif raw_img.startswith("http"):
+            url = raw_img
+        if url:
+            st.image(url, use_container_width=True)
+        else:
+            st.markdown("*(kein Bild)*")
+        st.markdown("---")
+
+        # Zutaten mit Mengen
+        parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+        mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+        st.markdown("**🧾 Zutaten mit Mengen:**")
+        for i, zutat in enumerate(parts):
+            menge = mengen[i] if i < len(mengen) else ""
+            st.markdown(f"- {menge} {zutat}".strip())
+
+        # Zubereitung
+        instr_raw = str(row["RecipeInstructions"])
+        step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+        if len(step_list) == 1:
+            step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+        st.markdown("**📝 Zubereitung:**")
+        for idx, step in enumerate(step_list, start=1):
+            if step.strip():
+                st.markdown(f"{idx}. {step.strip()}")
+
 
     def has_forbidden(row):
         if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
