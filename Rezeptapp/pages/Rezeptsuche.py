@@ -277,12 +277,24 @@ if search_button:
 
     for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
+        # Prüfe, ob das Rezept eigentlich verboten wäre (z.B. Fleisch bei Vegetarisch)
+        highlight = False
+        if diet in forbidden_dict:
+            forbidden = forbidden_dict[diet]
+            # Zutaten prüfen
+            if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+                highlight = True
+            # Name, Description, Keywords prüfen
+            for col in ["Name", "Description", "Keywords"]:
+                if forbidden_in_text(row.get(col, ''), forbidden):
+                    highlight = True
         row1, heart_col = st.columns([5, 1])
         with row1:
-            st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
-                     f" | **Mahlzeit:** {row.get('MealType', '-')}"
-                     f" | **Kochzeit:** {row.get('CookTime', '-')}")
+            if highlight:
+                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🍽️ {row['Name']}")
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
             with heart_col:
                 if rezept_id in st.session_state.favoriten:
                     if st.button("💔", key=f"remove_{rezept_id}"):
