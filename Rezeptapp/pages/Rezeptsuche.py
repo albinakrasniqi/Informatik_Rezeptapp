@@ -7,9 +7,6 @@ import ast
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
-data_manager.register("data")
-data_manager.register("favoriten")
-
 suchergebnisse = pd.DataFrame()  # leeres DataFrame zur Initialisierung
 
 if "favoriten" not in st.session_state:
@@ -294,7 +291,7 @@ def zeige_rezept(row, idx):
     import ast
     import re
 
-    rezept_id = row.get("ID") 
+    rezept_id = row.get("ID") or row.get("RecipeId")
 
     # Skip, wenn verboten (z. B. wegen Diät)
     if row.get('forbidden', False):
@@ -318,7 +315,6 @@ def zeige_rezept(row, idx):
                 st.session_state.favoriten.append(rezept_id)
             st.rerun()
             
-
 
     # Zutaten anzeigen
     def extract_ingredients(val):
@@ -413,7 +409,6 @@ if st.button("Neues Rezept erstellen"):
                 st.error("❌ Bitte eine Anleitung eingeben.")
             else:
                 new_recipe = {
-    "ID": str(uuid.uuid4()),  # Einheitliche ID
     "RecipeId": str(uuid.uuid4()),  # falls alt verwendet wird
     "Name": rezept_name,
     "Images": bild_url,
@@ -422,7 +417,7 @@ if st.button("Neues Rezept erstellen"):
     "RecipeInstructions": anleitung,
     "RecipeCategory": diät,
     "MealType": mahlzeit,
-    "ErstelltVon": "user",            
+    "AuthorId": "user",            
     "AuthorName": "",                 # falls du keinen Namen angibst
     "TotalTime": "",
     "PrepTime": "",
