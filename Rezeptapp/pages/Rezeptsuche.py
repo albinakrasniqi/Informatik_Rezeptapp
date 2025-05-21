@@ -184,8 +184,7 @@ search_button = st.button("🔎 Suchen")
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    key="diätform"
-) 
+)
 
 # ...existing code...
 
