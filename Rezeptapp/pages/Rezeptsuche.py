@@ -290,7 +290,7 @@ rezepte = st.session_state['data']
 
 
 
-    st.markdown("---")
+st.markdown("---")
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
