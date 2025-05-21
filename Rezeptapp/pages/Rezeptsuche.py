@@ -184,11 +184,6 @@ deutsch_to_englisch = {
 st.markdown("### 🔍 Suche starten")
 search_button = st.button("🔎 Suchen")
 
-diet = st.selectbox(
-    "🧘 Diät wählen",
-    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-)
-
 # --- Vor der Anzeige der Rezepte: Hilfsfunktionen und forbidden_dict bereitstellen ---
 forbidden_dict = {
     "Vegetarisch": [
