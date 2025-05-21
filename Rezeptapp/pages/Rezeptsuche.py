@@ -5,6 +5,11 @@ from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, da
 import re
 import ast
 
+
+if "favoriten" not in st.session_state:
+    st.session_state.favoriten = []
+
+
 # Überprüfen, ob Rezeptdaten vorhanden sind
 if 'data' not in st.session_state:
     st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
@@ -261,8 +266,26 @@ if search_button:
             for idx, step in enumerate(step_list, start=1):
                 if step.strip():
                     st.markdown(f"{idx}. {step.strip()}")
+# ❤️ Favoriten-Button
+rezept_id = row.get("ID") or row.get("RecipeId")
 
-        st.markdown("---")
+if rezept_id:
+    if rezept_id in st.session_state.favoriten:
+        if st.button("💔 Entfernen aus Favoriten", key=f"remove_{rezept_id}"):
+            st.session_state.favoriten.remove(rezept_id)
+            st.experimental_rerun()
+    else:
+        if st.button("❤️ Zu Favoriten", key=f"add_{rezept_id}"):
+            st.session_state.favoriten.append(rezept_id)
+            st.experimental_rerun()
+
+# Einheitliche ID-Spalte
+if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
+    rezepte["ID"] = rezepte["RecipeId"]
+
+
+
+    st.markdown("---")
 
 # Neues Rezept erstellen
 if st.button("Neues Rezept erstellen"):
