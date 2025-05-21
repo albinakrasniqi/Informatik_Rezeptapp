@@ -283,7 +283,7 @@ if search_button:
 
 # 🔄 Rezepte anzeigen, wenn vorhanden
 if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
-    for _, row in st.session_state['suchergebnisse'].iterrows():
+    for idx, row in st.session_state['suchergebnisse'].iterrows():
         if row.get('forbidden', False):
             continue
 
@@ -295,6 +295,7 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
         formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
         st.write(f"**Zutaten:** {formatted_ingredients}")
 
+        rezept_id = row.get("ID") or row.get("RecipeId")
         with heart_col:
             is_fav = rezept_id in st.session_state.favoriten
             icon = "❤️" if is_fav else "🤍"
