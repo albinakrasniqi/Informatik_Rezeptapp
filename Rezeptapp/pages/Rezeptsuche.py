@@ -256,7 +256,7 @@ if search_button:
         deutsch_to_englisch.get(name, name)
         for gruppe in zutat_emojis_gruppen.values()
         for emoji, name in gruppe.items()
-        if emoji in selected_ingredients
+        if emoji in st.session_state.auswahl
     ]
 
     if selected_ingredient_names:
@@ -276,15 +276,23 @@ if search_button:
         rezept_id = row.get("ID") or row.get("RecipeId")
         highlight = False
         warntext = ""
+        debugtext = ""
         forbidden = forbidden_dict.get(diet, [])
-        if forbidden:
-            if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+        zutaten_str = str(row.get('RecipeIngredientParts', '')).lower()
+        # Einfache Substring-Suche für Zutaten
+        for word in forbidden:
+            if word in zutaten_str:
                 highlight = True
                 warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
-            for col in ["Name", "Description", "Keywords"]:
-                if forbidden_in_text(row.get(col, ''), forbidden):
+                debugtext += f"[DEBUG] Verboten gefunden: '{word}' in Zutaten: {zutaten_str}\n"
+        # Auch Name, Description, Keywords prüfen
+        for col in ["Name", "Description", "Keywords"]:
+            val = str(row.get(col, '')).lower()
+            for word in forbidden:
+                if word in val:
                     highlight = True
                     warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
+                    debugtext += f"[DEBUG] Verboten gefunden: '{word}' in {col}: {val}\n"
         row1, heart_col = st.columns([5, 1])
         with row1:
             if highlight:
@@ -292,16 +300,9 @@ if search_button:
             else:
                 st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
-            with heart_col:
-                if rezept_id in st.session_state.favoriten:
-                    if st.button("💔", key=f"remove_{rezept_id}"):
-                        st.session_state.favoriten.remove(rezept_id)
-                        st.experimental_rerun()
-                else:
-                    if st.button("❤️", key=f"add_{rezept_id}"):
-                        st.session_state.favoriten.append(rezept_id)
-                        st.experimental_rerun()
-                        
+            st.write(f"**Zutaten:** {row.get('RecipeIngredientParts', '')}")
+            if debugtext:
+                st.code(debugtext)
         # Bild anzeigen (unterhalb)
         raw_img = str(row.get("Images", "")).strip()
         url = None
