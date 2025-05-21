@@ -121,7 +121,8 @@ if 'diätform' not in st.session_state:
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(st.session_state['diätform'])
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(st.session_state['diätform']),
+    key="rezeptsuche_diätform"
 )
 st.session_state['diätform'] = diet
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
