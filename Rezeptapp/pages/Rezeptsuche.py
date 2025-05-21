@@ -293,9 +293,11 @@ if search_button:
         rezept_id = row.get("ID") or row.get("RecipeId")
         row1, heart_col = st.columns([5, 1])
         with row1:
+            # Titel rot markieren, wenn forbidden
             if row.get('forbidden', False):
-                st.markdown(f"<div style='background-color:#ffcccc;padding:8px;border-radius:6px;'><b>⚠️ Nicht geeignet für die gewählte Diätform!</b></div>", unsafe_allow_html=True)
-            st.markdown(f"### 🍽️ {row['Name']}")
+                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
             formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
             st.write(f"**Zutaten:** {formatted_ingredients}")
