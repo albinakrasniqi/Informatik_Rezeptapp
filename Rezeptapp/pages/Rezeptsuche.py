@@ -301,6 +301,7 @@ if search_button:
                 st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
             st.write(f"**Zutaten:** {row.get('RecipeIngredientParts', '')}")
+            st.write(f"[DEBUG] Typ der Zutaten: {type(row.get('RecipeIngredientParts', '')).__name__}")
             if debugtext:
                 st.code(debugtext)
         # Bild anzeigen (unterhalb)
