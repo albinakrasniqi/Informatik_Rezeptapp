@@ -252,16 +252,23 @@ if search_button:
     # Diät aus Session State lesen
     diet = st.session_state.get("gespeicherte_diätform", "Alle")
     forbidden = forbidden_dict.get(diet, [])
+    # forbidden_in_ingredients prüft auf exakte Wortgrenzen, aber Zutatenlisten können zusammengesetzte Begriffe enthalten.
+    # Wir machen die Prüfung robuster, indem wir auch Teilstrings erlauben (z.B. "chicken breast" matcht "chicken").
+    def forbidden_in_ingredients_anywhere(ingredient_val, forbidden_words):
+        ingredients = extract_ingredients(ingredient_val)
+        for ing in ingredients:
+            for word in forbidden_words:
+                if word in ing:  # Teilstring-Suche, nicht nur Wortgrenze
+                    return True
+        return False
+
     def has_forbidden(row):
-        # Zutaten
-        if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+        if forbidden_in_ingredients_anywhere(row.get('RecipeIngredientParts', ''), forbidden):
             return True
-        # Name, Description, Keywords
         for col in ["Name", "Description", "Keywords"]:
             if forbidden_in_text(row.get(col, ''), forbidden):
                 return True
         return False
-    # Rezepte nicht entfernen, sondern markieren
     suchergebnisse['forbidden'] = suchergebnisse.apply(has_forbidden, axis=1)
 
     # Nach Mahlzeittyp filtern
