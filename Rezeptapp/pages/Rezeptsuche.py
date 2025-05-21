@@ -115,10 +115,9 @@ else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
 # 🧘 Diät auswählen
-# Wichtig: Key nur EINMAL pro Seite verwenden!
-# Wir speichern den Wert trotzdem in st.session_state['diätform'], aber OHNE key, um Fehler zu vermeiden
+# Hole die Diätform aus dem Session State, falls vorhanden, sonst 'Alle'
 if 'diätform' not in st.session_state:
-    st.session_state['diätform'] = "Alle"
+    st.session_state['diätform'] = 'Alle'
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
@@ -187,15 +186,15 @@ diet = st.selectbox(
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
     key="diätform"
 ) 
+
 # ...existing code...
 
 if search_button:
     suchergebnisse = rezepte.copy()
 
+    # Filtere nach Diätform
     if st.session_state['diätform'] != "Alle":
         suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(st.session_state['diätform'], case=False, na=False)]
-
-    # ...weitere Filter...
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
