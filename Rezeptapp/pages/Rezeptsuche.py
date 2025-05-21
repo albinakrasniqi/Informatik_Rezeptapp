@@ -406,7 +406,6 @@ if abgesendet:
         st.error("❌ Bitte eine Anleitung eingeben.")
     else:
         new_recipe = {
-            "ID": str(uuid.uuid4()),  # Wichtig für Anzeige + Löschen
             "RecipeId": str(uuid.uuid4()),
             "Name": rezept_name,
             "Images": bild_url,
@@ -415,15 +414,13 @@ if abgesendet:
             "RecipeInstructions": anleitung,
             "RecipeCategory": diät,
             "MealType": mahlzeit,
-            "ErstelltVon": "user",  # Damit es in „Mein Konto“ auftaucht
+            "ErstelltVon": "user",  # <-- wichtig!
             "TotalTime": "",
             "PrepTime": "",
             "CookTime": "",
             "Description": "",
             "RecipeServings": ""
         }
-        st.write("Neu gespeichert:", new_recipe)
-        st.write("Alle Rezepte:", st.session_state['data'].tail(5))
 
         if 'data' not in st.session_state or st.session_state['data'].empty:
             st.session_state['data'] = pd.DataFrame([new_recipe])
