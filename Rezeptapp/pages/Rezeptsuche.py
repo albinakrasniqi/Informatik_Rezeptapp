@@ -280,7 +280,6 @@ if search_button:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
         st.session_state['suchergebnisse'] = suchergebnisse
 
-
 # 🔄 Rezepte anzeigen, wenn vorhanden
 if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
     for _, row in st.session_state['suchergebnisse'].iterrows():
