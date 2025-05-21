@@ -26,7 +26,7 @@ def clean_and_validate_data(df):
             df[col] = None
     return df
 
-st.session_state['data'] = pd.read_csv("data/recipes_sample.csv", on_bad_lines="skip", encoding='utf-8', quotechar='"')
+st.session_state['data'] = pd.read_csv("data\recipes_sample.csv", on_bad_lines="skip", encoding='utf-8', quotechar='"')
 data = clean_and_validate_data(st.session_state['data'])
 
 # Layout
