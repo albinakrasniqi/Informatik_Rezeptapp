@@ -5,13 +5,7 @@ from utils.login_manager import LoginManager
 
 st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
 
-data_manager = DataManager(
-    fs_protocol='webdav',
-    fs_root_folder="Rezeptapp2",
-    fs_username=st.secrets["webdav"]["username"],
-    fs_password=st.secrets["webdav"]["password"]
-)
-
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
 # initialize the login manager
 login_manager = LoginManager(
