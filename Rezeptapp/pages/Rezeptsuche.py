@@ -280,6 +280,11 @@ if search_button:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
         st.session_state['suchergebnisse'] = suchergebnisse
 
+def toggle_favorit(rezept_id):
+    if rezept_id in st.session_state.favoriten:
+        st.session_state.favoriten.remove(rezept_id)
+    else:
+        st.session_state.favoriten.append(rezept_id)
 
 # 🔄 Rezepte anzeigen, wenn vorhanden
 if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
@@ -307,43 +312,47 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
                 else:
                     st.session_state.favoriten.append(rezept_id)
                 st.experimental_rerun()
+icon = "❤️" if rezept_id in st.session_state.favoriten else "🤍"
+if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+    toggle_favorit(rezept_id)
+    st.experimental_rerun()
 
-        # Bild anzeigen (unterhalb)
-        raw_img = str(row.get("Images", "")).strip()
-        url = None
-        if raw_img.startswith("c("):
-            try:
-                url_list = ast.literal_eval(raw_img[1:])
-                if url_list:
-                    url = url_list[0]
-            except Exception:
-                pass
-        elif raw_img.startswith("http"):
-            url = raw_img
-        if url:
-            st.image(url, use_container_width=True)
-        else:
-            st.markdown("*(kein Bild)*")
-        st.markdown("---")
+# Bild anzeigen (unterhalb)
+raw_img = str(row.get("Images", "")).strip()
+url = None
+if raw_img.startswith("c("):
+    try:
+        url_list = ast.literal_eval(raw_img[1:])
+        if url_list:
+            url = url_list[0]
+    except Exception:
+        pass
+elif raw_img.startswith("http"):
+    url = raw_img
+if url:
+    st.image(url, use_container_width=True)
+else:
+    st.markdown("*(kein Bild)*")
+st.markdown("---")
 
-        # Zutaten + Mengen formatieren
-        parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
-        mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+# Zutaten + Mengen formatieren
+parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
 
-        st.markdown("**🧾 Zutaten mit Mengen:**")
-        for i, zutat in enumerate(parts):
-            menge = mengen[i] if i < len(mengen) else ""
-            st.markdown(f"- {menge} {zutat}".strip())
+st.markdown("**🧾 Zutaten mit Mengen:**")
+for i, zutat in enumerate(parts):
+    menge = mengen[i] if i < len(mengen) else ""
+    st.markdown(f"- {menge} {zutat}".strip())
 
-        # Zubereitung (immer anzeigen!)
-        instr_raw = str(row["RecipeInstructions"])
-        step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
-        if len(step_list) == 1:
-            step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
-        st.markdown("**📝 Zubereitung:**")
-        for step_idx, step in enumerate(step_list, start=1):
-            if step.strip():
-                st.markdown(f"{step_idx}. {step.strip()}") 
+# Zubereitung (immer anzeigen!)
+instr_raw = str(row["RecipeInstructions"])
+step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+if len(step_list) == 1:
+    step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+st.markdown("**📝 Zubereitung:**")
+for step_idx, step in enumerate(step_list, start=1):
+    if step.strip():
+        st.markdown(f"{step_idx}. {step.strip()}") 
 
 
 # (Entfernt: Doppelte Anzeige und Favoriten-Logik, da dies bereits oben erledigt wird)
