@@ -8,7 +8,11 @@ st.set_page_config(page_title="Emoji-RezeptApp", layout="centered")
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
 # initialize the login manager
-login_manager = LoginManager(data_manager)
+login_manager = LoginManagerlogin_manager = LoginManager(
+    data_manager=data_manager,
+    auth_credentials_file="credentials.yaml"
+)
+
 login_manager.login_register()
 
 # load the data from the persistent storage into the session state
