@@ -179,18 +179,22 @@ deutsch_to_englisch = {
 st.markdown("### 🔍 Suche starten")
 search_button = st.button("🔎 Suchen")
 
+diet = st.selectbox(
+    "🧘 Diät wählen",
+    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
+        st.session_state.get("diätform", "Alle")
+    )
+)
+# ...existing code...
+
 if search_button:
     suchergebnisse = rezepte.copy()
 
-    diätform = st.session_state.get('diätform', 'Alle')
-    if diätform != "Alle":
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diätform, case=False, na=False)]
-
-    # ...weitere Filter (diet, meal_type, Zutaten, etc.)
-
-    # Nach Diät filtern
     if diet != "Alle":
         suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
+
+    # ...weitere Filter...
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
