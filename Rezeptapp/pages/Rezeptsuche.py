@@ -273,44 +273,34 @@ if search_button:
             )
         ]
 
-    if suchergebnisse.empty:
-        st.warning("❌ Kein passendes Rezept gefunden.")
-        st.session_state['suchergebnisse'] = pd.DataFrame()  # Leeren
-    else:
-        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
-        st.session_state['suchergebnisse'] = suchergebnisse
+    if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
+    for idx, row in st.session_state['suchergebnisse'].head(20).iterrows():
+        rezept_id = row.get("ID") or row.get("RecipeId") or f"noid_{idx}"
+        row1, heart_col = st.columns([5, 1])
+        with row1:
+            # Titel rot markieren, wenn forbidden
+            if row.get('forbidden', False):
+                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🍽️ {row['Name']}")
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+                     f" | **Mahlzeit:** {row.get('MealType', '-')}"
+                     f" | **Kochzeit:** {row.get('CookTime', '-')}")
+            formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+            st.write(f"**Zutaten:** {formatted_ingredients}")
 
-
-# 🔄 Rezepte anzeigen, wenn vorhanden
-if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
-    for _, row in st.session_state['suchergebnisse'].iterrows():
-        if row.get('forbidden', False):
-            continue
-
-        st.markdown(f"### 🍽️ {row['Name']}")
-        st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
-                 f" | **Mahlzeit:** {row.get('MealType', '-')}"
-                 f" | **Kochzeit:** {row.get('CookTime', '-')}")
-
-        formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
-        st.write(f"**Zutaten:** {formatted_ingredients}")
-
-        # Herz-Favoriten-Button
-        col1, col2 = st.columns([9, 1])
-        with col1:
-            st.write(f"**{row['Name']}**")
-        with col2:
-            rezept_id = row.get("ID", row.get("RecipeId", ""))
+        with heart_col:
             is_fav = rezept_id in st.session_state.favoriten
             icon = "❤️" if is_fav else "🤍"
-            if st.button(icon, key=f"fav_{rezept_id}"):
+            # Button-Key eindeutig machen!
+            if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
                 if is_fav:
                     st.session_state.favoriten.remove(rezept_id)
                 else:
                     st.session_state.favoriten.append(rezept_id)
                 st.experimental_rerun()
 
-        # Bild anzeigen
+        # Bild anzeigen (unterhalb)
         raw_img = str(row.get("Images", "")).strip()
         url = None
         if raw_img.startswith("c("):
@@ -328,23 +318,24 @@ if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse
             st.markdown("*(kein Bild)*")
         st.markdown("---")
 
-        # Zutaten mit Mengen
+        # Zutaten + Mengen formatieren
         parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
         mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+
         st.markdown("**🧾 Zutaten mit Mengen:**")
         for i, zutat in enumerate(parts):
             menge = mengen[i] if i < len(mengen) else ""
             st.markdown(f"- {menge} {zutat}".strip())
 
-        # Zubereitung
+        # Zubereitung (immer anzeigen!)
         instr_raw = str(row["RecipeInstructions"])
         step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
         if len(step_list) == 1:
             step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
         st.markdown("**📝 Zubereitung:**")
-        for idx, step in enumerate(step_list, start=1):
+        for step_idx, step in enumerate(step_list, start=1):
             if step.strip():
-                st.markdown(f"{idx}. {step.strip()}")
+                st.markdown(f"{step_idx}. {step.strip()}") 
 
 
     def has_forbidden(row):
