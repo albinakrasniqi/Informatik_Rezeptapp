@@ -245,16 +245,19 @@ if search_button:
 
     forbidden = forbidden_dict.get(diet, [])
     if forbidden:
-        # Remove recipes with forbidden ingredients
+        # Komplett-Filter: Entferne alle Rezepte mit verbotenen Zutaten
+        def has_forbidden(row):
+            # Zutaten
+            if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+                return True
+            # Name, Description, Keywords
+            for col in ["Name", "Description", "Keywords"]:
+                if forbidden_in_text(row.get(col, ''), forbidden):
+                    return True
+            return False
         before = len(suchergebnisse)
-        suchergebnisse = suchergebnisse[~suchergebnisse['RecipeIngredientParts'].apply(lambda x: forbidden_in_ingredients(x, forbidden))]
-        st.write(f"Nach Zutaten-Filter: {len(suchergebnisse)} Rezepte (entfernt: {before-len(suchergebnisse)})")
-        # Remove recipes with forbidden in Name, Description, Keywords
-        for col in ["Name", "Description", "Keywords"]:
-            if col in suchergebnisse.columns:
-                before = len(suchergebnisse)
-                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: forbidden_in_text(x, forbidden))]
-                st.write(f"Nach {col}-Filter: {len(suchergebnisse)} Rezepte (entfernt: {before-len(suchergebnisse)})")
+        suchergebnisse = suchergebnisse[~suchergebnisse.apply(has_forbidden, axis=1)]
+        st.write(f"Nach Diät-Filter: {len(suchergebnisse)} Rezepte (entfernt: {before-len(suchergebnisse)})")
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
