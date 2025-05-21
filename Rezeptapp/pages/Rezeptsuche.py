@@ -116,11 +116,15 @@ else:
 
 # 🧘 Diät auswählen
 # Wichtig: Key nur EINMAL pro Seite verwenden!
+# Wir speichern den Wert trotzdem in st.session_state['diätform'], aber OHNE key, um Fehler zu vermeiden
+if 'diätform' not in st.session_state:
+    st.session_state['diätform'] = "Alle"
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    key="diätform"
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(st.session_state['diätform'])
 )
+st.session_state['diätform'] = diet
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 
 # 🍲 Mahlzeittyp auswählen
@@ -282,7 +286,6 @@ if st.button("Neues Rezept erstellen"):
     with st.form("add_recipe_form"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
         bild_url = st.text_input("📸 Bild-URL eingeben")
-        # Kein key hier, damit es keinen DuplicateKey gibt!
         diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
         mahlzeit = st.selectbox("🍽 Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
         zutaten_emojis = st.multiselect("Zutaten auswählen", list(set([emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()])))
