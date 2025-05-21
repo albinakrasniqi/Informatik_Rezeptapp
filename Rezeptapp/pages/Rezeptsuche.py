@@ -222,8 +222,14 @@ if search_button:
 
         # Define forbidden ingredient patterns for each diet
         def forbidden_pattern(words):
-            # Use word boundaries to avoid partial matches (e.g., 'chicken' vs 'chickpea')
-            return re.compile(r"\\b(" + "|".join(map(re.escape, words)) + r")\\b", re.IGNORECASE)
+            # Use word boundaries and also match after comma, space, or start/end of string
+            return re.compile(r"(^|[ ,;:\\[\\]\(\\)\n\t\r\f])(" + "|".join(map(re.escape, words)) + r")($|[ ,;:\\[\\]\(\\)\n\t\r\f])", re.IGNORECASE)
+
+        def field_contains_forbidden(val, patt):
+            # If val is a list, join to string
+            if isinstance(val, list):
+                val = ' '.join(map(str, val))
+            return bool(patt.search(str(val)))
 
         if diet == "Vegetarisch":
             forbidden = [
@@ -232,7 +238,7 @@ if search_button:
             patt = forbidden_pattern(forbidden)
             for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
                 if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
         elif diet == "Vegan":
             forbidden = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
@@ -241,13 +247,13 @@ if search_button:
             patt = forbidden_pattern(forbidden)
             for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
                 if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
         elif diet == "Kein Schweinefleisch":
             forbidden = ["schwein", "schweinefleisch", "pork"]
             patt = forbidden_pattern(forbidden)
             for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
                 if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
         elif diet == "Pescitarisch":
             forbidden = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
@@ -255,7 +261,7 @@ if search_button:
             patt = forbidden_pattern(forbidden)
             for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
                 if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
         elif diet == "laktosefrei":
             forbidden = [
                 "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
@@ -263,7 +269,7 @@ if search_button:
             patt = forbidden_pattern(forbidden)
             for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
                 if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].astype(str).apply(lambda x: bool(patt.search(x)))]
+                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
