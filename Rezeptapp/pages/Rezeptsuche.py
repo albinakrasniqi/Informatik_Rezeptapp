@@ -263,6 +263,10 @@ if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
 
 rezepte = st.session_state['data']
 
+diätform = st.session_state.get('diätform', 'Keine Einschränkung')
+if diätform and diätform != "Keine Einschränkung":
+    suchergebnisse = suchergebnisse[suchergebnisse["RecipeCategory"] == diätform]
+
 
 
 
