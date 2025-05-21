@@ -194,8 +194,22 @@ if search_button:
 
     # Filtere nach Diätform
     if diet != "Alle":
-        # Nur Rezepte, die exakt zur Diätform passen
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower().str.strip() == diet.lower().strip()]
+        # Flexible Kategorie-Prüfung: auch Teilstrings und englische Begriffe
+        diet_keywords = {
+            "Vegetarisch": ["vegetarisch", "vegetarian", "vegetable"],
+            "Vegan": ["vegan"],
+            "Kein Schweinefleisch": ["kein schweinefleisch", "no pork", "ohne schweinefleisch"],
+            "Pescitarisch": ["pescitarisch", "pescetarian", "fish"],
+            "laktosefrei": ["laktosefrei", "lactose free", "laktose-frei"]
+        }
+        if diet in diet_keywords:
+            suchergebnisse = suchergebnisse[
+                suchergebnisse['RecipeCategory'].astype(str).str.lower().apply(
+                    lambda x: any(kw in x for kw in diet_keywords[diet])
+                )
+            ]
+        else:
+            suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower().str.strip() == diet.lower().strip()]
         # UND: Entferne alle Rezepte, die Fleisch enthalten, wenn vegetarisch oder vegan gewählt ist
         if diet == "Vegetarisch":
             fleisch_stichworte = [
@@ -240,14 +254,12 @@ if search_button:
                     )
                 ]
         elif diet == "Kein Schweinefleisch":
-            # Entferne alle Rezepte mit Schwein
             suchergebnisse = suchergebnisse[
                 ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
                     lambda x: any(schwein in x for schwein in ["schwein", "schweinefleisch", "pork"])
                 )
             ]
         elif diet == "Pescitarisch":
-            # Entferne alle Rezepte mit Fleisch außer Fisch
             fleisch_ausser_fisch = [
                 "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
             ]
@@ -257,7 +269,6 @@ if search_button:
                 )
             ]
         elif diet == "laktosefrei":
-            # Entferne alle Rezepte mit Milchprodukten
             milchprodukte = [
                 "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
             ]
