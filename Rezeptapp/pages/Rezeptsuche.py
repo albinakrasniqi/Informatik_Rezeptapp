@@ -118,9 +118,7 @@ else:
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
-        st.session_state.get("diät", "Alle")
-    )
+    key="diätform"
 )
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 
@@ -182,17 +180,15 @@ search_button = st.button("🔎 Suchen")
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
-        st.session_state.get("diätform", "Alle")
-    )
+    key="diätform"
 ) 
 # ...existing code...
 
 if search_button:
     suchergebnisse = rezepte.copy()
 
-    if diet != "Alle":
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
+    if st.session_state['diätform'] != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(st.session_state['diätform'], case=False, na=False)]
 
     # ...weitere Filter...
 
