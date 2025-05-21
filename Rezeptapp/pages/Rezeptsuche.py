@@ -274,8 +274,7 @@ if search_button:
             pass 
 
     elif raw_img.startswith("http"): 
-
-        url = 
+    url = raw_img
 
         # ----------  Text-Teil --------------
         with col_txt:
