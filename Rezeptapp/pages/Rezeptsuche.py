@@ -214,9 +214,9 @@ if search_button:
     for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
         row1, heart_col = st.columns([5, 1])
-    with row1:
-        st.markdown(f"### 🍽️ {row['Name']}")
-        st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+        with row1:
+            st.markdown(f"### 🍽️ {row['Name']}")
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
                  f" | **Mahlzeit:** {row.get('MealType', '-')}"
                  f" | **Kochzeit:** {row.get('CookTime', '-')}")
     with heart_col:
