@@ -185,7 +185,7 @@ diet = st.selectbox(
     index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(
         st.session_state.get("diätform", "Alle")
     )
-)
+) 
 # ...existing code...
 
 if search_button:
