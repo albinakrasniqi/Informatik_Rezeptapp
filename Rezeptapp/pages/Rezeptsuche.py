@@ -23,9 +23,6 @@ rezepte = st.session_state['data']
 st.subheader("🧪 Vorschau auf alle Rezeptzutaten")
 st.write(rezepte["RecipeIngredientParts"].head(20))  # zeigt die ersten 20 Einträge
 
-# DEBUG: Zeige Struktur
-st.write("📊 Shape:", rezepte.shape)
-st.write("📋 Spalten:", rezepte.columns.tolist())
 
 # Falls leer, sofort stoppen
 if rezepte.empty:
