@@ -74,7 +74,7 @@ zutat_emojis_gruppen = {
         "🧂": "Salz", "🫒": "Olivenöl", "🍯": "Honig", "🧃": "Essig", "🥫": "Tomatenmark",
         "🍶": "Sojasauce", "🌶": "Chilipulver", "🟤": "Zucker", "🍁": "Ahornsirup",
         "🧁": "Vanilleextrakt", "🍫": "Schokolade", "🍩": "Backpulver", "🍞": "Hefe",
-        "🥄": "Senf", "🍯": "Melasse", "🥫": "Worcestersauce", "🍜": "Miso-Paste",
+        "🥄": "Senf", "🍯": "Melasse", "🥫": "Worcestersauce",
         "🥄": "Tahini", "🧂": "Kreuzkümmel", "🌿": "Thymian", "🌿": "Oregano",
         "🌿": "Rosmarin", "🌿": "Basilikum", "🧂": "Muskatnuss", "🧂": "Zimt"
     }
