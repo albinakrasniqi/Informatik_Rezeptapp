@@ -271,26 +271,6 @@ else:
     st.markdown("*(kein Bild)*")
 st.markdown("---")
 
-    raw_img = str(row.get("Images", "")).strip() 
-
-    url = None 
-
-    if raw_img.startswith("c("): 
-
-        try: 
-
-            url_list = ast.literal_eval(raw_img[1:]) 
-
-            if url_list: 
-
-                url = url_list[0] 
-
-        except Exception: 
-
-            pass 
-
-        elif raw_img.startswith("http"):
-        url = raw_img
 
     # ----------  Text-Teil --------------
     with col_txt:
