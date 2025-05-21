@@ -217,17 +217,20 @@ if search_button:
         with row1:
             st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
-                 f" | **Mahlzeit:** {row.get('MealType', '-')}"
-                 f" | **Kochzeit:** {row.get('CookTime', '-')}")
-    with heart_col:
-        if rezept_id in st.session_state.favoriten:
-            if st.button("💔", key=f"remove_{rezept_id}"):
-                st.session_state.favoriten.remove(rezept_id)
-                st.experimental_rerun()
-        else:
-            if st.button("❤️", key=f"add_{rezept_id}"):
-                st.session_state.favoriten.append(rezept_id)
-                st.experimental_rerun()
+                     f" | **Mahlzeit:** {row.get('MealType', '-')}"
+                     f" | **Kochzeit:** {row.get('CookTime', '-')}")
+            with heart_col:
+                if rezept_id in st.session_state.favoriten:
+                    if st.button("💔", key=f"remove_{rezept_id}"):
+                        st.session_state.favoriten.remove(rezept_id)
+                        st.experimental_rerun()
+                        
+                else:
+                    if st.button("❤️", key=f"add_{rezept_id}"):
+                        st.session_state.favoriten.append(rezept_id)
+                        st.experimental_rerun()
+
+    # Bild und Zubereitung wie gehabt...
 
     # Bild anzeigen (unterhalb)
     raw_img = str(row.get("Images", "")).strip()
