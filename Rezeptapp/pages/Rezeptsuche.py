@@ -291,7 +291,7 @@ def zeige_rezept(row, idx):
     import ast
     import re
 
-    rezept_id = row.get("ID") or row.get("RecipeId")
+    rezept_id = row.get("ID") 
 
     # Skip, wenn verboten (z. B. wegen Diät)
     if row.get('forbidden', False):
@@ -314,6 +314,8 @@ def zeige_rezept(row, idx):
             else:
                 st.session_state.favoriten.append(rezept_id)
             st.rerun()
+            data_manager.save_data("data")
+
 
     # Zutaten anzeigen
     def extract_ingredients(val):
@@ -372,11 +374,15 @@ def zeige_rezept(row, idx):
 
     # (Entfernt: Doppelte Anzeige und Favoriten-Logik, da dies bereits oben erledigt wird)
 
+if "favoriten" not in st.session_state:
+    st.session_state.favoriten = []
+
 if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
     for idx, row in st.session_state['suchergebnisse'].iterrows():
         if row.get('forbidden', False):
             continue
         zeige_rezept(row, idx)
+data_manager.save_data("data")
 
 
 # Einheitliche ID-Spalte
@@ -384,6 +390,11 @@ if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
     rezepte["ID"] = rezepte["RecipeId"]
 
 rezepte = st.session_state['data']
+
+if "gespeicherte_diätform" in st.session_state and "diätform" not in st.session_state:
+    st.session_state["diätform"] = st.session_state["gespeicherte_diätform"]
+data_manager.save_data("data")
+
 
 st.markdown("---")
 
@@ -406,7 +417,8 @@ if st.button("Neues Rezept erstellen"):
                 st.error("❌ Bitte eine Anleitung eingeben.")
             else:
                 new_recipe = {
-    "RecipeId": str(uuid.uuid4()),
+    "ID": str(uuid.uuid4()),  # Einheitliche ID
+    "RecipeId": str(uuid.uuid4()),  # falls alt verwendet wird
     "Name": rezept_name,
     "Images": bild_url,
     "RecipeIngredientParts": zutaten_emojis,
@@ -414,7 +426,7 @@ if st.button("Neues Rezept erstellen"):
     "RecipeInstructions": anleitung,
     "RecipeCategory": diät,
     "MealType": mahlzeit,
-    "AuthorId": "user",               # statt 'ErstelltVon'
+    "ErstelltVon": "user",            
     "AuthorName": "",                 # falls du keinen Namen angibst
     "TotalTime": "",
     "PrepTime": "",
@@ -432,3 +444,4 @@ if st.button("Neues Rezept erstellen"):
                     )
                 data_manager.save_data("data")
                 st.success("✅ Rezept erfolgreich gespeichert!")
+                data_manager.save_data("data")
