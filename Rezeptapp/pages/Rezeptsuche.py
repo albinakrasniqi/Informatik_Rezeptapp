@@ -249,23 +249,20 @@ if search_button:
     suchergebnisse = rezepte.copy()
     st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
 
-    # Diät aus Session State lesen (explizit wie im Screenshot)
+    # Diät aus Session State lesen
     diet = st.session_state.get("gespeicherte_diätform", "Alle")
     forbidden = forbidden_dict.get(diet, [])
-    if forbidden:
-        # Komplett-Filter: Entferne alle Rezepte mit verbotenen Zutaten
-        def has_forbidden(row):
-            # Zutaten
-            if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+    def has_forbidden(row):
+        # Zutaten
+        if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
+            return True
+        # Name, Description, Keywords
+        for col in ["Name", "Description", "Keywords"]:
+            if forbidden_in_text(row.get(col, ''), forbidden):
                 return True
-            # Name, Description, Keywords
-            for col in ["Name", "Description", "Keywords"]:
-                if forbidden_in_text(row.get(col, ''), forbidden):
-                    return True
-            return False
-        before = len(suchergebnisse)
-        suchergebnisse = suchergebnisse[~suchergebnisse.apply(has_forbidden, axis=1)]
-        st.write(f"Nach Diät-Filter: {len(suchergebnisse)} Rezepte (entfernt: {before-len(suchergebnisse)})")
+        return False
+    # Rezepte nicht entfernen, sondern markieren
+    suchergebnisse['forbidden'] = suchergebnisse.apply(has_forbidden, axis=1)
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
@@ -296,8 +293,10 @@ if search_button:
         rezept_id = row.get("ID") or row.get("RecipeId")
         row1, heart_col = st.columns([5, 1])
         with row1:
+            if row.get('forbidden', False):
+                st.markdown(f"<div style='background-color:#ffcccc;padding:8px;border-radius:6px;'><b>⚠️ Nicht geeignet für die gewählte Diätform!</b></div>", unsafe_allow_html=True)
             st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
             formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
             st.write(f"**Zutaten:** {formatted_ingredients}")
         # Bild anzeigen (unterhalb)
@@ -317,7 +316,6 @@ if search_button:
         else:
             st.markdown("*(kein Bild)*")
         st.markdown("---")
-                
         # Zubereitung (immer anzeigen!)
         instr_raw = str(row["RecipeInstructions"])
         step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
