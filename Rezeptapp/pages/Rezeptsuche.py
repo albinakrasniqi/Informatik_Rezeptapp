@@ -12,7 +12,6 @@ suchergebnisse = pd.DataFrame()  # leeres DataFrame zur Initialisierung
 if "favoriten" not in st.session_state:
     st.session_state.favoriten = []
 
-
 # Überprüfen, ob Rezeptdaten vorhanden sind
 if 'data' not in st.session_state:
     st.warning("📛 Keine Rezeptdaten gefunden. Bitte öffne zuerst die Startseite.")
