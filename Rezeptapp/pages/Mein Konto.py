@@ -6,10 +6,12 @@ def kontopage():
 
     st.markdown("### 🥗 Diätpräferenzen festlegen")
     diät = st.radio(
-    "Meine Diät:",
-    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    key="diätform"
-)
+        "Meine Diät:",
+        ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
+        key="diätform"
+    )
+    # Synchronisiere Session State für andere Seiten explizit
+    st.session_state['diätform'] = diät
 
     st.markdown("### 📚 Meine Rezepte")
 
