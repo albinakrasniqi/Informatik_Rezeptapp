@@ -114,19 +114,9 @@ if selected_ingredients:
 else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
-# 🧘 Diät auswählen
-# Hole die gespeicherte Diätform, falls vorhanden, sonst 'Alle'
-if 'gespeicherte_diätform' in st.session_state:
-    default_diet = st.session_state['gespeicherte_diätform']
-else:
-    default_diet = 'Alle'
-diet = st.selectbox(
-    "🧘 Diät wählen",
-    ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(default_diet),
-    key="rezeptsuche_diätform"
-)
-st.session_state['diätform'] = diet
+# Ausgewählte Diät übernehmen aus dem Session State
+diet = st.session_state.get("gespeicherte_diätform", "Alle")
+# Zeige dem Nutzer an, welche Diät gerade aktiv ist
 st.markdown(f"### 🧘 Ausgewählte Diät: {diet}")
 
 # 🍲 Mahlzeittyp auswählen
