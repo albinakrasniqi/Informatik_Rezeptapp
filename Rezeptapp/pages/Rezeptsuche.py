@@ -273,15 +273,15 @@ if search_button:
 
             pass 
 
-    elif raw_img.startswith("http"): 
-    url = raw_img
+        elif raw_img.startswith("http"):
+        url = raw_img
 
-        # ----------  Text-Teil --------------
-        with col_txt:
-            st.markdown(f"### 🍽️ {row['Name']}")
-            st.write(f"**Kategorie:** {row['RecipeCategory']}  |  "
-                     f"**Mahlzeit:** {row['MealType']}  |  "
-                     f"**Kochzeit:** {row['CookTime']}")
+    # ----------  Text-Teil --------------
+    with col_txt:
+        st.markdown(f"### 🍽️ {row['Name']}")
+        st.write(f"**Kategorie:** {row['RecipeCategory']}  |  "
+                 f"**Mahlzeit:** {row['MealType']}  |  "
+                 f"**Kochzeit:** {row['CookTime']}")
             
 # ❤️ Favoriten-Button
 rezept_id = row.get("ID") or row.get("RecipeId")
