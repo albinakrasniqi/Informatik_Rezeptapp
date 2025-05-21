@@ -212,8 +212,8 @@ if search_button:
         st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
     for _, row in suchergebnisse.head(20).iterrows():
-    rezept_id = row.get("ID") or row.get("RecipeId")
-    row1, heart_col = st.columns([5, 1])
+        rezept_id = row.get("ID") or row.get("RecipeId")
+        row1, heart_col = st.columns([5, 1])
     with row1:
         st.markdown(f"### 🍽️ {row['Name']}")
         st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
