@@ -287,36 +287,11 @@ if search_button:
 
     for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
-        highlight = False
-        warntext = ""
-        debugtext = ""
-        forbidden = forbidden_dict.get(diet, [])
-        zutaten_str = str(row.get('RecipeIngredientParts', '')).lower()
-        # Einfache Substring-Suche für Zutaten
-        for word in forbidden:
-            if word in zutaten_str:
-                highlight = True
-                warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
-                debugtext += f"[DEBUG] Verboten gefunden: '{word}' in Zutaten: {zutaten_str}\n"
-        # Auch Name, Description, Keywords prüfen
-        for col in ["Name", "Description", "Keywords"]:
-            val = str(row.get(col, '')).lower()
-            for word in forbidden:
-                if word in val:
-                    highlight = True
-                    warntext = "⚠️ Enthält für diese Diät verbotene Zutaten!"
-                    debugtext += f"[DEBUG] Verboten gefunden: '{word}' in {col}: {val}\n"
         row1, heart_col = st.columns([5, 1])
         with row1:
-            if highlight:
-                st.markdown(f"### <span style='color:red; font-weight:bold'>🍽️ {row['Name']}</span> {warntext}", unsafe_allow_html=True)
-            else:
-                st.markdown(f"### 🍽️ {row['Name']}")
+            st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
             st.write(f"**Zutaten:** {row.get('RecipeIngredientParts', '')}")
-            st.write(f"[DEBUG] Typ der Zutaten: {type(row.get('RecipeIngredientParts', '')).__name__}")
-            if debugtext:
-                st.code(debugtext)
         # Bild anzeigen (unterhalb)
         raw_img = str(row.get("Images", "")).strip()
         url = None
