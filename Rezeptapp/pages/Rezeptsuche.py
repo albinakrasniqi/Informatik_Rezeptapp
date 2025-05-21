@@ -207,20 +207,29 @@ forbidden_dict = {
     ]
 }
 def extract_ingredients(val):
+    # Handles R-style c("...") and Python list/str
     if isinstance(val, list):
         return [str(x).strip().lower() for x in val]
+    s = str(val).strip().lower()
+    if s.startswith('c(') and s.endswith(')'):
+        # Remove c( and ) and split by comma
+        s = s[2:-1]
+        # Remove quotes and split
+        items = [x.strip().strip('"\'') for x in s.split(',')]
+        return [x for x in items if x]
     try:
         parsed = ast.literal_eval(val)
         if isinstance(parsed, list):
             return [str(x).strip().lower() for x in parsed]
     except Exception:
         pass
-    return [x.strip().lower() for x in re.split(r'[;,]', str(val)) if x.strip()]
+    # fallback: split by comma/semicolon
+    return [x.strip().lower() for x in re.split(r'[;,]', s) if x.strip()]
 def forbidden_in_ingredients(ingredient_val, forbidden_words):
     ingredients = extract_ingredients(ingredient_val)
     for ing in ingredients:
         for word in forbidden_words:
-            if re.fullmatch(rf".*\\b{re.escape(word)}\\b.*", ing):
+            if word in ing:
                 return True
     return False
 def forbidden_in_text(val, forbidden_words):
