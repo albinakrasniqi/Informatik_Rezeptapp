@@ -189,8 +189,6 @@ diet = st.selectbox(
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
 )
 
-# ...existing code...
-
 if search_button:
     suchergebnisse = rezepte.copy()
 
@@ -216,6 +214,33 @@ if search_button:
             suchergebnisse = suchergebnisse[
                 ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
                     lambda x: any(tier in x for tier in tierprodukte)
+                )
+            ]
+        elif diet == "Kein Schweinefleisch":
+            # Entferne alle Rezepte mit Schwein
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(schwein in x for schwein in ["schwein", "schweinefleisch", "pork"])
+                )
+            ]
+        elif diet == "Pescitarisch":
+            # Entferne alle Rezepte mit Fleisch außer Fisch
+            fleisch_ausser_fisch = [
+                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
+            ]
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(fleisch in x for fleisch in fleisch_ausser_fisch)
+                )
+            ]
+        elif diet == "laktosefrei":
+            # Entferne alle Rezepte mit Milchprodukten
+            milchprodukte = [
+                "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
+            ]
+            suchergebnisse = suchergebnisse[
+                ~suchergebnisse['RecipeIngredientParts'].astype(str).str.lower().apply(
+                    lambda x: any(milch in x for milch in milchprodukte)
                 )
             ]
 
