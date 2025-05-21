@@ -16,18 +16,22 @@ def fav():
         return
 
     # Lade Rezeptdaten
-    rezepte = st.session_state.get('data', pd.DataFrame())
+    rezepte = st.session_state.get('data', pd.DataFrame()).copy()
+
+    # Einheitliche ID-Spalte sicherstellen
+    if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
+        rezepte["ID"] = rezepte["RecipeId"]
+
+    # Prüfen, ob gültige Daten vorhanden sind
     if rezepte.empty or "ID" not in rezepte.columns:
         st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
         return
-    rezepte = rezepte if not rezepte.empty else pd.DataFrame()
+
+    # Fehlende Spalten auffüllen
     required_cols = ["ID", "Name", "Images", "RecipeCategory", "MealType"]
     for col in required_cols:
         if col not in rezepte.columns:
             rezepte[col] = ""
-    # Einheitliche ID-Spalte sicherstellen
-    if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
-        rezepte["ID"] = rezepte["RecipeId"]
 
     # Filtere Favoriten
     favoriten_rezepte = rezepte[rezepte["ID"].isin(st.session_state.favoriten)].copy()
