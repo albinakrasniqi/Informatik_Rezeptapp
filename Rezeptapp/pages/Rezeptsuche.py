@@ -303,6 +303,18 @@ for _, row in suchergebnisse.iterrows():
     formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
     st.write(f"**Zutaten:** {formatted_ingredients}")
 
+#Herz-button für Favoriten
+rezept_id = row["ID"]
+is_fav = rezept_id in st.session_state.favoriten
+
+if st.button("❤️" if is_fav else "🤍", key=f"fav_{rezept_id}"):
+    if is_fav:
+        st.session_state.favoriten.remove(rezept_id)
+    else:
+        st.session_state.favoriten.append(rezept_id)
+    st.experimental_rerun()
+
+
     # Bild anzeigen (unterhalb)
     raw_img = str(row.get("Images", "")).strip()
     url = None
@@ -320,6 +332,16 @@ for _, row in suchergebnisse.iterrows():
     else:
         st.markdown("*(kein Bild)*")
     st.markdown("---")
+   
+ # Zutaten + Mengen formatieren
+    parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+    mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+
+    st.markdown("**🧾 Zutaten mit Mengen:**")
+    for i, zutat in enumerate(parts):
+        menge = mengen[i] if i < len(mengen) else ""
+        st.markdown(f"- {menge} {zutat}".strip())
+
     # Zubereitung (immer anzeigen!)
     instr_raw = str(row["RecipeInstructions"])
     step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
@@ -329,15 +351,6 @@ for _, row in suchergebnisse.iterrows():
     for idx, step in enumerate(step_list, start=1):
         if step.strip():
             st.markdown(f"{idx}. {step.strip()}")
-
-    # Zutaten + Mengen formatieren
-    parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
-    mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
-
-    st.markdown("**🧾 Zutaten mit Mengen:**")
-    for i, zutat in enumerate(parts):
-        menge = mengen[i] if i < len(mengen) else ""
-        st.markdown(f"- {menge} {zutat}".strip())
 
 
 # Einheitliche ID-Spalte
