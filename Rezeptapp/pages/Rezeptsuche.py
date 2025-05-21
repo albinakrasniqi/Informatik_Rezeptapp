@@ -196,7 +196,8 @@ if search_button:
 
     # Filtere nach Diätform
     if diet != "Alle":
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
+        # Rezepte müssen exakt zur Diätform passen (nicht nur enthalten!)
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower() == diet.lower()]
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
