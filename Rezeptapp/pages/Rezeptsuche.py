@@ -115,13 +115,15 @@ else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
 # 🧘 Diät auswählen
-# Hole die Diätform aus dem Session State, falls vorhanden, sonst 'Alle'
-if 'diätform' not in st.session_state:
-    st.session_state['diätform'] = 'Alle'
+# Hole die gespeicherte Diätform, falls vorhanden, sonst 'Alle'
+if 'gespeicherte_diätform' in st.session_state:
+    default_diet = st.session_state['gespeicherte_diätform']
+else:
+    default_diet = 'Alle'
 diet = st.selectbox(
     "🧘 Diät wählen",
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
-    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(st.session_state['diätform']),
+    index=["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"].index(default_diet),
     key="rezeptsuche_diätform"
 )
 st.session_state['diätform'] = diet
@@ -193,8 +195,8 @@ if search_button:
     suchergebnisse = rezepte.copy()
 
     # Filtere nach Diätform
-    if st.session_state['diätform'] != "Alle":
-        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(st.session_state['diätform'], case=False, na=False)]
+    if diet != "Alle":
+        suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.contains(diet, case=False, na=False)]
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
