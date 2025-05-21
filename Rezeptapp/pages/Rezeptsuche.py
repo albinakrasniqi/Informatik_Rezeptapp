@@ -189,56 +189,53 @@ diet = st.selectbox(
     ["Alle", "Vegetarisch", "Vegan", "Kein Schweinefleisch", "Pescitarisch", "laktosefrei"],
 )
 
+# --- Vor der Anzeige der Rezepte: Hilfsfunktionen und forbidden_dict bereitstellen ---
+forbidden_dict = {
+    "Vegetarisch": [
+        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
+    ],
+    "Vegan": [
+        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+        "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
+    ],
+    "Kein Schweinefleisch": ["schwein", "schweinefleisch", "pork"],
+    "Pescitarisch": [
+        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
+    ],
+    "laktosefrei": [
+        "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
+    ]
+}
+def extract_ingredients(val):
+    if isinstance(val, list):
+        return [str(x).strip().lower() for x in val]
+    try:
+        parsed = ast.literal_eval(val)
+        if isinstance(parsed, list):
+            return [str(x).strip().lower() for x in parsed]
+    except Exception:
+        pass
+    return [x.strip().lower() for x in re.split(r'[;,]', str(val)) if x.strip()]
+def forbidden_in_ingredients(ingredient_val, forbidden_words):
+    ingredients = extract_ingredients(ingredient_val)
+    for ing in ingredients:
+        for word in forbidden_words:
+            if re.fullmatch(rf".*\\b{re.escape(word)}\\b.*", ing):
+                return True
+    return False
+def forbidden_in_text(val, forbidden_words):
+    val = str(val).lower()
+    for word in forbidden_words:
+        if re.search(rf"\\b{re.escape(word)}\\b", val):
+            return True
+    return False
+
 if search_button:
     suchergebnisse = rezepte.copy()
     st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
 
-    def extract_ingredients(val):
-        # Try to parse as list, else treat as string
-        if isinstance(val, list):
-            return [str(x).strip().lower() for x in val]
-        try:
-            parsed = ast.literal_eval(val)
-            if isinstance(parsed, list):
-                return [str(x).strip().lower() for x in parsed]
-        except Exception:
-            pass
-        # fallback: split by comma/semicolon/space
-        return [x.strip().lower() for x in re.split(r'[;,]', str(val)) if x.strip()]
-
-    def forbidden_in_ingredients(ingredient_val, forbidden_words):
-        ingredients = extract_ingredients(ingredient_val)
-        for ing in ingredients:
-            for word in forbidden_words:
-                if re.fullmatch(rf".*\\b{re.escape(word)}\\b.*", ing):
-                    return True
-        return False
-
-    def forbidden_in_text(val, forbidden_words):
-        val = str(val).lower()
-        for word in forbidden_words:
-            if re.search(rf"\\b{re.escape(word)}\\b", val):
-                return True
-        return False
-
-    forbidden_dict = {
-        "Vegetarisch": [
-            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
-        ],
-        "Vegan": [
-            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
-            "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
-        ],
-        "Kein Schweinefleisch": ["schwein", "schweinefleisch", "pork"],
-        "Pescitarisch": [
-            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
-        ],
-        "laktosefrei": [
-            "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
-        ]
-    }
-    if diet in forbidden_dict:
-        forbidden = forbidden_dict[diet]
+    forbidden = forbidden_dict.get(diet, [])
+    if forbidden:
         # Remove recipes with forbidden ingredients
         before = len(suchergebnisse)
         suchergebnisse = suchergebnisse[~suchergebnisse['RecipeIngredientParts'].apply(lambda x: forbidden_in_ingredients(x, forbidden))]
@@ -279,12 +276,10 @@ if search_button:
         rezept_id = row.get("ID") or row.get("RecipeId")
         # Prüfe, ob das Rezept eigentlich verboten wäre (z.B. Fleisch bei Vegetarisch)
         highlight = False
-        if diet in forbidden_dict:
-            forbidden = forbidden_dict[diet]
-            # Zutaten prüfen
+        forbidden = forbidden_dict.get(diet, [])
+        if forbidden:
             if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
                 highlight = True
-            # Name, Description, Keywords prüfen
             for col in ["Name", "Description", "Keywords"]:
                 if forbidden_in_text(row.get(col, ''), forbidden):
                     highlight = True
