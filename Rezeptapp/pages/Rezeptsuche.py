@@ -192,15 +192,32 @@ diet = st.selectbox(
 # --- Vor der Anzeige der Rezepte: Hilfsfunktionen und forbidden_dict bereitstellen ---
 forbidden_dict = {
     "Vegetarisch": [
-        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
+        "chicken", "chicken broth", "broth", "bouillon", "poulet",
+        "rind", "rindfleisch", "beef",
+        "schwein", "schweinefleisch", "pork",
+        "speck", "bacon", "wurst", "salami",
+        "lamm", "ente", "gans", "pute", "truthahn",
+        "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+        "ham", "schinken"
     ],
     "Vegan": [
-        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+        "chicken", "chicken broth", "broth", "bouillon", "poulet",
+        "rind", "rindfleisch", "beef",
+        "schwein", "schweinefleisch", "pork",
+        "speck", "bacon", "wurst", "salami",
+        "lamm", "ente", "gans", "pute", "truthahn",
+        "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+        "ham", "schinken",
         "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
     ],
-    "Kein Schweinefleisch": ["schwein", "schweinefleisch", "pork"],
+    "Kein Schweinefleisch": ["schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "ham", "schinken"],
     "Pescitarisch": [
-        "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
+        "chicken", "chicken broth", "broth", "bouillon", "poulet",
+        "rind", "rindfleisch", "beef",
+        "schwein", "schweinefleisch", "pork",
+        "speck", "bacon", "wurst", "salami",
+        "lamm", "ente", "gans", "pute", "truthahn",
+        "ham", "schinken"
     ],
     "laktosefrei": [
         "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
