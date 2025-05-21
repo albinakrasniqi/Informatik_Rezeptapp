@@ -263,7 +263,7 @@ if search_button:
         return False
 
     def has_forbidden(row):
-        if forbidden_in_ingredients_anywhere(row.get('RecipeIngredientParts', ''), forbidden):
+        if forbidden_in_ingredients(row.get('RecipeIngredientParts', ''), forbidden):
             return True
         for col in ["Name", "Description", "Keywords"]:
             if forbidden_in_text(row.get(col, ''), forbidden):
