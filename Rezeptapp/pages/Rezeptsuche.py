@@ -304,15 +304,20 @@ for _, row in suchergebnisse.iterrows():
     st.write(f"**Zutaten:** {formatted_ingredients}")
 
 #Herz-button für Favoriten
-rezept_id = row["ID"]
-is_fav = rezept_id in st.session_state.favoriten
+col1, col2 = st.columns([9, 1])
+with col1:
+    st.write(f"**{row['Name']}**")
+with col2:
+    rezept_id = row.get("ID", "")
+    is_fav = rezept_id in st.session_state.favoriten
+    icon = "❤️" if is_fav else "🤍"
+    if st.button(icon, key=f"fav_{rezept_id}"):
+        if is_fav:
+            st.session_state.favoriten.remove(rezept_id)
+        else:
+            st.session_state.favoriten.append(rezept_id)
+        st.experimental_rerun()
 
-if st.button("❤️" if is_fav else "🤍", key=f"fav_{rezept_id}"):
-    if is_fav:
-        st.session_state.favoriten.remove(rezept_id)
-    else:
-        st.session_state.favoriten.append(rezept_id)
-    st.experimental_rerun()
 
 
     # Bild anzeigen (unterhalb)
