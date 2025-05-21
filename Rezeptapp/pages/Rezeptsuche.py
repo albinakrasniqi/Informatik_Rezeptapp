@@ -409,3 +409,65 @@ if st.button("Neues Rezept erstellen"):
                 data_manager.save_data("data")
                 st.success("✅ Rezept erfolgreich gespeichert!")
 
+if not suchergebnisse.empty:
+    for _, row in suchergebnisse.head(20).iterrows():
+        rezept_id = row.get("ID") or row.get("RecipeId")
+        row1, heart_col = st.columns([5, 1])
+        with row1:
+            # Titel rot markieren, wenn forbidden
+            if row.get('forbidden', False):
+                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🍽️ {row['Name']}")
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
+                     f" | **Kochzeit:** {row.get('CookTime', '-')}")
+            formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+            st.write(f"**Zutaten:** {formatted_ingredients}")
+
+        with heart_col:
+            is_fav = rezept_id in st.session_state.favoriten
+            icon = "❤️" if is_fav else "🤍"
+            if st.button(icon, key=f"fav_{rezept_id}"):
+                if is_fav:
+                    st.session_state.favoriten.remove(rezept_id)
+                else:
+                    st.session_state.favoriten.append(rezept_id)
+                st.experimental_rerun()
+
+        # Bild anzeigen (unterhalb)
+        raw_img = str(row.get("Images", "")).strip()
+        url = None
+        if raw_img.startswith("c("):
+            try:
+                url_list = ast.literal_eval(raw_img[1:])
+                if url_list:
+                    url = url_list[0]
+            except Exception:
+                pass
+        elif raw_img.startswith("http"):
+            url = raw_img
+        if url:
+            st.image(url, use_container_width=True)
+        else:
+            st.markdown("*(kein Bild)*")
+        st.markdown("---")
+
+        # Zutaten + Mengen formatieren
+        parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+        mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+
+        st.markdown("**🧾 Zutaten mit Mengen:**")
+        for i, zutat in enumerate(parts):
+            menge = mengen[i] if i < len(mengen) else ""
+            st.markdown(f"- {menge} {zutat}".strip())
+
+        # Zubereitung (immer anzeigen!)
+        instr_raw = str(row["RecipeInstructions"])
+        step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+        if len(step_list) == 1:
+            step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+        st.markdown("**📝 Zubereitung:**")
+        for idx, step in enumerate(step_list, start=1):
+            if step.strip():
+                st.markdown(f"{idx}. {step.strip()}")
+
