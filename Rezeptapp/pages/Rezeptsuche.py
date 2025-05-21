@@ -257,6 +257,10 @@ def forbidden_in_text(val, forbidden_words):
             return True
     return False
 
+def format_ingredients(val):
+    items = extract_ingredients(val)
+    return ", ".join(items)
+
 if search_button:
     suchergebnisse = rezepte.copy()
     st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
@@ -308,7 +312,8 @@ if search_button:
         with row1:
             st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Mahlzeit:** {row.get('MealType', '-')} | **Kochzeit:** {row.get('CookTime', '-')}")
-            st.write(f"**Zutaten:** {row.get('RecipeIngredientParts', '')}")
+            formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+            st.write(f"**Zutaten:** {formatted_ingredients}")
         # Bild anzeigen (unterhalb)
         raw_img = str(row.get("Images", "")).strip()
         url = None
