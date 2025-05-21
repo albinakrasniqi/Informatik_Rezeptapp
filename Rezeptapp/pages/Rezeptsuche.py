@@ -5,6 +5,8 @@ from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, da
 import re
 import ast
 
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
+
 
 if "favoriten" not in st.session_state:
     st.session_state.favoriten = []
@@ -377,5 +379,6 @@ if st.button("Neues Rezept erstellen"):
                         [st.session_state['data'], pd.DataFrame([new_recipe])],
                         ignore_index=True
                     )
+                data_manager.save_data("data")
                 st.success("✅ Rezept erfolgreich gespeichert!")
 
