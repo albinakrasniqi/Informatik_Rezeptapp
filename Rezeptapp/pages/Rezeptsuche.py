@@ -191,85 +191,60 @@ diet = st.selectbox(
 
 if search_button:
     suchergebnisse = rezepte.copy()
+    st.write(f"Vor Filter: {len(suchergebnisse)} Rezepte")
 
-    # Normalize all relevant fields for robust filtering
-    def normalize_field(val):
+    # --- DIÄT-FILTER: Immer zuerst, unabhängig von Kategorie ---
+    def forbidden_pattern(words):
+        return re.compile(r"(^|[ ,;:\\[\\]\(\\)\n\t\r\f])(" + "|".join(map(re.escape, words)) + r")($|[ ,;:\\[\\]\(\\)\n\t\r\f])", re.IGNORECASE)
+    def field_contains_forbidden(val, patt):
         if isinstance(val, list):
             val = ' '.join(map(str, val))
-        return str(val).lower().strip()
+        return bool(patt.search(str(val)))
 
-    for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-        if col in suchergebnisse.columns:
-            suchergebnisse[col] = suchergebnisse[col].apply(normalize_field)
-
-    # Filtere nach Diätform
-    if diet != "Alle":
-        diet_keywords = {
-            "Vegetarisch": ["vegetarisch", "vegetarian", "vegetable"],
-            "Vegan": ["vegan"],
-            "Kein Schweinefleisch": ["kein schweinefleisch", "no pork", "ohne schweinefleisch"],
-            "Pescitarisch": ["pescitarisch", "pescetarian", "fish"],
-            "laktosefrei": ["laktosefrei", "lactose free", "laktose-frei"]
-        }
-        if diet in diet_keywords:
-            suchergebnisse = suchergebnisse[
-                suchergebnisse['RecipeCategory'].astype(str).str.lower().apply(
-                    lambda x: any(kw in x for kw in diet_keywords[diet])
-                )
-            ]
-        else:
-            suchergebnisse = suchergebnisse[suchergebnisse['RecipeCategory'].str.lower().str.strip() == diet.lower().strip()]
-
-        # Define forbidden ingredient patterns for each diet
-        def forbidden_pattern(words):
-            # Use word boundaries and also match after comma, space, or start/end of string
-            return re.compile(r"(^|[ ,;:\\[\\]\(\\)\n\t\r\f])(" + "|".join(map(re.escape, words)) + r")($|[ ,;:\\[\\]\(\\)\n\t\r\f])", re.IGNORECASE)
-
-        def field_contains_forbidden(val, patt):
-            # If val is a list, join to string
-            if isinstance(val, list):
-                val = ' '.join(map(str, val))
-            return bool(patt.search(str(val)))
-
-        if diet == "Vegetarisch":
-            forbidden = [
-                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
-            ]
-            patt = forbidden_pattern(forbidden)
-            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-                if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
-        elif diet == "Vegan":
-            forbidden = [
-                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
-                "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
-            ]
-            patt = forbidden_pattern(forbidden)
-            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-                if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
-        elif diet == "Kein Schweinefleisch":
-            forbidden = ["schwein", "schweinefleisch", "pork"]
-            patt = forbidden_pattern(forbidden)
-            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-                if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
-        elif diet == "Pescitarisch":
-            forbidden = [
-                "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
-            ]
-            patt = forbidden_pattern(forbidden)
-            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-                if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
-        elif diet == "laktosefrei":
-            forbidden = [
-                "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
-            ]
-            patt = forbidden_pattern(forbidden)
-            for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
-                if col in suchergebnisse.columns:
-                    suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+    if diet == "Vegetarisch":
+        forbidden = [
+            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood"
+        ]
+        patt = forbidden_pattern(forbidden)
+        for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+            if col in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+        st.write(f"Nach Vegetarisch-Filter: {len(suchergebnisse)} Rezepte")
+    elif diet == "Vegan":
+        forbidden = [
+            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn", "fisch", "thunfisch", "lachs", "shrimp", "garnelen", "krabben", "meeresfrüchte", "seafood",
+            "ei", "egg", "käse", "cheese", "milch", "milk", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "honig", "honey"
+        ]
+        patt = forbidden_pattern(forbidden)
+        for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+            if col in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+        st.write(f"Nach Vegan-Filter: {len(suchergebnisse)} Rezepte")
+    elif diet == "Kein Schweinefleisch":
+        forbidden = ["schwein", "schweinefleisch", "pork"]
+        patt = forbidden_pattern(forbidden)
+        for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+            if col in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+        st.write(f"Nach Kein Schweinefleisch-Filter: {len(suchergebnisse)} Rezepte")
+    elif diet == "Pescitarisch":
+        forbidden = [
+            "chicken", "poulet", "rind", "rindfleisch", "beef", "schwein", "schweinefleisch", "pork", "speck", "bacon", "wurst", "salami", "lamm", "ente", "gans", "pute", "truthahn"
+        ]
+        patt = forbidden_pattern(forbidden)
+        for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+            if col in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+        st.write(f"Nach Pescitarisch-Filter: {len(suchergebnisse)} Rezepte")
+    elif diet == "laktosefrei":
+        forbidden = [
+            "milch", "milk", "käse", "cheese", "joghurt", "yogurt", "butter", "quark", "sahne", "cream", "kondensmilch", "frischkäse", "parmesan", "buttermilch"
+        ]
+        patt = forbidden_pattern(forbidden)
+        for col in ["RecipeIngredientParts", "Name", "Description", "Keywords"]:
+            if col in suchergebnisse.columns:
+                suchergebnisse = suchergebnisse[~suchergebnisse[col].apply(lambda x: field_contains_forbidden(x, patt))]
+        st.write(f"Nach Laktosefrei-Filter: {len(suchergebnisse)} Rezepte")
 
     # Nach Mahlzeittyp filtern
     if meal_type != "Alle":
