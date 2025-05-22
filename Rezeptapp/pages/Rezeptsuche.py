@@ -140,9 +140,9 @@ deutsch_to_englisch = {
 
     # Eiweissquellen
     "Poulet": "chicken", "Rindfleisch": "beef", "Schweinefleisch": "pork", "Fisch": "fish",
-    "Garnelen": "shrimp", "Käse": "cheese", "Ei": "egg", "Eiweiss": "egg white", "Speck": "bacon",
+    "Garnelen": "shrimp", "Ei": "egg", "Eiweiss": "egg white", "Speck": "bacon",
     "Falafel": "falafel", "Thunfisch": "tuna", "Quark": "quark", "Joghurt": "yogurt",
-    "Wurst": "sausage", "Fleischbällchen": "meatballs",
+    "Wurst": "sausage",
 
     # Hülsenfrüchte & Nüsse
     "Haselnüsse": "hazelnuts", "Erdnüsse": "peanuts", "Bohnen": "beans", "Linsen": "lentils",
