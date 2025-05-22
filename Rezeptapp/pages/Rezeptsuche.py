@@ -54,9 +54,8 @@ zutat_emojis_gruppen = {
     },
     "Eiweissquellen": {
         "🍗": "Poulet", "🥩": "Rindfleisch", "🍖": "Schweinefleisch", "🐟": "Fisch",
-        "🦐": "Garnelen", "🧀": "Käse", "🥚": "Ei", "🍳": "Eiweiss", "🥓": "Speck",
-        "🧆": "Falafel", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst",
-        "🍢": "Fleischbällchen"
+        "🦐": "Garnelen", "🥚": "Ei", "🍳": "Eiweiss", "🥓": "Speck",
+        "🧆": "Falafel", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst"
     },
     "Hülsenfrüchte & Nüsse": {
         "🥜": "Erdnüsse", "🫘": "Bohnen", "🟤": "Linsen",
