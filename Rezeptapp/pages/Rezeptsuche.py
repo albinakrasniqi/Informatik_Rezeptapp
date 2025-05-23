@@ -430,9 +430,13 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
                 username = st.session_state.get("username", "user")
                 # Lokale Speicherung:
                 st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
+                
                 # WebDAV-Speicherung:
                 def Rezept_speichern(username, rezepte_liste):
                     # Beispiel: Speichern mit DataManager (anpassen je nach tatsächlicher Implementierung)
                     data_manager.save_data(f"{username}_rezepte.json", rezepte_liste)
                 Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
                 st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
+
+username = st.session_state.get("username", "user")
+st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)

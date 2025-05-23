@@ -5,6 +5,7 @@ import pandas as pd
 
 def kontopage():
     st.title("📖 Mein Konto")
+
 #Diätpräferenzen
     st.markdown("### 🥗 Diätpräferenzen festlegen")
     diät = st.radio(
@@ -19,7 +20,7 @@ def kontopage():
     if 'gespeicherte_diätform' in st.session_state and st.session_state['diätform'] != st.session_state['gespeicherte_diätform']:
         st.session_state['diätform'] = st.session_state['gespeicherte_diätform']
 
-    st.title("📖 Mein Konto")
+    # Rezept speichern
     username = st.session_state.get("username", "user")
     try:
         rezepte = pd.read_csv(f"rezepte_{username}.csv")
