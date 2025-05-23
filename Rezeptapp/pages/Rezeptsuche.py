@@ -399,9 +399,12 @@ import datetime
 
 if st.button("➕ Eigenes Rezept hinzufügen"):
     with st.form("rezept_hinzufuegen_formular"):
-        rezept_name = st.text_input("Rezeptname")
-        zutaten = st.text_area("Zutaten (kommagetrennt)")
-        anleitung = st.text_area("Anleitung")
+        rezept_name = st.text_input("📖 Rezepttitel eingeben")
+        bild_url = st.text_input("📸 Bild-URL eingeben")
+        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
+        zutaten_emojis = st.multiselect("Zutaten auswählen", [f"{emoji} {name}" for gruppe in zutat_emojis_gruppen.values() for emoji, name in gruppe.items()])
+        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
+        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
         abgesendet = st.form_submit_button("✅ Rezept speichern")
 
         if abgesendet:
