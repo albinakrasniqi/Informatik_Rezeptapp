@@ -8,10 +8,13 @@ def kontopage():
 
     # fürs Speichern von erstellten Rezepten
     username = st.session_state.get("username", "default_user")
-    rezepte = data_manager.load_data(f"rezepte_{username}.csv")
+    try:
+        rezepte = pd.read_csv(f"rezepte_{username}.csv")
+    except Exception:
+        rezepte = pd.DataFrame()
     st.session_state["data"] = rezepte
 
-
+#Diätpräferenzen
     st.markdown("### 🥗 Diätpräferenzen festlegen")
     diät = st.radio(
         "Meine Diät:",
@@ -25,15 +28,13 @@ def kontopage():
     if 'gespeicherte_diätform' in st.session_state and st.session_state['diätform'] != st.session_state['gespeicherte_diätform']:
         st.session_state['diätform'] = st.session_state['gespeicherte_diätform']
 
-   
+   #erstellte Rezepte
     st.markdown("### 📚 Meine Rezepte")
 
     rezepte = st.session_state.get("data", pd.DataFrame())
     if "ErstelltVon" not in rezepte.columns:
         st.warning("⚠ Keine gültigen Rezeptdaten gefunden.")
         return
-
-
 
     eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
 
@@ -47,11 +48,11 @@ def kontopage():
                 st.write(f"**{row.get('Name', 'Ohne Titel')}**")
                 st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
                 if st.button("🗑 Löschen", key=f"my_recipe_{row['ID']}"):
-                    st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
+                    rezepte = rezepte[rezepte["ID"] != row["ID"]]
+                    st.session_state.data = rezepte
+                    username = st.session_state.get("username", "default_user")
+                    rezepte.to_csv(f"rezepte_{username}.csv", index=False)
                     st.rerun()
-    username = st.session_state.get("username", "default_user")
-    st.session_state["data"] = data_manager.load_data(f"rezepte_{username}.csv")
-
 
 kontopage()
 

@@ -431,6 +431,6 @@ else:
         [st.session_state['data'], pd.DataFrame([new_recipe])],
         ignore_index=True
     )
-# Speichere das DataFrame in die Datei für den Benutzer
-data_manager.save_data(f"rezepte_{username}.csv", st.session_state['data'])
+# Speichere das DataFrame direkt mit pandas
+st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
 st.success("✅ Rezept erfolgreich gespeichert!")
