@@ -468,18 +468,18 @@ def Rezept_laden(username):
         return []
 
 # manuell
-def Rezept_speichern(username, Rezept_speichern ):
+def Rezept_speichern(username, rezepte_liste):
     url = get_mein_konto_pfad(username)
     auth = HTTPBasicAuth(webdav_user, webdav_password)
     output = io.StringIO()
     fieldnames = [
-    "RecipeId", "ID", "Name", "Images", "RecipeIngredientParts", "RecipeIngredientQuantities",
-    "RecipeInstructions", "RecipeCategory", "ErstelltVon", "AuthorName",
-    "TotalTime", "PrepTime", "CookTime", "Description", "RecipeServings"
-]
+        "RecipeId", "ID", "Name", "Images", "RecipeIngredientParts", "RecipeIngredientQuantities",
+        "RecipeInstructions", "RecipeCategory", "ErstelltVon", "AuthorName",
+        "TotalTime", "PrepTime", "CookTime", "Description", "RecipeServings"
+    ]
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(Rezept_speichern)
+    writer.writerows(rezepte_liste)  # <-- Hier angepasst!
     try:
         response = requests.put(
             url,
@@ -491,7 +491,6 @@ def Rezept_speichern(username, Rezept_speichern ):
             st.error(f"Speichern fehlgeschlagen: {response.status_code}")
     except Exception as e:
         st.error(f"Speicherfehler: {e}")
-
 
         # Rezepte als Liste von Dicts speichern
 Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
