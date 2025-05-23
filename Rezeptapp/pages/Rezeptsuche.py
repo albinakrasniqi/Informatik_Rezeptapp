@@ -119,7 +119,7 @@ if selected_ingredients:
 else:
     st.markdown("### 🛒 Keine Zutaten ausgewählt")
 
-# Diätform anzeigen (aber NICHT session_state['diätform'] setzen!)
+# Diätform anzeigen 
 gespeicherte_diät = st.session_state.get("gespeicherte_diätform", "Alle")
 st.markdown(f"### 🧘 Ausgewählte Diät: {gespeicherte_diät}")
 
@@ -169,11 +169,11 @@ deutsch_to_englisch = {
     "Rosmarin": "rosemary", "Basilikum": "basil", "Muskatnuss": "nutmeg", "Zimt": "cinnamon"
 }
 
-
+# Such feld
 st.markdown("### 🔍 Suche starten")
 search_button = st.button("🔎 Suchen")
 
-# --- Vor der Anzeige der Rezepte: Hilfsfunktionen und forbidden_dict bereitstellen ---
+#forbidden_dict/ diätformen codiert
 forbidden_dict = {
     "Vegetarisch": [
         "chicken", "chicken broth", "broth", "bouillon", "poulet",
@@ -318,6 +318,23 @@ def zeige_rezept(row, idx):
                 st.session_state.favoriten.append(rezept_id)
             st.rerun()
             
+# Bild anzeigen (unterhalb)
+    raw_img = str(row.get("Images", "")).strip()
+    url = None
+    if raw_img.startswith("c("):
+        try:
+            url_list = ast.literal_eval(raw_img[1:])
+            if url_list:
+                url = url_list[0]
+        except Exception:
+            pass
+    elif raw_img.startswith("http"):
+        url = raw_img
+    if url:
+        st.image(url, use_container_width=True)
+    else:
+        st.markdown("*(kein Bild)*")
+    st.markdown("---")
 
     # Zutaten anzeigen
     def extract_ingredients(val):
@@ -337,23 +354,6 @@ def zeige_rezept(row, idx):
             pass
         return [x.strip().lower() for x in re.split(r'[;,]', s) if x.strip()]
 
-    # Bild anzeigen (unterhalb)
-    raw_img = str(row.get("Images", "")).strip()
-    url = None
-    if raw_img.startswith("c("):
-        try:
-            url_list = ast.literal_eval(raw_img[1:])
-            if url_list:
-                url = url_list[0]
-        except Exception:
-            pass
-    elif raw_img.startswith("http"):
-        url = raw_img
-    if url:
-        st.image(url, use_container_width=True)
-    else:
-        st.markdown("*(kein Bild)*")
-    st.markdown("---")
 
     # Zutaten + Mengen formatieren
     parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
