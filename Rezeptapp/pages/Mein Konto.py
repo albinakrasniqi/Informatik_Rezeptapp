@@ -28,44 +28,7 @@ def kontopage():
     if 'gespeicherte_diätform' in st.session_state and st.session_state['diätform'] != st.session_state['gespeicherte_diätform']:
         st.session_state['diätform'] = st.session_state['gespeicherte_diätform']
 
-   #erstellte Rezepte
-    st.markdown("### 📚 Meine Rezepte")
-
-    rezepte = st.session_state.get("data", pd.DataFrame())
-    if "ErstelltVon" not in rezepte.columns:
-        st.warning("⚠ Keine gültigen Rezeptdaten gefunden.")
-        return
-
-    eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
-
-    if eigene_rezepte.empty:
-        st.info("Noch keine eigenen Rezepte erstellt.")
-    else:
-        for _, row in eigene_rezepte.iterrows():
-            with st.container():
-                if "Images" in row and pd.notna(row["Images"]):
-                    st.image(row["Images"], width=300)
-                st.write(f"**{row.get('Name', 'Ohne Titel')}**")
-                st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
-                if st.button("🗑 Löschen", key=f"my_recipe_{row['ID']}"):
-                    rezepte = rezepte[rezepte["ID"] != row["ID"]]
-                    st.session_state.data = rezepte
-                    username = st.session_state.get("username", "default_user")
-                    rezepte.to_csv(f"rezepte_{username}.csv", index=False)
-                    st.rerun()
-
-   # Sicherstellen, dass die Rezept-Daten vorhanden sind
-if "data" in st.session_state and not st.session_state["data"].empty:
-    df = st.session_state["data"].copy()
-
-    # Nur eigene Rezepte anzeigen (optional)
-    eigene_rezepte = df[df["ErstelltVon"] == "user"] if "ErstelltVon" in df.columns else df
-
-    if not eigene_rezepte.empty:
-        st.markdown("#### Deine gesamten Rezepte:")
-        st.dataframe(eigene_rezepte.reset_index(drop=True))
-    else:
-        st.info("Noch keine eigenen Rezepte erstellt.")
+   
         
 
 kontopage()
