@@ -413,7 +413,6 @@ if abgesendet:
             "RecipeIngredientQuantities": zutaten_mit_mengen,
             "RecipeInstructions": anleitung,
             "RecipeCategory": diät,
-            "MealType": mahlzeit,
             "ErstelltVon": "user",  
             "AuthorName": "",                 
             "TotalTime": "",
@@ -422,16 +421,16 @@ if abgesendet:
             "Description": "",
             "RecipeServings": ""
         }
-        username = st.session_state.get("username", "default_user")
-        data_manager.save_data(f"rezepte_{username}.csv")
-
-        if 'data' not in st.session_state or st.session_state['data'].empty:
-            st.session_state['data'] = pd.DataFrame([new_recipe])
-        else:
-            st.session_state['data'] = pd.concat(
-                [st.session_state['data'], pd.DataFrame([new_recipe])],
-                ignore_index=True
-            )
-        data_manager.save_data("data")
-        st.success("✅ Rezept erfolgreich gespeichert!")
-        data_manager.save_data("data")
+       
+# ...nach dem Erstellen von new_recipe...
+username = st.session_state.get("username", "default_user")
+if 'data' not in st.session_state or st.session_state['data'].empty:
+    st.session_state['data'] = pd.DataFrame([new_recipe])
+else:
+    st.session_state['data'] = pd.concat(
+        [st.session_state['data'], pd.DataFrame([new_recipe])],
+        ignore_index=True
+    )
+# Speichere das DataFrame in die Datei für den Benutzer
+data_manager.save_data(f"rezepte_{username}.csv", st.session_state['data'])
+st.success("✅ Rezept erfolgreich gespeichert!")

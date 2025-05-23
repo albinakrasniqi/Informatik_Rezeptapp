@@ -1,8 +1,16 @@
 import streamlit as st
 import pandas as pd
+from .. import data_manager  # Adjust the import path as needed
+
 
 def kontopage():
     st.title("📖 Mein Konto")
+
+    # fürs Speichern von erstellten Rezepten
+    username = st.session_state.get("username", "default_user")
+    rezepte = data_manager.load_data(f"rezepte_{username}.csv")
+    st.session_state["data"] = rezepte
+
 
     st.markdown("### 🥗 Diätpräferenzen festlegen")
     diät = st.radio(
@@ -17,12 +25,14 @@ def kontopage():
     if 'gespeicherte_diätform' in st.session_state and st.session_state['diätform'] != st.session_state['gespeicherte_diätform']:
         st.session_state['diätform'] = st.session_state['gespeicherte_diätform']
 
+   
     st.markdown("### 📚 Meine Rezepte")
 
     rezepte = st.session_state.get("data", pd.DataFrame())
     if "ErstelltVon" not in rezepte.columns:
         st.warning("⚠ Keine gültigen Rezeptdaten gefunden.")
         return
+
 
 
     eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
@@ -40,7 +50,7 @@ def kontopage():
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
                     st.rerun()
     username = st.session_state.get("username", "default_user")
-st.session_state["data"] = data_manager.load_data(f"rezepte_{username}.csv")
+    st.session_state["data"] = data_manager.load_data(f"rezepte_{username}.csv")
 
 
 kontopage()
