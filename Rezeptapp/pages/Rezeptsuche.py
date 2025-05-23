@@ -461,6 +461,7 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
                         ignore_index=True
                     )
                 username = st.session_state.get("username", "user")
+               
                 # Lokale Speicherung:
                 st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
                 # WebDAV-Speicherung
