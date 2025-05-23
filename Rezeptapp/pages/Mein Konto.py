@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from .. import data_manager  # Adjust the import path as needed
+
 
 
 def kontopage():
