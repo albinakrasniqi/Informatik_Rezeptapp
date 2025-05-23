@@ -450,7 +450,7 @@ if not username:
 
 #erstellen von Pfad von Mein Konto
 def get_mein_konto_pfad(username):
-    return f"{base_url}/files/{webdav_user}/trink_us/rezepte_{username}.csv"
+  return f"{base_url}/files/{webdav_user}Rezeptapp/pages/Mein Konto.py"
 
 # 🔁 Rezept laden
 def Rezept_laden(username):
