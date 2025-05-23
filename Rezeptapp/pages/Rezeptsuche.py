@@ -468,7 +468,7 @@ def Rezept_laden(username):
         return []
 
 # manuell
-def Rezept_speichern(username, favoriten_liste):
+def Rezept_speichern(username, Rezept_speichern ):
     url = get_mein_konto_pfad(username)
     auth = HTTPBasicAuth(webdav_user, webdav_password)
     output = io.StringIO()
@@ -479,7 +479,7 @@ def Rezept_speichern(username, favoriten_liste):
 ]
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(favoriten_liste)
+    writer.writerows(Rezept_speichern)
     try:
         response = requests.put(
             url,
