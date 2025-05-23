@@ -33,7 +33,9 @@ def kontopage():
         st.dataframe(rezepte)
     else:
         st.info("Noch keine eigenen Rezepte gespeichert.")
-        
+
+    # Definiere rezepte_liste basierend auf den geladenen Rezepten
+    rezepte_liste = rezepte if not rezepte.empty else []
 
 kontopage()
 
