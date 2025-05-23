@@ -393,3 +393,43 @@ rezepte = st.session_state['data']
 if "gespeicherte_diätform" in st.session_state and "diätform" not in st.session_state:
     st.session_state["diätform"] = st.session_state["gespeicherte_diätform"]
 
+
+#Rezept hinzufügen
+import datetime
+
+if st.button("➕ Eigenes Rezept hinzufügen"):
+    with st.form("rezept_hinzufuegen_formular"):
+        rezept_name = st.text_input("Rezeptname")
+        zutaten = st.text_area("Zutaten (kommagetrennt)")
+        anleitung = st.text_area("Anleitung")
+        abgesendet = st.form_submit_button("✅ Rezept speichern")
+
+        if abgesendet:
+            if not rezept_name or not zutaten or not anleitung:
+                st.error("Bitte mindestens einen Titel, Zutaten und eine Anleitung angeben.")
+            else:
+                # Rezept als Dict anlegen
+                new_recipe = {
+                    "Name": rezept_name,
+                    "RecipeIngredientParts": [z.strip() for z in zutaten.split(",") if z.strip()],
+                    "RecipeInstructions": anleitung,
+                    "ID": str(uuid.uuid4()),
+                    "DateAdded": datetime.datetime.now().isoformat()
+                }
+                # Zum DataFrame hinzufügen
+                if 'data' not in st.session_state or st.session_state['data'].empty:
+                    st.session_state['data'] = pd.DataFrame([new_recipe])
+                else:
+                    st.session_state['data'] = pd.concat(
+                        [st.session_state['data'], pd.DataFrame([new_recipe])],
+                        ignore_index=True
+                    )
+                username = st.session_state.get("username", "user")
+                # Lokale Speicherung:
+                st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
+                # WebDAV-Speicherung:
+                def Rezept_speichern(username, rezepte_liste):
+                    # Beispiel: Speichern mit DataManager (anpassen je nach tatsächlicher Implementierung)
+                    data_manager.save_data(f"{username}_rezepte.json", rezepte_liste)
+                Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
+                st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
