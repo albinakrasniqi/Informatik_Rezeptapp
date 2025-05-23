@@ -54,6 +54,20 @@ def kontopage():
                     rezepte.to_csv(f"rezepte_{username}.csv", index=False)
                     st.rerun()
 
+   # Sicherstellen, dass die Rezept-Daten vorhanden sind
+if "data" in st.session_state and not st.session_state["data"].empty:
+    df = st.session_state["data"].copy()
+
+    # Nur eigene Rezepte anzeigen (optional)
+    eigene_rezepte = df[df["ErstelltVon"] == "user"] if "ErstelltVon" in df.columns else df
+
+    if not eigene_rezepte.empty:
+        st.markdown("#### Deine gesamten Rezepte:")
+        st.dataframe(eigene_rezepte.reset_index(drop=True))
+    else:
+        st.info("Noch keine eigenen Rezepte erstellt.")
+        
+
 kontopage()
 
 

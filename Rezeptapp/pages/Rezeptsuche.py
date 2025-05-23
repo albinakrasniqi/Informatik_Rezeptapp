@@ -4,7 +4,11 @@ import uuid  # Für die Generierung von IDs
 from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, dass utils verfügbar ist
 import re
 import ast
-import os
+import csv
+import io
+import requests
+from requests.auth import HTTPBasicAuth
+
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
@@ -432,20 +436,63 @@ if st.button("Neues Rezept erstellen"):
                         [st.session_state['data'], pd.DataFrame([new_recipe])],
                         ignore_index=True
                     )
-                # Speichern
-                st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
-                st.success("✅ Rezept erfolgreich gespeichert!")
-                    
-            #Test
-            import os
+                
+# WebDAV Zugangsdaten
+base_url = st.secrets["webdav"]["base_url"]
+webdav_user = st.secrets["webdav"]["username"]
+webdav_password = st.secrets["webdav"]["password"]
 
-username = st.session_state.get("username", "default_user")
-dateipfad = f"rezepte_{username}.csv"
+# Benutzername aus Login
+username = st.session_state.get("username")
+if not username:
+    st.error("Bitte zuerst einloggen!")
+    st.stop()
 
-# Prüfen, ob die Datei existiert und wo sie gespeichert wird
-st.write("Speicherpfad für Rezepte:", os.path.abspath(dateipfad))
-if os.path.exists(dateipfad):
-    st.success("Die Datei existiert bereits.")
-else:
-    st.info("Die Datei existiert noch nicht und wird beim ersten Speichern angelegt.")
-       
+#erstellen von Pfad von Mein Konto
+def get_mein_konto_pfad(username):
+    return f"{base_url}/files/{webdav_user}/trink_us/rezepte_{username}.csv"
+
+# 🔁 Rezept laden
+def Rezept_laden(username):
+    url = get_mein_konto_pfad(username)
+    auth = HTTPBasicAuth(webdav_user, webdav_password)
+    try:
+        response = requests.get(url, auth=auth)
+        if response.status_code == 200:
+            reader = csv.DictReader(io.StringIO(response.text))
+            return list(reader)
+        else:
+            return []
+    except Exception as e:
+        st.error(f"Fehler beim Laden: {e}")
+        return []
+
+# manuell
+def Rezept_speichern(username, favoriten_liste):
+    url = get_mein_konto_pfad(username)
+    auth = HTTPBasicAuth(webdav_user, webdav_password)
+    output = io.StringIO()
+    fieldnames = [
+    "RecipeId", "ID", "Name", "Images", "RecipeIngredientParts", "RecipeIngredientQuantities",
+    "RecipeInstructions", "RecipeCategory", "ErstelltVon", "AuthorName",
+    "TotalTime", "PrepTime", "CookTime", "Description", "RecipeServings"
+]
+    writer = csv.DictWriter(output, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(favoriten_liste)
+    try:
+        response = requests.put(
+            url,
+            data=output.getvalue().encode("utf-8"),
+            headers={"Content-Type": "text/csv"},
+            auth=auth
+        )
+        if response.status_code not in [200, 201, 204]:
+            st.error(f"Speichern fehlgeschlagen: {response.status_code}")
+    except Exception as e:
+        st.error(f"Speicherfehler: {e}")
+
+
+        # Rezepte als Liste von Dicts speichern
+Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
+st.success("✅ Rezept erfolgreich gespeichert!")
