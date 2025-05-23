@@ -407,6 +407,7 @@ if st.button("Neues Rezept erstellen"):
             else:
                 new_recipe = {
                     "RecipeId": str(uuid.uuid4()),
+                    "ID": str(uuid.uuid4()),  # Für die Löschfunktion in Mein Konto
                     "Name": rezept_name,
                     "Images": bild_url,
                     "RecipeIngredientParts": zutaten_emojis,
@@ -422,6 +423,7 @@ if st.button("Neues Rezept erstellen"):
                     "RecipeServings": ""
                 }
                 username = st.session_state.get("username", "default_user")
+                # DataFrame aktualisieren
                 if 'data' not in st.session_state or st.session_state['data'].empty:
                     st.session_state['data'] = pd.DataFrame([new_recipe])
                 else:
@@ -429,6 +431,20 @@ if st.button("Neues Rezept erstellen"):
                         [st.session_state['data'], pd.DataFrame([new_recipe])],
                         ignore_index=True
                     )
+                # Speichern
                 st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
                 st.success("✅ Rezept erfolgreich gespeichert!")
+                    
+            #Test
+            import os
+
+username = st.session_state.get("username", "default_user")
+dateipfad = f"rezepte_{username}.csv"
+
+# Prüfen, ob die Datei existiert und wo sie gespeichert wird
+st.write("Speicherpfad für Rezepte:", os.path.abspath(dateipfad))
+if os.path.exists(dateipfad):
+    st.success("Die Datei existiert bereits.")
+else:
+    st.info("Die Datei existiert noch nicht und wird beim ersten Speichern angelegt.")
        
