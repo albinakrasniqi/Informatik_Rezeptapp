@@ -429,19 +429,25 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
         bild_url = st.text_input("📸 Bild-URL eingeben")
         diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        zutaten_emojis = st.multiselect("Zutaten auswählen", [f"{emoji} {name}" for gruppe in zutat_emojis_gruppen.values() for emoji, name in gruppe.items()])
+        zutaten_emojis = st.multiselect(
+            "Zutaten auswählen",
+            [f"{emoji} {name}" for gruppe in zutat_emojis_gruppen.values() for emoji, name in gruppe.items()]
+        )
         zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
         anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
         abgesendet = st.form_submit_button("✅ Rezept speichern")
 
         if abgesendet:
-            if not rezept_name or not zutaten or not anleitung:
+            # Zutaten-Check: mindestens eine Zutat ausgewählt oder Mengenangaben gemacht
+            if not rezept_name or (not zutaten_emojis and not zutaten_mit_mengen) or not anleitung:
                 st.error("Bitte mindestens einen Titel, Zutaten und eine Anleitung angeben.")
             else:
-                # Rezept als Dict anlegen
                 new_recipe = {
                     "Name": rezept_name,
-                    "RecipeIngredientParts": [z.strip() for z in zutaten.split(",") if z.strip()],
+                    "Images": bild_url,
+                    "RecipeCategory": diät,
+                    "RecipeIngredientParts": zutaten_emojis,
+                    "RecipeIngredientQuantities": zutaten_mit_mengen,
                     "RecipeInstructions": anleitung,
                     "ID": str(uuid.uuid4()),
                     "DateAdded": datetime.datetime.now().isoformat()
@@ -457,8 +463,6 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
                 username = st.session_state.get("username", "user")
                 # Lokale Speicherung:
                 st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
-                
                 # WebDAV-Speicherung
                 Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
                 st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
-

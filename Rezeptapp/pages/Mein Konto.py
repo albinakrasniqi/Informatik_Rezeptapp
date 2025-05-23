@@ -48,7 +48,7 @@ def kontopage():
         st.dataframe(rezepte)
     else:
         st.info("Noch keine eigenen Rezepte gespeichert.")
-        
+
 kontopage()
 
 
