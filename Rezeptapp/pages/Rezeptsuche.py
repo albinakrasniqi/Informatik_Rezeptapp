@@ -438,5 +438,5 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
                 Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
                 st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
 
-username = st.session_state.get("username", "user")
-st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
+                username = st.session_state.get("username", "user")
+                st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
