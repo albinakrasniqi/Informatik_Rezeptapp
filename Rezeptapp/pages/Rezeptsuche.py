@@ -397,6 +397,33 @@ if "gespeicherte_diätform" in st.session_state and "diätform" not in st.sessio
 #Rezept hinzufügen
 import datetime
 
+def Rezept_speichern(username, rezepte_liste):
+    # WebDAV-Zugangsdaten aus st.secrets oder deiner Konfiguration
+    base_url = st.secrets["webdav"]["base_url"]
+    webdav_user = st.secrets["webdav"]["username"]
+    webdav_password = st.secrets["webdav"]["password"]
+
+    # Zielpfad für die Rezepte-Datei auf WebDAV
+    url = f"{base_url}/files/{webdav_user}/rezepte_{username}.csv"
+    auth = HTTPBasicAuth(webdav_user, webdav_password)
+    output = io.StringIO()
+    # Feldnamen anpassen, falls du weitere Felder hast
+    fieldnames = rezepte_liste[0].keys() if rezepte_liste else ["Name", "RecipeIngredientParts", "RecipeInstructions", "ID", "DateAdded"]
+    writer = csv.DictWriter(output, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rezepte_liste)
+    try:
+        response = requests.put(
+            url,
+            data=output.getvalue().encode("utf-8"),
+            headers={"Content-Type": "text/csv"},
+            auth=auth
+        )
+        if response.status_code not in [200, 201, 204]:
+            st.error(f"Speichern auf WebDAV fehlgeschlagen: {response.status_code}")
+    except Exception as e:
+        st.error(f"WebDAV-Speicherfehler: {e}")
+
 if st.button("➕ Eigenes Rezept hinzufügen"):
     with st.form("rezept_hinzufuegen_formular"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
@@ -431,12 +458,7 @@ if st.button("➕ Eigenes Rezept hinzufügen"):
                 # Lokale Speicherung:
                 st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
                 
-                # WebDAV-Speicherung:
-                def Rezept_speichern(username, rezepte_liste):
-                    # Beispiel: Speichern mit DataManager (anpassen je nach tatsächlicher Implementierung)
-                    data_manager.save_data(f"{username}_rezepte.json", rezepte_liste)
+                # WebDAV-Speicherung
                 Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
                 st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
 
-                username = st.session_state.get("username", "user")
-                st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
