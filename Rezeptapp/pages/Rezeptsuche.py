@@ -4,6 +4,7 @@ import uuid  # Für die Generierung von IDs
 from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, dass utils verfügbar ist
 import re
 import ast
+import os
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
 
