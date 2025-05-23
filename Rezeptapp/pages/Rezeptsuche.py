@@ -394,43 +394,44 @@ if st.button("Neues Rezept erstellen"):
         rezept_name = st.text_input("📖 Rezepttitel eingeben")
         bild_url = st.text_input("📸 Bild-URL eingeben")
         diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        mahlzeit = st.selectbox("🍽 Mahlzeit", ["Frühstück", "Mittagessen", "Abendessen", "Snack"])
-        zutaten_emojis = st.multiselect("Zutaten auswählen", list(set([emoji for gruppe in zutat_emojis_gruppen.values() for emoji in gruppe.keys()])))
+        zutaten_emojis = st.multiselect("Zutaten auswählen", [f"{emoji} {name}" for gruppe in zutat_emojis_gruppen.values() for emoji, name in gruppe.items()])
         zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
         anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
         abgesendet = st.form_submit_button("✅ Rezept speichern")
         
-        if abgesendet:
-            if not rezept_name:
-                st.error("❌ Bitte einen Rezepttitel eingeben.")
-            elif not anleitung:
-                st.error("❌ Bitte eine Anleitung eingeben.")
-            else:
-                new_recipe = {
-    "RecipeId": str(uuid.uuid4()),  # falls alt verwendet wird
-    "Name": rezept_name,
-    "Images": bild_url,
-    "RecipeIngredientParts": zutaten_emojis,
-    "RecipeIngredientQuantities": zutaten_mit_mengen,
-    "RecipeInstructions": anleitung,
-    "RecipeCategory": diät,
-    "MealType": mahlzeit,
-    "AuthorId": "user",            
-    "AuthorName": "",                 # falls du keinen Namen angibst
-    "TotalTime": "",
-    "PrepTime": "",
-    "CookTime": "",
-    "Description": "",
-    "RecipeServings": ""
-}
+if abgesendet:
+    if not rezept_name:
+        st.error("❌ Bitte einen Rezepttitel eingeben.")
+    elif not anleitung:
+        st.error("❌ Bitte eine Anleitung eingeben.")
+    else:
+        new_recipe = {
+            "RecipeId": str(uuid.uuid4()),  # falls alt verwendet wird
+            "Name": rezept_name,
+            "Images": bild_url,
+            "RecipeIngredientParts": zutaten_emojis,
+            "RecipeIngredientQuantities": zutaten_mit_mengen,
+            "RecipeInstructions": anleitung,
+            "RecipeCategory": diät,
+            "MealType": mahlzeit,
+            "ErstelltVon": "user",  
+            "AuthorName": "",                 
+            "TotalTime": "",
+            "PrepTime": "",
+            "CookTime": "",
+            "Description": "",
+            "RecipeServings": ""
+        }
+        username = st.session_state.get("username", "default_user")
+        data_manager.save_data(f"rezepte_{username}.csv")
 
-                if 'data' not in st.session_state or st.session_state['data'].empty:
-                    st.session_state['data'] = pd.DataFrame([new_recipe])
-                else:
-                    st.session_state['data'] = pd.concat(
-                        [st.session_state['data'], pd.DataFrame([new_recipe])],
-                        ignore_index=True
-                    )
-                data_manager.save_data("data")
-                st.success("✅ Rezept erfolgreich gespeichert!")
-                data_manager.save_data("data")
+        if 'data' not in st.session_state or st.session_state['data'].empty:
+            st.session_state['data'] = pd.DataFrame([new_recipe])
+        else:
+            st.session_state['data'] = pd.concat(
+                [st.session_state['data'], pd.DataFrame([new_recipe])],
+                ignore_index=True
+            )
+        data_manager.save_data("data")
+        st.success("✅ Rezept erfolgreich gespeichert!")
+        data_manager.save_data("data")

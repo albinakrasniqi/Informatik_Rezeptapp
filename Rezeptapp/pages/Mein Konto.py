@@ -24,6 +24,7 @@ def kontopage():
         st.warning("⚠ Keine gültigen Rezeptdaten gefunden.")
         return
 
+
     eigene_rezepte = rezepte[rezepte["ErstelltVon"] == "user"]
 
     if eigene_rezepte.empty:
@@ -38,6 +39,9 @@ def kontopage():
                 if st.button("🗑 Löschen", key=f"my_recipe_{row['ID']}"):
                     st.session_state.data = rezepte[rezepte["ID"] != row["ID"]]
                     st.rerun()
+    username = st.session_state.get("username", "default_user")
+st.session_state["data"] = data_manager.load_data(f"rezepte_{username}.csv")
+
 
 kontopage()
 
