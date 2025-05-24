@@ -283,9 +283,9 @@ if search_button:
     if selected_ingredient_names:
         suchergebnisse = suchergebnisse[
             suchergebnisse['RecipeIngredientParts'].astype(str).apply(
-                lambda x: all(z in x for z in selected_ingredient_names)
-            ) | suchergebnisse['forbidden']
-    ] 
+                lambda x: any(z in x for z in selected_ingredient_names)
+            )
+    ]
 
     if suchergebnisse.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
