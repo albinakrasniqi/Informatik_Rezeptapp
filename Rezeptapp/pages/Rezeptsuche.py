@@ -241,8 +241,15 @@ def forbidden_in_ingredients(ingredient_val, forbidden_words):
     # Prüfe auf verbotene Zutaten
     for zutat in zutaten_englisch:
         for word in forbidden_words:
-            if re.search(rf"\b{re.escape(word)}\b", zutat):
+            if word in zutat:
                 return True
+    return False
+
+def forbidden_in_text(text, forbidden_words):
+    text = str(text).lower()
+    for word in forbidden_words:
+        if word in text:
+            return True
     return False
 
 def format_ingredients(val):
