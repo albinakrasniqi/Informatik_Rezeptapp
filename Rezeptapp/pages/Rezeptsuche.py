@@ -294,18 +294,16 @@ def zeige_rezept(row, idx):
     import ast
     import re
 
-    rezept_id = row.get("ID") or row.get("RecipeId")
-
-    # Skip, wenn verboten (z. B. wegen Diät)
-    if row.get('forbidden', False):
+    for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
         row1, heart_col = st.columns([5, 1])
         with row1:
             # Titel rot markieren, wenn forbidden
-            st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            if row.get('forbidden', False):
+                st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
-    else:
-        st.markdown(f"### 🍽️ {row['Name']}")
 
     st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
              f" | **Mahlzeit:** {row.get('MealType', '-')}"
