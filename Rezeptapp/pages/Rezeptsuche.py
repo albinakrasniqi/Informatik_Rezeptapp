@@ -298,7 +298,12 @@ def zeige_rezept(row, idx):
 
     # Skip, wenn verboten (z. B. wegen Diät)
     if row.get('forbidden', False):
-        st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+        rezept_id = row.get("ID") or row.get("RecipeId")
+        row1, heart_col = st.columns([5, 1])
+        with row1:
+            # Titel rot markieren, wenn forbidden
+            st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
+            st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
     else:
         st.markdown(f"### 🍽️ {row['Name']}")
 
