@@ -399,11 +399,13 @@ def zeige_rezept(row, idx):
     # (Entfernt: Doppelte Anzeige und Favoriten-Logik, da dies bereits oben erledigt wird)
 
 
+# ...existing code...
+
 if 'suchergebnisse' in st.session_state and not st.session_state['suchergebnisse'].empty:
     for idx, row in st.session_state['suchergebnisse'].iterrows():
-        if row.get('forbidden', False):
-            continue
         zeige_rezept(row, idx)
+
+# ...existing code...
 
 
 # Einheitliche ID-Spalte
