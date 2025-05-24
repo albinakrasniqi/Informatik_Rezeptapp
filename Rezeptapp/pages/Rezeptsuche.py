@@ -228,20 +228,20 @@ def extract_ingredients(val):
     return [x.strip().lower() for x in re.split(r'[;,]', s) if x.strip()]
 def forbidden_in_ingredients(ingredient_val, forbidden_words):
     ingredients = extract_ingredients(ingredient_val)
-    # Zutaten-Namen extrahieren (z.B. "🍗 Poulet" -> "Poulet")
     zutaten_namen = []
     for ing in ingredients:
-        # Emoji entfernen, falls vorhanden
         name = ing
         if " " in ing:
             name = ing.split(" ", 1)[1]
         zutaten_namen.append(name.lower())
-    # Übersetze ins Englische
     zutaten_englisch = [deutsch_to_englisch.get(name.capitalize(), name.lower()) for name in zutaten_namen]
-    # Prüfe auf verbotene Zutaten
+    # Debug-Ausgabe
+    print("Zutaten Englisch:", zutaten_englisch)
+    print("Forbidden:", forbidden_words)
     for zutat in zutaten_englisch:
         for word in forbidden_words:
             if word in zutat:
+                print("Treffer:", zutat, word)
                 return True
     return False
 
