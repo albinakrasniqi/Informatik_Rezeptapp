@@ -60,22 +60,22 @@ zutat_emojis_gruppen = {
     "Eiweissquellen": {
         "🍗": "Poulet", "🥩": "Rindfleisch", "🍖": "Schweinefleisch", "🐟": "Fisch",
         "🦐": "Garnelen", "🥚": "Ei", "🍳": "Eiweiss", "🥓": "Speck",
-        "🧆": "Falafel", "🍶": "Quark", "🥛": "Joghurt", "🌭": "Wurst"
+        "🧆": "Falafel", "🍶": "Quark", "🥣": "Joghurt", "🌭": "Wurst"
     },
     "Hülsenfrüchte & Nüsse": {
         "🥜": "Erdnüsse", "🫘": "Bohnen", "🟤": "Linsen",
         "🟡": "Gelbe Linsen", "🟣": "Schwarze Bohnen", "🟢": "Kichererbsen",
         "🔴": "Rote Linsen", "⚪": "Weiße Bohnen", "💚": "Grüne Erbsen",
-        "🌰": "Mandeln", "🌰": "Walnüsse", "🥥": "Kokosnuss"
+        "🌸🌰": "Mandeln", "🌰": "Walnüsse", "🥥": "Kokosnuss"
     },
     "Milchprodukte & Alternativen": {
-        "🥛": "Milch", "🧈": "Butter", "🧀": "Käse", "🥥": "Kokosmilch",
-        "🌱": "Sojamilch", "🧁": "Sahne", "🍶": "Frischkäse",
+        "🥛": "Milch", "🧈": "Butter", "🧀": "Käse", "🥥🥛": "Kokosmilch",
+        "🌱": "Sojamilch", "☁️": "Sahne", "🥯": "Frischkäse",
         "🧴": "Kondensmilch"
     },
     "Extras": {
         "🧂": "Salz", "🫒": "Olivenöl", "🍯": "Honig", "🧃": "Essig", "🥫": "Tomatenmark",
-        "🍶": "Sojasauce", "🌶": "Chilipulver", "🍬": "Zucker", "🍁": "Ahornsirup",
+        "🫙": "Sojasauce", "🌶": "Chilipulver", "🍬": "Zucker", "🍁": "Ahornsirup",
         "🧁": "Vanilleextrakt", "🍫": "Schokolade", "🍩": "Backpulver", "🥄": "Senf", "🌿": "Basilikum", "🪵": "Zimt"
     }
 }
