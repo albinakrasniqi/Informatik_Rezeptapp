@@ -293,6 +293,27 @@ def toggle_favorit(rezept_id):
 def zeige_rezept(row, idx):
     import ast
     import re
+    
+ # Nach Zutaten filtern
+    selected_ingredient_names = [
+        deutsch_to_englisch.get(name, name)
+        for gruppe in zutat_emojis_gruppen.values()
+        for emoji, name in gruppe.items()
+        if emoji in st.session_state.auswahl
+    ]
+
+    if selected_ingredient_names:
+        suchergebnisse = suchergebnisse[
+            suchergebnisse['RecipeIngredientParts'].astype(str).apply(
+                lambda x: all(z in x for z in selected_ingredient_names)
+            )
+        ]
+
+    # Ergebnis anzeigen
+    if suchergebnisse.empty:
+        st.warning("❌ Kein passendes Rezept gefunden.")
+    else:
+        st.success(f"✅ {len(suchergebnisse)} Rezept(e) gefunden.")
 
     for _, row in suchergebnisse.head(20).iterrows():
         rezept_id = row.get("ID") or row.get("RecipeId")
@@ -304,10 +325,8 @@ def zeige_rezept(row, idx):
             else:
                 st.markdown(f"### 🍽️ {row['Name']}")
             st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
-
-    st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}"
-             f" | **Mahlzeit:** {row.get('MealType', '-')}"
-             f" | **Kochzeit:** {row.get('CookTime', '-')}")
+            formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
+            st.write(f"**Zutaten:** {formatted_ingredients}")
 
     # Favoriten-Button
     col1, heart_col = st.columns([8, 1])
