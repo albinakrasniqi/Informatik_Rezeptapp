@@ -325,6 +325,22 @@ def zeige_rezept(row, idx):
     st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}")
     st.write(f"**Kochzeit:** {row.get('CookTime', '-')}")
 
+        # Zutaten anzeigen
+    def extract_ingredients(val):
+        if isinstance(val, list):
+            return [str(x).strip().lower() for x in val]
+        s = str(val).strip().lower()
+        if s.startswith('c(') and s.endswith(')'):
+            s = s[2:-1]
+            items = [x.strip().strip('"\'') for x in s.split(',')]
+            return [x for x in items if x]
+        try:
+            parsed = ast.literal_eval(val)
+            if isinstance(parsed, list):
+                return [str(x).strip().lower() for x in parsed]
+        except Exception:
+            pass
+        return [x.strip().lower() for x in re.split(r'[;,]', s) if x.strip()]
     
     parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
     mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
