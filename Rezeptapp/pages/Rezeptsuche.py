@@ -325,7 +325,8 @@ def zeige_rezept(row, idx):
 
         # 🧠 Speichern der Favoriten auf dem Server
         favoriten_df = pd.DataFrame({"favoriten": st.session_state.favoriten})
-        data_manager.save_dataframe(favoriten_df, "favoriten.csv")
+        csv_inhalt = favoriten_df.to_csv(index=False)
+        data_manager.save_file("favoriten.csv", csv_inhalt)
 
         st.rerun()
 
