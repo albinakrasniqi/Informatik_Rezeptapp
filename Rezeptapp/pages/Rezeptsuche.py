@@ -9,8 +9,17 @@ import io
 import requests
 from requests.auth import HTTPBasicAuth
 
+username = st.session_state.get("username", "gast")  # Fallback, falls kein Login
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
+
+if "favoriten" not in st.session_state:
+    try:
+        fav_df = data_manager.load_dataframe(f"favoriten_{username}.csv")
+        st.session_state.favoriten = fav_df["ID"].tolist()
+    except Exception:
+        st.session_state.favoriten = []
+
 
 suchergebnisse = pd.DataFrame()  # leeres DataFrame zur Initialisierung
 
@@ -295,43 +304,67 @@ def toggle_favorit(rezept_id):
     else:
         st.session_state.favoriten.append(rezept_id)
 
-# 🔄 Rezepte anzeigen, wenn vorhanden
 def zeige_rezept(row, idx):
-    import ast
-    import re
-
     rezept_id = row.get("ID") or row.get("RecipeId")
-    row1, heart_col = st.columns([5, 1])
-    with row1:
-        # Titel rot markieren, wenn forbidden
-        if row.get('forbidden', False):
-            st.markdown(f"### <span style='color:red'>🍽️ {row['Name']}</span>", unsafe_allow_html=True)
-        else:
-            st.markdown(f"### 🍽️ {row['Name']}")
-        st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')} | **Kochzeit:** {row.get('CookTime', '-')}" )
-        formatted_ingredients = format_ingredients(row.get('RecipeIngredientParts', ''))
-        st.write(f"**Zutaten:** {formatted_ingredients}")
+    is_fav = rezept_id in st.session_state.favoriten
+    icon = "❤️" if is_fav else "🤍"
 
-    # Favoriten-Button
-    col1, heart_col = st.columns([8, 1])
+    # Favoriten-Button oben rechts
+    row1, heart_col = st.columns([8, 1])
     with heart_col:
-        is_fav = rezept_id in st.session_state.favoriten
-        icon = "❤️" if is_fav else "🤍"
-    if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
-        if is_fav:
-            st.session_state.favoriten.remove(rezept_id)
-        else:
-            st.session_state.favoriten.append(rezept_id)
+        if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+            if is_fav:
+                st.session_state.favoriten.remove(rezept_id)
+            else:
+                st.session_state.favoriten.append(rezept_id)
 
-        # 🧠 Speichern der Favoriten auf dem Server
-        favoriten_df = pd.DataFrame({"favoriten": st.session_state.favoriten})
-        csv_inhalt = favoriten_df.to_csv(index=False)
-        data_manager.save_file("favoriten.csv", csv_inhalt)
+            # Favoriten speichern
+            fav_df = pd.DataFrame({"ID": st.session_state.favoriten})
+            data_manager.save_dataframe(fav_df, f"favoriten_{username}.csv")
+            st.rerun()
 
-        st.rerun()
+    # Rezeptdetails anzeigen
+    st.markdown(f"### 🍽️ {row.get('Name', '(Kein Titel)')}")
+    st.write(f"**Kategorie:** {row.get('RecipeCategory', '-')}")
+    st.write(f"**Kochzeit:** {row.get('CookTime', '-')}")
 
+    # Zutaten anzeigen
+    def extract_ingredients(val):
+        if isinstance(val, list):
+            return [str(x).strip().lower() for x in val]
+        s = str(val).strip().lower()
+        if s.startswith('c(') and s.endswith(')'):
+            s = s[2:-1]
+            items = [x.strip().strip('"\'') for x in s.split(',')]
+            return [x for x in items if x]
+        try:
+            parsed = ast.literal_eval(val)
+            if isinstance(parsed, list):
+                return [str(x).strip().lower() for x in parsed]
+        except Exception:
+            pass
+        return [x.strip().lower() for x in re.split(r'[;,]', s) if x.strip()]
 
-    # Bild anzeigen (unterhalb)
+    parts = extract_ingredients(row.get("RecipeIngredientParts", ""))
+    mengen = extract_ingredients(row.get("RecipeIngredientQuantities", ""))
+
+    st.markdown("**🧾 Zutaten mit Mengen:**")
+    for i, zutat in enumerate(parts):
+        menge = mengen[i] if i < len(mengen) else ""
+        st.markdown(f"- {menge} {zutat}".strip())
+
+    # Zubereitung
+    instr_raw = str(row["RecipeInstructions"])
+    step_list = instr_raw.strip('c()[]').replace('"', '').split('", "')
+    if len(step_list) == 1:
+        step_list = re.split(r'[.\n]\s+', instr_raw.strip('c()[]').replace('"', ''))
+
+    st.markdown("**📝 Zubereitung:**")
+    for step_idx, step in enumerate(step_list, start=1):
+        if step.strip():
+            st.markdown(f"{step_idx}. {step.strip()}")
+
+    # Bild anzeigen
     raw_img = str(row.get("Images", "")).strip()
     url = None
     if raw_img.startswith("c("):
@@ -343,11 +376,14 @@ def zeige_rezept(row, idx):
             pass
     elif raw_img.startswith("http"):
         url = raw_img
+
     if url:
         st.image(url, use_container_width=True)
     else:
         st.markdown("*(kein Bild)*")
+
     st.markdown("---")
+
 
     # Zutaten anzeigen
     def extract_ingredients(val):
