@@ -317,12 +317,18 @@ def zeige_rezept(row, idx):
     with heart_col:
         is_fav = rezept_id in st.session_state.favoriten
         icon = "❤️" if is_fav else "🤍"
-        if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
-            if is_fav:
-                st.session_state.favoriten.remove(rezept_id)
-            else:
-                st.session_state.favoriten.append(rezept_id)
-            st.rerun()
+    if st.button(icon, key=f"fav_{rezept_id}_{idx}"):
+        if is_fav:
+            st.session_state.favoriten.remove(rezept_id)
+        else:
+            st.session_state.favoriten.append(rezept_id)
+
+        # 🧠 Speichern der Favoriten auf dem Server
+        favoriten_df = pd.DataFrame({"favoriten": st.session_state.favoriten})
+        data_manager.save_dataframe(favoriten_df, "favoriten.csv")
+
+        st.rerun()
+
 
     # Bild anzeigen (unterhalb)
     raw_img = str(row.get("Images", "")).strip()

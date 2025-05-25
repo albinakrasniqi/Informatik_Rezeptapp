@@ -1,5 +1,17 @@
 import streamlit as st
-import pandas as pd  # Fehlender Import
+import pandas as pd
+from utils.data_manager import DataManager  # DataManager importieren
+
+# DataManager initialisieren
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
+
+# Favoriten aus Datei laden, falls noch nicht im session_state
+if "favoriten" not in st.session_state:
+    try:
+        df_fav = data_manager.load_dataframe("favoriten.csv")
+        st.session_state.favoriten = df_fav["favoriten"].tolist()
+    except Exception:
+        st.session_state.favoriten = []
 
 def fav():
     st.title("❤️ Meine Favoriten")
@@ -8,10 +20,6 @@ def fav():
     if "data" not in st.session_state or st.session_state["data"].empty:
         st.warning("📛 Keine Rezeptdaten geladen. Bitte öffne zuerst die Startseite.")
         return
-
-    # Favoriten initialisieren, wenn noch nicht vorhanden
-    if "favoriten" not in st.session_state:
-        st.session_state.favoriten = []
 
     # Wenn keine Favoriten vorhanden sind
     if not st.session_state.favoriten:
@@ -61,6 +69,9 @@ def fav():
             st.write(f"🍽️ Mahlzeit: {row.get('MealType', '')}")
             if st.button("🗑️ Entfernen", key=f"remove_fav_{row['ID']}"):
                 st.session_state.favoriten.remove(row["ID"])
+                # 🧠 Favoriten auch direkt speichern
+                favoriten_df = pd.DataFrame({"favoriten": st.session_state.favoriten})
+                data_manager.save_dataframe(favoriten_df, "favoriten.csv")
                 st.rerun()
 
 # ⬅️ Hier aufrufen
