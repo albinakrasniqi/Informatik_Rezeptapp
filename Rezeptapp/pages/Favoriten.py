@@ -4,28 +4,26 @@ import pandas as pd  # Fehlender Import
 def fav():
     st.title("❤️ Meine Favoriten")
 
-    sort_option = st.selectbox("Sortieren nach", ["Diät", "Mahlzeit", "Zuletzt hinzugefügt", "Alt -> Neu"])
-    sortieren = st.button("🔃 Sortierung anwenden")
+    # Rezeptdaten prüfen und laden
+    if "data" not in st.session_state or st.session_state["data"].empty:
+        st.warning("📛 Keine Rezeptdaten geladen. Bitte öffne zuerst die Startseite.")
+        return
 
-    # Initialisiere Favoriten, falls nicht vorhanden
+    # Favoriten initialisieren, wenn noch nicht vorhanden
     if "favoriten" not in st.session_state:
         st.session_state.favoriten = []
 
+    # Wenn keine Favoriten vorhanden sind
     if not st.session_state.favoriten:
-        st.info("Noch keine Favoriten gespeichert.")
+        st.info("🩷 Du hast noch keine Favoriten gespeichert.")
         return
 
-    # Lade Rezeptdaten
-    rezepte = st.session_state.get('data', pd.DataFrame()).copy()
+    # Daten kopieren
+    rezepte = st.session_state['data'].copy()
 
     # Einheitliche ID-Spalte sicherstellen
     if "ID" not in rezepte.columns and "RecipeId" in rezepte.columns:
         rezepte["ID"] = rezepte["RecipeId"]
-
-    # Prüfen, ob gültige Daten vorhanden sind
-    if rezepte.empty or "ID" not in rezepte.columns:
-        st.warning("⚠️ Keine gültigen Rezeptdaten gefunden.")
-        return
 
     # Fehlende Spalten auffüllen
     required_cols = ["ID", "Name", "Images", "RecipeCategory", "MealType"]
@@ -33,11 +31,12 @@ def fav():
         if col not in rezepte.columns:
             rezepte[col] = ""
 
-    # Filtere Favoriten
+    # Nur Favoriten herausfiltern
     favoriten_rezepte = rezepte[rezepte["ID"].isin(st.session_state.favoriten)].copy()
 
     # Sortieren
-    if sortieren:
+    sort_option = st.selectbox("Sortieren nach", ["Diät", "Mahlzeit", "Zuletzt hinzugefügt", "Alt -> Neu"])
+    if st.button("🔃 Sortierung anwenden"):
         if sort_option == "Diät":
             favoriten_rezepte.sort_values(by="RecipeCategory", inplace=True)
         elif sort_option == "Mahlzeit":
@@ -55,13 +54,16 @@ def fav():
     # Favoriten anzeigen
     for _, row in favoriten_rezepte.iterrows():
         with st.container():
-            if "Images" in row and pd.notna(row["Images"]):
+            st.markdown(f"### 🍽️ {row.get('Name', 'Ohne Titel')}")
+            if "Images" in row and pd.notna(row["Images"]) and row["Images"].startswith("http"):
                 st.image(row["Images"], width=300)
-            st.write(f"**{row.get('Name', 'Ohne Titel')}**")
-            st.write(f"Tags: {row.get('RecipeCategory', '')} | {row.get('MealType', '')}")
+            st.write(f"🧘 Diät: {row.get('RecipeCategory', '')}")
+            st.write(f"🍽️ Mahlzeit: {row.get('MealType', '')}")
             if st.button("🗑️ Entfernen", key=f"remove_fav_{row['ID']}"):
                 st.session_state.favoriten.remove(row["ID"])
                 st.rerun()
 
-fav() 
+# ⬅️ Hier aufrufen
+fav()
+
 
