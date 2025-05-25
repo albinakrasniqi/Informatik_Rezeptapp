@@ -273,13 +273,14 @@ if search_button:
         for emoji, name in gruppe.items()
         if emoji in st.session_state.auswahl
     ]
+if "RecipeIngredientParts" in suchergebnisse.columns:
+    suchergebnisse = suchergebnisse[suchergebnisse['RecipeIngredientParts'].astype(str).apply(
+        lambda x: any(z in x for z in selected_ingredient_names)
+    )]
+else:
+    st.warning("⚠️ Die Spalte 'RecipeIngredientParts' fehlt – bitte überprüfe die Datenquelle.")
+    suchergebnisse = pd.DataFrame()  # leeres Ergebnis
 
-    if selected_ingredient_names:
-        suchergebnisse = suchergebnisse[
-            suchergebnisse['RecipeIngredientParts'].astype(str).apply(
-                lambda x: any(z in x for z in selected_ingredient_names)
-            )
-    ]
 
     if suchergebnisse.empty:
         st.warning("❌ Kein passendes Rezept gefunden.")
