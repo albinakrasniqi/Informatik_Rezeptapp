@@ -32,12 +32,6 @@ gewünschte_spalten = [
 # Rezepte DataFrame aus Session State laden
 rezepte = st.session_state['data']
 
-
-# Falls leer, sofort stoppen
-if rezepte.empty:
-    st.error("❌ Keine Daten im Rezept-Datensatz! Bitte prüfe die Datei in SwitchDrive.")
-    st.stop()
-
 # Zutaten-Emoji-Gruppen definieren
 zutat_emojis_gruppen = {
     "Kohlenhydrate & Getreide": {
