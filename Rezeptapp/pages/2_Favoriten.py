@@ -1,16 +1,12 @@
 import streamlit as st
 import pandas as pd
+import os
+
 
 # Initialisierung
 username = st.session_state.get("username", "gast")
 
-# Favoriten aus lokaler CSV laden
-if "favoriten" not in st.session_state:
-    try:
-        fav_df = pd.read_csv(f"favoriten_{username}.csv")
-        st.session_state.favoriten = fav_df["ID"].tolist()
-    except Exception:
-        st.session_state.favoriten = []
+pfad = os.path.join(".", f"favoriten_{username}.csv")
 
 def fav():
     st.title("❤️ Meine Favoriten")
@@ -56,7 +52,7 @@ def fav():
             if st.button("🗑️ Entfernen", key=f"remove_fav_{row['ID']}"):
                 st.session_state.favoriten.remove(row["ID"])
                 new_fav_df = pd.DataFrame({"ID": st.session_state.favoriten})
-                new_fav_df.to_csv(f"favoriten_{username}.csv", index=False)
+                new_fav_df.to_csv(pfad, index=False)
                 st.rerun()
 
 # Seite starten
