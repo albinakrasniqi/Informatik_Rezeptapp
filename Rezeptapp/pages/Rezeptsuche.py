@@ -1,24 +1,20 @@
 import streamlit as st
 import pandas as pd
 import uuid  # Für die Generierung von IDs
-from utils.data_manager import DataManager  # Falls benötigt, sicherstellen, dass utils verfügbar ist
 import re
 import ast
 import csv
 import io
-import requests
-from requests.auth import HTTPBasicAuth
 
 username = st.session_state.get("username", "gast")  # Fallback, falls kein Login
 
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Rezeptapp2")
-
 if "favoriten" not in st.session_state:
     try:
-        fav_df = data_manager.load_dataframe(f"favoriten_{username}.csv")
+        fav_df = pd.read_csv(f"favoriten_{username}.csv")
         st.session_state.favoriten = fav_df["ID"].tolist()
     except Exception:
         st.session_state.favoriten = []
+
 
 
 suchergebnisse = pd.DataFrame()  # leeres DataFrame zur Initialisierung
@@ -320,7 +316,8 @@ def zeige_rezept(row, idx):
 
             # Favoriten speichern
             fav_df = pd.DataFrame({"ID": st.session_state.favoriten})
-            data_manager.save_dataframe(fav_df, f"favoriten_{username}.csv")
+            fav_df.to_csv(f"favoriten_{username}.csv", index=False)
+
             st.rerun()
 
     # Rezeptdetails anzeigen
@@ -444,76 +441,3 @@ if "gespeicherte_diätform" in st.session_state and "diätform" not in st.sessio
     st.session_state["diätform"] = st.session_state["gespeicherte_diätform"]
 
 
-#Rezept hinzufügen
-import datetime
-
-def Rezept_speichern(username, rezepte_liste):
-    # WebDAV-Zugangsdaten aus st.secrets oder deiner Konfiguration
-    base_url = st.secrets["webdav"]["base_url"]
-    webdav_user = st.secrets["webdav"]["username"]
-    webdav_password = st.secrets["webdav"]["password"]
-
-    # Zielpfad für die Rezepte-Datei auf WebDAV
-    url = f"{base_url}/files/{webdav_user}/rezepte_{username}.csv"
-    auth = HTTPBasicAuth(webdav_user, webdav_password)
-    output = io.StringIO()
-    # Feldnamen anpassen, falls du weitere Felder hast
-    fieldnames = rezepte_liste[0].keys() if rezepte_liste else ["Name", "RecipeIngredientParts", "RecipeInstructions", "ID", "DateAdded"]
-    writer = csv.DictWriter(output, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(rezepte_liste)
-    try:
-        response = requests.put(
-            url,
-            data=output.getvalue().encode("utf-8"),
-            headers={"Content-Type": "text/csv"},
-            auth=auth
-        )
-        if response.status_code not in [200, 201, 204]:
-            st.error(f"Speichern auf WebDAV fehlgeschlagen: {response.status_code}")
-    except Exception as e:
-        st.error(f"WebDAV-Speicherfehler: {e}")
-
-if st.button("➕ Eigenes Rezept hinzufügen"):
-    with st.form("rezept_hinzufuegen_formular"):
-        rezept_name = st.text_input("📖 Rezepttitel eingeben")
-        bild_url = st.text_input("📸 Bild-URL eingeben")
-        diät = st.selectbox("🧘 Diät", ["Vegetarisch", "Vegan", "Kein Schweinefleisch"])
-        zutaten_emojis = st.multiselect(
-            "Zutaten auswählen",
-            [f"{emoji} {name}" for gruppe in zutat_emojis_gruppen.values() for emoji, name in gruppe.items()]
-        )
-        zutaten_mit_mengen = st.text_area("Zutaten mit Mengenangaben")
-        anleitung = st.text_area("📝 Schritt-für-Schritt Anleitung")
-        abgesendet = st.form_submit_button("✅ Rezept speichern")
-
-        if abgesendet:
-            # Zutaten-Check: mindestens eine Zutat ausgewählt oder Mengenangaben gemacht
-            if not rezept_name or (not zutaten_emojis and not zutaten_mit_mengen) or not anleitung:
-                st.error("Bitte mindestens einen Titel, Zutaten und eine Anleitung angeben.")
-            else:
-                new_recipe = {
-                    "Name": rezept_name,
-                    "Images": bild_url,
-                    "RecipeCategory": diät,
-                    "RecipeIngredientParts": zutaten_emojis,
-                    "RecipeIngredientQuantities": zutaten_mit_mengen,
-                    "RecipeInstructions": anleitung,
-                    "ID": str(uuid.uuid4()),
-                    "DateAdded": datetime.datetime.now().isoformat()
-                }
-                # Zum DataFrame hinzufügen
-                if 'data' not in st.session_state or st.session_state['data'].empty:
-                    st.session_state['data'] = pd.DataFrame([new_recipe])
-                else:
-                    st.session_state['data'] = pd.concat(
-                        [st.session_state['data'], pd.DataFrame([new_recipe])],
-                        ignore_index=True
-                    )
-                username = st.session_state.get("username", "user")
-               
-                # Lokale Speicherung:
-                st.session_state['data'].to_csv(f"rezepte_{username}.csv", index=False)
-                # WebDAV-Speicherung
-                Rezept_speichern(username, st.session_state['data'].to_dict(orient="records"))
-                st.success("✅ Rezept erfolgreich gespeichert! Du findest es unter 'Mein Konto'.")
